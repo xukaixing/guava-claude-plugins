@@ -1,0 +1,8 @@
+{
+  "name": "guava-plugins",
+  "description": "Guava 前端页面与 Spring Boot 后端代码生成 skills",
+  "version": "1.0.0",
+  "author": {
+    "name": "Guava Team"
+  }
+}

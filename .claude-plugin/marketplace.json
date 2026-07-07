@@ -1,0 +1,23 @@
+{
+  "name": "guava-tools",
+  "description": "Guava 前后端代码生成 Claude Code 插件",
+  "version": "1.0.0",
+  "owner": {
+    "name": "xukaixing<xukaixing@guava.com>"
+  },
+  "plugins": [
+    {
+      "name": "guava-plugins",
+      "source": "./plugins/guava-plugins",
+      "description": "Guava 前端页面与 Spring Boot 后端代码生成 skills",
+      "version": "1.0.0",
+      "keywords": [
+        "guava",
+        "vue",
+        "spring-boot",
+        "crud",
+        "codegen"
+      ]
+    }
+  ]
+}
