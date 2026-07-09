@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "hooks": {
+    "postToolUse": [
+      {
+        "command": "bash /path/to/guava-claude-plugins/plugins/guava-plugins/hooks/lint-fix.sh",
+        "matcher": "Write|StrReplace",
+        "timeout": 180
+      }
+    ],
+    "stop": [
+      {
+        "command": "bash /path/to/guava-claude-plugins/plugins/guava-plugins/hooks/lint-fix.sh",
+        "timeout": 180
+      }
+    ]
+  }
+}

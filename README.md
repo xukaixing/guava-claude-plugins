@@ -55,3 +55,9 @@ plugins/guava-plugins/
 ## 开发
 
 修改插件后于 Claude Code 执行 `/reload-plugins` 热加载。
+
+### ESLint hook 排查
+
+1. 确认插件已安装且 hooks 已加载（`/reload-plugins`）
+2. 调试：在消费项目 `settings.local.json` 加 `"GUAVA_LINT_DEBUG": "1"`
+3. 若用 **Cursor Agent**（非 Claude Code 插件），需在 ses-web 配置 `.cursor/hooks.json`（见 `plugins/guava-plugins/hooks/cursor-hooks.json.example`）
