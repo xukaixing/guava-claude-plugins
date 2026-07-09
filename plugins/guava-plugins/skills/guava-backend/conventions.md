@@ -1,4 +1,6 @@
-# 代码规范 & 命名参考
+# 后端代码规范
+
+> [SKILL.md](SKILL.md) · [../../README.md](../../README.md)
 
 ## 目录结构
 

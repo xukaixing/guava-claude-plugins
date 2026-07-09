@@ -1,10 +1,8 @@
 # 类型定义模板
 
-生成 `src/views/<viewPath>/module/types.d.ts`（layout=module）或 `src/views/<viewPath>/types.d.ts`（layout=flat）。**仅为 enabled CRUD 操作定义接口。**
+> [_shared.md](../_shared.md)
 
-## 已存在文件
-
-文件已存在时 **Write 整文件覆盖**，按当前配置的 CRUD enabled 状态重新生成。禁止跳过。
+生成 `types.d.ts`。**仅为 enabled CRUD 操作定义接口。**
 
 ## 全局类型（已存在，禁止重复定义）
 
@@ -39,3 +37,35 @@ export interface <Feature>EditTableActions {
 - `EditActions` 仅当选中新增/编辑时生成
 - `EditTableActions` 仅当选中子表格时生成
 - 使用中文注释：`// <feature>-xxx回调方法赋类型`
+
+## form-only
+
+**仅生成** `FormActions`，不生成 `TableActions` / `EditActions` / `EditTableActions`。
+
+```typescript
+// <feature>-表单页回调方法赋类型
+export interface <Feature>FormActions {
+  dictCB: DictSelectedFn;
+  dictClearCB: DictSelectedFn;
+}
+```
+
+无字典字段时可省略 `dictCB` / `dictClearCB`，helper 工厂改为无参 `create<Feature>FormList = () => { ... }`。
+
+## tabs
+
+与 crud-module 相同，生成 `TableActions` + `EditActions`（Drawer 用）。
+
+含 `inline-form` Tab 时追加（可与 `EditActions` 结构相同，二选一）：
+
+```typescript
+// <feature>-Tab 内嵌表单回调方法赋类型
+export interface <Feature>InlineEditActions {
+  dictCB: DictSelectedFn;
+  dictClearCB: DictSelectedFn;
+}
+```
+
+若 Index 与 Edit 共用 `EditActions`，可只生成一个 `EditActions` 接口。
+
+---

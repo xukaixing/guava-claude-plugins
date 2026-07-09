@@ -1,0 +1,6 @@
+{
+  "env": {
+    "GUAVA_BACKEND_ROOT": "/path/to/your/guava-backend-maven-root",
+    "GUAVA_JAVA_FORMAT": "auto"
+  }
+}

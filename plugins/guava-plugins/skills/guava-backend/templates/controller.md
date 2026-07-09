@@ -1,5 +1,7 @@
 # Controller 模板
 
+> [\_shared.md](../_shared.md) · [conventions.md](../conventions.md)
+
 生成 `controller/{feature}/{Entity}Controller.java`。**仅生成 Step 1.3 选中的方法。**
 
 ## 文件头
@@ -29,7 +31,7 @@ import java.util.Map;
  * <p> {中文模块名} controller</p>
  * @author: {git user.email}
  * @created: {YYYY-MM-DD}
- * @version v1.0.0
+ * @version v1.0.1
  */
 @Tag(name = "{swagger-tag}")
 @RestController
@@ -50,7 +52,7 @@ public class {Entity}Controller
    * <p> 查询{中文名}信息 </p>
    * @author: {author}
    * @date: {date}
-   * @version: 1.0.0
+   * @version: 1.0.1
    */
   @Operation(summary = "查询->{中文名}信息", description = "查询{中文名}信息")
   @PostMapping(value = "/find{Entity}")

@@ -1,14 +1,8 @@
 # Helper 配置工厂模板
 
-生成 `src/views/<viewPath>/module/helper.tsx`（layout=module）或 `src/views/<viewPath>/helper.tsx`（layout=flat）。
+> [_shared.md](../_shared.md) · 查询字段 [search-conditions.md](../search-conditions.md)
 
-**关键**：`ItemForm`、`TableHeadItem`、`Recordable` 是全局类型，禁止 import。
-
-> 查询条件详见 [search-conditions.md](../search-conditions.md)
-
-## 已存在文件
-
-文件已存在时 **Write 整文件覆盖**，按当前配置的查询/表格/编辑字段重新生成。禁止跳过。
+生成 `helper.tsx`（module 在 `module/` 下）。`ItemForm`/`TableHeadItem`/`Recordable` 为全局类型，禁止 import。
 
 ## 按操作选择生成
 
@@ -153,3 +147,101 @@ export const create<Feature>EditTableHeadList = (actions: <Feature>EditTableActi
 | `date` | dateType |
 | `textarea` | format, colspan |
 | `switch`（表格 render） | remark=switch:handlerName |
+
+## form-only
+
+**仅生成** `create<Feature>FormList`，不生成 SearchList / TableHeadList / EditList。
+
+| 工厂函数 | 生成条件 | 数据来源 |
+|---------|---------|---------|
+| `create<Feature>FormList` | 始终 | 编辑表（整页表单字段） |
+
+字段 `format` 规则与 EditList 相同（必填 `1` + `idDic`，非必填 `0` + `isDic`）。**无** `operateType` / `disabledOnEdit`（纯配置页通常无新增/编辑模式区分；若扩展需要可保留）。
+
+```typescript
+import { ref } from 'vue';
+import { useI18n } from '@/hook/web/useI18n';
+import type { <Feature>FormActions } from './types';
+// ↓ only if dicRemote in config:
+import { findDictFromTableApi } from '@/api/<apiModule>';
+
+// <title>-表单
+export const create<Feature>FormList = (actions: <Feature>FormActions) => {
+  const { t } = useI18n();
+  return ref<FormItem[]>([
+    {
+      type: 'text',
+      format: [1, 'isAny', 60],
+      label: t('<i18nKey>.siteName'),
+      field: 'siteName',
+    },
+    {
+      type: 'dic',
+      format: [0, 'isDic', 6],
+      dicType: 'yxzt',
+      label: t('<i18nKey>.maintenanceMode'),
+      field: 'maintenanceMode',
+      cb: actions.dictCB,
+      clear: actions.dictClearCB,
+    },
+    {
+      type: 'textarea',
+      format: [0, 'isAny', 200],
+      label: t('<i18nKey>.remark'),
+      field: 'remark',
+    },
+  ]);
+};
+```
+
+无字典字段时：
+
+```typescript
+export const create<Feature>FormList = () => {
+  const { t } = useI18n();
+  return ref<FormItem[]>([ /* ... */ ]);
+};
+```
+
+---
+
+## tabs
+
+在 crud-module 工厂基础上，**含 `inline-form` Tab 时追加** `create<Feature>InlineEditList`。
+
+| 工厂函数 | 生成条件 | 数据来源 |
+|---------|---------|---------|
+| `create<Feature>SearchList` | 含 search-table Tab | 查询表 |
+| `create<Feature>TableHeadList` | 含 search-table Tab | 表格列 |
+| `create<Feature>EditList` | editMode=drawer 且 add/edit | 编辑表（Drawer） |
+| `create<Feature>InlineEditList` | 含 inline-form Tab | 编辑表（Tab 内嵌，同字段） |
+
+`InlineEditList` 与 `EditList` 字段相同，签名**无** `operateType`；`disabledOnEdit` 扩展列在 inline 中**不生效**。
+
+```typescript
+// <title>-Tab 内嵌编辑表单
+export const create<Feature>InlineEditList = (actions: <Feature>InlineEditActions) => {
+  const { t } = useI18n();
+  return ref<FormItem[]>([
+    {
+      type: 'text',
+      format: [1, 'isNumberLetter', 30],
+      label: t('<i18nKey>.account'),
+      field: 'account',
+    },
+    {
+      type: 'dic',
+      format: [1, 'idDic', 6],
+      dicType: 'yxzt',
+      label: t('<i18nKey>.status'),
+      field: 'status',
+      cb: actions.dictCB,
+      clear: actions.dictClearCB,
+    },
+  ]);
+};
+```
+
+Index 与 Edit 可共用 `EditActions` / `InlineEditActions`（结构相同：`dictCB` + `dictClearCB`）。
+
+---

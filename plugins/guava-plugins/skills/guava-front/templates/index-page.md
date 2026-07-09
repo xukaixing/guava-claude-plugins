@@ -1,35 +1,25 @@
 # 列表页模板
 
-生成 `src/views/<viewPath>/<Base>Index.vue`（Index **不在** module/ 子目录）。
+> [\_shared.md](../_shared.md) · [conventions.md](../conventions.md)
 
-**仅生成 CRUD 配置中 enabled=true 的方法。**
-
-## 已存在文件
-
-文件已存在时 **Write 整文件覆盖**。保留原文件头 `@date` 不变，更新 `@LastEditTime`、`@LastEditors`，`@version` 末位 +1。禁止跳过。
-
-## 代码结构顺序
-
-```
-imports → @define name → @hook → @data → @methods → @bizData → @mounted
-```
+生成 `src/views/<viewPath>/<Base>Index.vue`。**仅生成 CRUD 配置中 enabled 的方法。**
 
 ## 方法生成条件
 
-| 操作 | 方法 | 条件 |
-|------|------|------|
-| 查询 | 配置 methodName | 始终 |
-| 新增 | 配置 methodName | add enabled |
-| 编辑 | 配置 methodName | edit enabled |
-| 删除 | 配置 methodName | delete enabled |
+| 操作     | 方法             | 条件             |
+| -------- | ---------------- | ---------------- |
+| 查询     | 配置 methodName  | 始终             |
+| 新增     | 配置 methodName  | add enabled      |
+| 编辑     | 配置 methodName  | edit enabled     |
+| 删除     | 配置 methodName  | delete enabled   |
 | 保存回调 | `save<Base>Info` | add/edit enabled |
 
 ## import 路径
 
-| layout | helper import | Edit import |
-|--------|--------------|-------------|
+| layout   | helper import     | Edit import               |
+| -------- | ----------------- | ------------------------- |
 | `module` | `./module/helper` | `./module/<Base>Edit.vue` |
-| `flat` | `./helper` | `./<Base>Edit.vue` |
+| `flat`   | `./helper`        | `./<Base>Edit.vue`        |
 
 ## 模板
 
@@ -40,7 +30,7 @@ imports → @define name → @hook → @data → @methods → @bizData → @moun
  * @date: <current YYYY-MM-DD HH:mm:ss>
  * @LastEditors: <git user.name>
  * @LastEditTime: <current YYYY-MM-DD HH:mm:ss>
- * @version: 1.0.0
+ * @version: 1.0.1
 -->
 <script setup lang="tsx">
   import type { FormInstance, TableInstance } from 'element-plus';

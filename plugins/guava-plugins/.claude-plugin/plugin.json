@@ -1,8 +1,10 @@
 {
   "name": "guava-plugins",
-  "description": "Guava 前端页面与 Spring Boot 后端代码生成 skills",
-  "version": "1.0.0",
+  "description": "Guava 全栈代码生成：guava-front / guava-backend / guava-all，含 lint hooks",
+  "version": "2.0.0",
   "author": {
-    "name": "Guava Team"
-  }
+    "name": "Guava Team",
+    "email": "xukaixing@hotmail.com"
+  },
+  "keywords": ["guava", "vue", "spring-boot", "crud", "codegen", "ses-web"]
 }

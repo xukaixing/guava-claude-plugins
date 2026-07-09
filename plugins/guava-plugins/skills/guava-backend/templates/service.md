@@ -18,7 +18,7 @@ import java.util.Map;
  * <p> {中文模块名} service 接口</p>
  * @author: {author}
  * @created: {YYYY-MM-DD}
- * @version v1.0.0
+ * @version v1.0.1
  */
 public interface {Entity}Service
 {
@@ -44,13 +44,13 @@ public interface {Entity}Service
 
 ## 方法签名约定
 
-| 操作 | 签名 |
-|------|------|
-| 查询 | `IPage<Map<String, Object>> findXxx(Page<Map<String, Object>> page, String qc)` |
-| 新增 | `Map<String, Object> saveXxx(Map<String, Object> param)` |
-| 更新 | `Map<String, Object> updateXxx(Long id, Map<String, Object> param)` |
-| 删除 | `Integer removeXxx(Long id)` |
-| 状态 | `Map<String, Object> updateXxxStatus(Long id, Integer status)` |
+| 操作 | 签名                                                                                                        |
+| ---- | ----------------------------------------------------------------------------------------------------------- |
+| 查询 | `IPage<Map<String, Object>> findXxx(Page<Map<String, Object>> page, String qc)`                             |
+| 新增 | `Map<String, Object> saveXxx(Map<String, Object> param)`                                                    |
+| 更新 | `Map<String, Object> updateXxx(Long id, Map<String, Object> param)`                                         |
+| 删除 | `Integer removeXxx(Long id)`                                                                                |
+| 状态 | `Map<String, Object> updateXxxStatus(Long id, Integer status)`                                              |
 | 导出 | `void export(HttpServletResponse response, String fileName, Map<String, Object> params) throws IOException` |
 
 ## 关键规则

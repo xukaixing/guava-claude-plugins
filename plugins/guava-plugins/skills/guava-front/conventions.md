@@ -1,4 +1,6 @@
-# 代码规范 & 命名参考
+# 代码规范 & 命名
+
+> 流程 [\_shared.md](_shared.md) · 项目 [../../README.md](../../README.md)
 
 ## 代码风格
 
@@ -30,6 +32,41 @@
 - Vue 方法使用 JSDoc：`@todo`、`@author`、`@Date`、`@param`、`@return`
 - API 函数使用单行注释：`// xxx api`
 
+## UI 组件（Guava UI / guava-ui）
+
+生成或修改 **Vue `<template>`** 时：
+
+- **必须** 使用 `guava-ui` 封装的 **`Gv*` 组件**
+- **禁止** 直接使用 Element Plus 的 `El*` 组件或 **`el-*` 标签**
+
+表单/表格字段优先通过 `helper.tsx` 的 `FormItem[]` / `TableHeadItem[]` + `GvForm :form-list` / `GvTable :table-head` 配置驱动（`type: text | dic | date | textarea` 等），**不要**在 template 手写 `<el-input>`、`<el-select>` 等。
+
+### 常用对照
+
+| 禁止 (Element Plus)       | 使用 (Guava UI)                                 |
+| ------------------------- | ----------------------------------------------- |
+| `el-form`                 | `GvForm`                                        |
+| `el-table`                | `GvTable`                                       |
+| `el-button`               | `GvButton`                                      |
+| `el-dialog`               | `GvDialog`                                      |
+| `el-drawer`               | `GvDrawer`                                      |
+| `el-select`               | `GvSelect`，或 form-list `type: dic`            |
+| `el-input`                | `GvInput`，或 form-list `type: text / textarea` |
+| `el-tabs` / `el-tab-pane` | `GvTabs` / `GvTabPane`                          |
+| `el-row` / `el-col`       | `GvRow` / `GvCol`                               |
+| `el-card`                 | `GvCard`                                        |
+| `el-divider`              | `GvDivider`                                     |
+| `el-tree`                 | `GvTree`                                        |
+| `el-upload`               | `GvUpload`                                      |
+| `el-icon`                 | `GvIcon`                                        |
+
+页面级常用组合：`GvForm` + `GvSearchBar` + `GvButton`（搜索区）、`GvTable`（列表）、`GvDrawer` / `GvDialog`（编辑容器）。
+
+### 例外
+
+- **类型**：`FormInstance`、`TableInstance` 等 ref 类型可从 `element-plus` 导入（已在上方说明）
+- **存量代码**：修改已有 legacy 页面时可与周边保持一致；**guava-front 新生成代码一律 Gv\***
+
 ## Vue 文件头
 
 ```vue
@@ -39,12 +76,13 @@
  * @date: <current YYYY-MM-DD HH:mm:ss>  ← 文件首次创建时的系统时间
  * @LastEditors: <author name>     ← 可选：只读 `git config user.name`，或直接写已知姓名
  * @LastEditTime: <current YYYY-MM-DD HH:mm:ss>  ← 每次修改时的系统时间
- * @version: 1.0.0
+ * @version: 1.0.1
 -->
 <script setup lang="tsx">
 ```
 
 获取方式：
+
 - `@author` / `@LastEditors`: 可只读 `git config` 获取，或直接填写；**禁止**为此执行 add/commit 等 git 仓库操作
 - `@date` / `@LastEditTime`: 使用当前系统时间，格式 `YYYY-MM-DD HH:mm:ss`
 - 新建文件时 `@date` = `@LastEditTime`；修改文件时**不修改 `@date`**，只更新 `@LastEditors` + `@LastEditTime` + `@version`
@@ -52,7 +90,8 @@
 ## 版本号规则
 
 每次修改文件时，**必须递增文件头部 `@version`**（`@date` 保持不变）：
-- 末位 +1（如 `1.0.0` → `1.0.1`）
+
+- 末位 +1（如 `1.0.1` → `1.0.2`）
 - 末位到 10 时进位：`1.0.9` → `1.1.0`
 - 中位到 10 时进位：`1.9.9` → `2.0.0`
 - 同时更新 `@LastEditors` 和 `@LastEditTime`
@@ -84,29 +123,30 @@ src/views/svcProduct/svcLead/salesSkills/
 
 ## 命名参考
 
-| 项目 | 规范 | 示例 |
-|------|------|------|
-| viewPath | camelCase 路径 | `sysMng/userMng` |
-| componentBaseName | PascalCase，去 Mng 后缀 | `User`, `SalesSkills` |
-| 列表页 | `<Base>Index.vue` | `UserIndex.vue` |
-| 编辑页 | `<Base>Edit.vue` | `UserEdit.vue` |
-| Helper 文件 | `helper.tsx` | `helper.tsx` |
-| Types 文件 | `types.d.ts` | `types.d.ts` |
-| API 文件 | `src/api/<apiModule>.ts` | `admin/user.ts` |
-| GvForm ref | `<feature>SearchFm` | `userSearchFm` |
-| GvForm form-list | `<feature>SearchList` | `userSearchList` |
-| GvTable ref | `<feature>TableList` | `userTableList` |
-| GvTable table-head | `<feature>TableHeadList` | `userTableHeadList` |
-| GvTable table-data | `search<Feature>Data` | `searchUserData` |
-| API 函数 | `verb+Entity+Api` | `findUsersApi` |
-| 查询方法 | `search*` | `searchUserList` |
-| 编辑方法 | `edit*` / `<feature>Edit` | `editUser` |
-| 删除方法 | `delete*` | `deleteUser` |
-| 新增方法 | `add*` / `<feature>Add` | `addUser` |
-| 保存回调 | `save*Info` | `saveUserInfo` |
-| SearchList 工厂 | `create<Feature>SearchList` | `createUserSearchList` |
-| TableHead 工厂 | `create<Feature>TableHeadList` | `createUserTableHeadList` |
-| EditList 工厂 | `create<Feature>EditList` | `createUserEditList` |
+| 项目               | 规范                           | 示例                      |
+| ------------------ | ------------------------------ | ------------------------- |
+| viewPath           | camelCase 路径                 | `sysMng/userMng`          |
+| componentBaseName  | PascalCase，去 Mng 后缀        | `User`, `SalesSkills`     |
+| 列表页             | `<Base>Index.vue`              | `UserIndex.vue`           |
+| 编辑页             | `<Base>Edit.vue`               | `UserEdit.vue`            |
+| 纯表单页           | `<Base>.vue`（form-only）      | `SystemConfig.vue`        |
+| Helper 文件        | `helper.tsx`                   | `helper.tsx`              |
+| Types 文件         | `types.d.ts`                   | `types.d.ts`              |
+| API 文件           | `src/api/<apiModule>.ts`       | `admin/user.ts`           |
+| GvForm ref         | `<feature>SearchFm`            | `userSearchFm`            |
+| GvForm form-list   | `<feature>SearchList`          | `userSearchList`          |
+| GvTable ref        | `<feature>TableList`           | `userTableList`           |
+| GvTable table-head | `<feature>TableHeadList`       | `userTableHeadList`       |
+| GvTable table-data | `search<Feature>Data`          | `searchUserData`          |
+| API 函数           | `verb+Entity+Api`              | `findUsersApi`            |
+| 查询方法           | `search*`                      | `searchUserList`          |
+| 编辑方法           | `edit*` / `<feature>Edit`      | `editUser`                |
+| 删除方法           | `delete*`                      | `deleteUser`              |
+| 新增方法           | `add*` / `<feature>Add`        | `addUser`                 |
+| 保存回调           | `save*Info`                    | `saveUserInfo`            |
+| SearchList 工厂    | `create<Feature>SearchList`    | `createUserSearchList`    |
+| TableHead 工厂     | `create<Feature>TableHeadList` | `createUserTableHeadList` |
+| EditList 工厂      | `create<Feature>EditList`      | `createUserEditList`      |
 
 ### Legacy 模式（勿用于新页面）
 
@@ -122,19 +162,19 @@ src/views/svcProduct/svcLead/salesSkills/
 
 ## crud API 参考
 
-| 方法 | 用途 |
-|------|------|
-| `crud.search(fm, table, api)` | 带搜索表单的列表查询 |
-| `crud.searchNoFm(table, api, filter)` | 无搜索表单的查询（子表） |
-| `crud.save(fm, api, hasMsg?)` | 新增保存 |
-| `crud.update(fm, id, api)` | 更新保存 |
-| `crud.submit(api, data)` | 通用提交（删除/状态变更） |
-| `crud.setEditValue(list, row)` | 编辑模式填充表单 |
-| `crud.resetEditValue(list)` | 新增模式重置表单 |
-| `crud.insertResult(data, row)` | 列表插入行 |
-| `crud.updateResult(data, row, rownums)` | 列表更新行 |
-| `crud.removeResult(data, index)` | 列表删除行 |
-| `crud.fetchTable(api, filter)` | 获取表格数据 |
+| 方法                                    | 用途                      |
+| --------------------------------------- | ------------------------- |
+| `crud.search(fm, table, api)`           | 带搜索表单的列表查询      |
+| `crud.searchNoFm(table, api, filter)`   | 无搜索表单的查询（子表）  |
+| `crud.save(fm, api, hasMsg?)`           | 新增保存                  |
+| `crud.update(fm, id, api)`              | 更新保存                  |
+| `crud.submit(api, data)`                | 通用提交（删除/状态变更） |
+| `crud.setEditValue(list, row)`          | 编辑模式填充表单          |
+| `crud.resetEditValue(list)`             | 新增模式重置表单          |
+| `crud.insertResult(data, row)`          | 列表插入行                |
+| `crud.updateResult(data, row, rownums)` | 列表更新行                |
+| `crud.removeResult(data, index)`        | 列表删除行                |
+| `crud.fetchTable(api, filter)`          | 获取表格数据              |
 
 ## API 复用规则
 

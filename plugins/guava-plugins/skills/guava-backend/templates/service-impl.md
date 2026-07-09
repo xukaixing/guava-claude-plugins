@@ -35,7 +35,7 @@ import java.util.Map;
  * <p> {中文模块名} serviceImpl 实现类</p>
  * @author: {author}
  * @created: {YYYY-MM-DD}
- * @version v1.0.0
+ * @version v1.0.1
  */
 @Service
 @Slf4j
@@ -157,14 +157,14 @@ public class {Entity}ServiceImpl implements {Entity}Service
 
 ## 实现要点
 
-| 场景 | 模式 |
-|------|------|
-| Map → PO | `Map2ObjUtil.toObject(param, XxxPO.class)` |
-| 参数校验 | `AssertMyUtil.notNull / notEmpty / errMsg` |
+| 场景         | 模式                                                   |
+| ------------ | ------------------------------------------------------ |
+| Map → PO     | `Map2ObjUtil.toObject(param, XxxPO.class)`             |
+| 参数校验     | `AssertMyUtil.notNull / notEmpty / errMsg`             |
 | 查询结果翻译 | `transResultService.transResult(data, getTransHash())` |
-| PO → 返回 | `po.toMaps()` 再翻译 |
-| 排序 | `OrderItem` + `page.addOrder(oi)` |
-| 唯一校验 | Mapper 自定义方法 + `AssertMyUtil.errMsg` |
+| PO → 返回    | `po.toMaps()` 再翻译                                   |
+| 排序         | `OrderItem` + `page.addOrder(oi)`                      |
+| 唯一校验     | Mapper 自定义方法 + `AssertMyUtil.errMsg`              |
 
 ## 关键规则
 

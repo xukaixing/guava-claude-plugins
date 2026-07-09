@@ -1,6 +1,8 @@
 # API 文件模板
 
-生成或补全 `src/api/<apiModule>.ts`。**仅生成 CRUD 配置中 enabled=true 的 API 函数。**
+> [_shared.md](../_shared.md)
+
+生成或补全 `src/api/<apiModule>.ts`。**仅生成 enabled CRUD 的 API 函数。**
 
 ## 生成前检查
 
@@ -42,10 +44,38 @@ import { findDictFromTableApi } from '@/api/admin/user';
 | 更新 | PUT | `fetch.put(\`${endpoint}/${id}\`, datas)` |
 | 删除 | POST | `fetch.post(endpoint, datas)` |
 | 子表查询 | POST | `fetch.post(endpoint, datas)` |
+| form-only 加载 | GET | `fetch.get(endpoint, { params: datas })` |
+| form-only 保存 | POST | `fetch.post(endpoint, datas)` |
 
 `httpMethod` 列可覆盖默认值。`gateway` 来自配置（默认 `gateway_admin`）。
 
-## 模板
+## form-only
+
+**仅生成** `crud` 含 `load` / `save` 的 API。不生成 find/add/edit/delete 列表接口。
+
+| 操作 | API 名 | 默认 HTTP | 端点 |
+|------|--------|-----------|------|
+| load | `get{Component}Api` | GET | `paths.get`（或 `paths.find`） |
+| save | `save{Component}Api` | POST | `paths.save` |
+| update（crud 含 update 无 save） | `update{Component}Api` | PUT | `paths.update` |
+
+```typescript
+// get <feature> api  ← load enabled
+export const get<Feature>Api = (datas: Recordable<any>) => {
+  const { fetch } = useFetch();
+  return fetch.get(`${server.<gateway>}<apiEndpoint>`, { params: datas });
+}
+
+// save <feature> api  ← save enabled
+export const save<Feature>Api = (datas: Recordable<any>) => {
+  const { fetch } = useFetch();
+  return fetch.post(`${server.<gateway>}<apiEndpoint>`, datas);
+}
+```
+
+`<apiEndpoint>` 使用配置完整路径（如 `/sysconfig/getByKey`）。GET 统一 `{ params: datas }` 传参。
+
+---
 
 ```typescript
 import server from '@/api/server';
