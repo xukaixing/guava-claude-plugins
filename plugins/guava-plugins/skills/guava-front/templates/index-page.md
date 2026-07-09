@@ -65,6 +65,11 @@
   const title = ref<string>('');
 
   // @methods
+  /**
+   * @todo: 查询<Feature>列表
+   * @author: <git user.name>
+   * @Date: <current YYYY-MM-DD HH:mm:ss>
+   */
   const search<Feature>List = async () => {
     const fm = <feature>SearchFm.value;
     const table = <feature>TableList.value;
@@ -77,6 +82,11 @@
   };
 
   // ↓ add enabled:
+  /**
+   * @todo: 新增<Feature>
+   * @author: <git user.name>
+   * @Date: <current YYYY-MM-DD HH:mm:ss>
+   */
   const add<Feature> = () => {
     operateType.value = 'add';
     rowData.value = {};
@@ -85,6 +95,13 @@
   };
 
   // ↓ edit enabled:
+  /**
+   * @todo: 编辑<Feature>
+   * @author: <git user.name>
+   * @Date: <current YYYY-MM-DD HH:mm:ss>
+   * @param row 当前行数据
+   * @param _index 行索引
+   */
   const edit<Feature> = (row: Recordable<any>, _index: number) => {
     operateType.value = 'update';
     rowData.value = row;
@@ -93,6 +110,13 @@
   };
 
   // ↓ delete enabled:
+  /**
+   * @todo: 删除<Feature>
+   * @author: <git user.name>
+   * @Date: <current YYYY-MM-DD HH:mm:ss>
+   * @param row 当前行数据
+   * @param index 行索引
+   */
   const delete<Feature> = (row: Recordable<any>, index: number) => {
     confirm(t('<i18nKey>.deleteConfirm'))
       .then(async () => {
@@ -112,6 +136,12 @@
   };
 
   // ↓ add/edit enabled:
+  /**
+   * @todo: 保存<Feature>信息回调
+   * @author: <git user.name>
+   * @Date: <current YYYY-MM-DD HH:mm:ss>
+   * @param payload 保存结果
+   */
   const save<Base>Info = (payload: { type: 'update' | 'insert'; data: Recordable<any>; rownums?: number }) => {
     const tableData = search<Feature>Data.value;
     if (payload.type === 'update') crud.updateResult(tableData, payload.data, payload.rownums!);

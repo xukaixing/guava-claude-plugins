@@ -19,6 +19,7 @@
 - 字段走 `GvForm`/`GvTable` + helper 的 `FormItem[]`/`TableHeadItem[]`
 - 新页面用 `create*List` + i18n，禁止 legacy 硬编码中文
 - 分区顺序见 conventions `@section`
+- `@methods` 下每个方法使用多行 JSDoc（`@todo:` / `@author:` / `@Date:`），禁止单行 `/** @todo xxx */`
 
 ## 生成后
 

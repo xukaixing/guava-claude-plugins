@@ -106,14 +106,80 @@ GvTabs
   const <feature>InlineEditFm = ref<FormInstance>();
   const <feature>InlineEditList = ref<FormItem[]>([]);
 
-  const search<Feature>List = async () => { /* 同 index-page.md */ };
+  // @methods
+  /**
+   * @todo: 查询<Feature>列表
+   * @author: <git user.name>
+   * @Date: <current YYYY-MM-DD HH:mm:ss>
+   */
+  const search<Feature>List = async () => {
+    const fm = <feature>SearchFm.value;
+    const table = <feature>TableList.value;
+    if (!fm || !table) return;
+    try {
+      search<Feature>Data.value = await crud.search(fm, table, findXxxApi);
+    } catch (e) {
+      message(e, 'error');
+    }
+  };
 
-  const add<Feature> = () => { /* 同 index-page.md → drawer */ };
+  /**
+   * @todo: 新增<Feature>
+   * @author: <git user.name>
+   * @Date: <current YYYY-MM-DD HH:mm:ss>
+   */
+  const add<Feature> = () => {
+    operateType.value = 'add';
+    rowData.value = {};
+    dialogVisible.value = true;
+    title.value = t('<i18nKey>.add<Base>');
+  };
 
-  const edit<Feature> = (row: Recordable<any>, _index: number) => { /* 同 index-page.md */ };
+  /**
+   * @todo: 编辑<Feature>
+   * @author: <git user.name>
+   * @Date: <current YYYY-MM-DD HH:mm:ss>
+   * @param row 当前行数据
+   * @param _index 行索引
+   */
+  const edit<Feature> = (row: Recordable<any>, _index: number) => {
+    operateType.value = 'update';
+    rowData.value = row;
+    dialogVisible.value = true;
+    title.value = t('<i18nKey>.edit<Base>');
+  };
 
-  const delete<Feature> = (row: Recordable<any>, index: number) => { /* 同 index-page.md */ };
+  /**
+   * @todo: 删除<Feature>
+   * @author: <git user.name>
+   * @Date: <current YYYY-MM-DD HH:mm:ss>
+   * @param row 当前行数据
+   * @param index 行索引
+   */
+  const delete<Feature> = (row: Recordable<any>, index: number) => {
+    confirm(t('<i18nKey>.deleteConfirm'))
+      .then(async () => {
+        try {
+          if (row.id) {
+            await crud.submit(deleteXxxApi, { id: row.id });
+            search<Feature>List();
+            message(t('<i18nKey>.deleteSuccess'), 'success');
+          } else {
+            crud.removeResult(<feature>TableList.value, index);
+          }
+        } catch (e) {
+          message(e, 'error');
+        }
+      })
+      .catch(() => {});
+  };
 
+  /**
+   * @todo: 保存<Feature>信息回调
+   * @author: <git user.name>
+   * @Date: <current YYYY-MM-DD HH:mm:ss>
+   * @param payload 保存结果
+   */
   const save<Base>Info = (payload: { type: 'update' | 'insert'; data: Recordable<any>; rownums?: number }) => {
     const tableData = search<Feature>Data.value;
     if (payload.type === 'update') crud.updateResult(tableData, payload.data, payload.rownums!);
@@ -123,6 +189,8 @@ GvTabs
 
   /**
    * @todo: Tab 内嵌表单保存
+   * @author: <git user.name>
+   * @Date: <current YYYY-MM-DD HH:mm:ss>
    */
   const save<Feature>Inline = async () => {
     const fm = <feature>InlineEditFm.value;
@@ -139,6 +207,13 @@ GvTabs
     }
   };
 
+  /**
+   * @todo: Tab 切换处理
+   * @author: <git user.name>
+   * @Date: <current YYYY-MM-DD HH:mm:ss>
+   * @param pane 当前 Tab 面板
+   * @param _ev 点击事件
+   */
   const handleTabClick = (pane: TabsPaneContext, _ev: Event) => {
     if (pane.paneName === '<inlineTabName>') {
       crud.resetEditValue(<feature>InlineEditList.value);

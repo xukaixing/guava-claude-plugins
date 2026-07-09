@@ -59,6 +59,11 @@ const isShow = computed({
 });
 
 // @methods
+/**
+ * @todo: 保存<Feature>
+ * @author: <git user.name>
+ * @Date: <current YYYY-MM-DD HH:mm:ss>
+ */
 const <feature>Save = async () => {
   const fm = <feature>EditFm.value;
   if (!fm) return;
@@ -78,6 +83,11 @@ const <feature>Save = async () => {
 const dictCB: DictSelectedFn = (_res, _field, _dicType) => {};
 const dictClearCB: DictSelectedFn = (_res, _field, _dicType) => {};
 
+/**
+ * @todo: 初始化编辑表单
+ * @author: <git user.name>
+ * @Date: <current YYYY-MM-DD HH:mm:ss>
+ */
 const init = () => {
   const rowData = props.rowData;
   if (rowData?.id) crud.setEditValue(<feature>EditList.value, rowData);
@@ -149,6 +159,11 @@ const masterId = ref<number>(0);
 // formKey, isShow (same as Variant A)
 
 // @methods
+/**
+ * @todo: 保存<Feature>
+ * @author: <git user.name>
+ * @Date: <current YYYY-MM-DD HH:mm:ss>
+ */
 const <feature>Save = async () => {
   const fm = <feature>EditFm.value;
   if (!fm) return;
@@ -169,6 +184,11 @@ const <feature>Save = async () => {
 };
 
 // 查询子表数据
+/**
+ * @todo: 查询<Feature>明细
+ * @author: <git user.name>
+ * @Date: <current YYYY-MM-DD HH:mm:ss>
+ */
 const find<Feature>Dtl = async () => {
   if (!<feature>DtlTableList.value) return;
   try {
@@ -183,6 +203,11 @@ const find<Feature>Dtl = async () => {
 };
 
 // 新增明细行
+/**
+ * @todo: 新增<Feature>明细行
+ * @author: <git user.name>
+ * @Date: <current YYYY-MM-DD HH:mm:ss>
+ */
 const add<Feature>Dtl = () => {
   if (!<feature>DtlTableList.value) return;
   search<Feature>DtlData.value.records.unshift({
@@ -193,6 +218,13 @@ const add<Feature>Dtl = () => {
 };
 
 // 保存明细行
+/**
+ * @todo: 保存<Feature>明细行
+ * @author: <git user.name>
+ * @Date: <current YYYY-MM-DD HH:mm:ss>
+ * @param row 当前行数据
+ * @param _index 行索引
+ */
 const save<Feature>Dtl = async (row: Recordable<any>, _index: number) => {
   try {
     const data = await crud.submit(save<Feature>DtlApi, row);
@@ -203,6 +235,13 @@ const save<Feature>Dtl = async (row: Recordable<any>, _index: number) => {
 };
 
 // 删除明细行
+/**
+ * @todo: 删除<Feature>明细行
+ * @author: <git user.name>
+ * @Date: <current YYYY-MM-DD HH:mm:ss>
+ * @param row 当前行数据
+ * @param index 行索引
+ */
 const delete<Feature>Dtl = async (row: Recordable<any>, index: number) => {
   try {
     if (row.id) await crud.submit(delete<Feature>DtlApi, { id: row.id });
@@ -215,6 +254,11 @@ const delete<Feature>Dtl = async (row: Recordable<any>, index: number) => {
 const dictCB: DictSelectedFn = (_res, _field, _dicType) => {};
 const dictClearCB: DictSelectedFn = (_res, _field, _dicType) => {};
 
+/**
+ * @todo: 初始化编辑表单
+ * @author: <git user.name>
+ * @Date: <current YYYY-MM-DD HH:mm:ss>
+ */
 const init = () => {
   const rowData = props.rowData;
   if (rowData?.id) {

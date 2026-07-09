@@ -29,8 +29,34 @@
 - `<style scoped lang="scss">` + BEM 命名
 - 文件顺序：`<script setup lang="tsx">` → `<template>` → `<style scoped lang="scss">`
 - 组件名：`defineOptions({ name: '...' })`
-- Vue 方法使用 JSDoc：`@todo`、`@author`、`@Date`、`@param`、`@return`
+- Vue 方法使用多行 JSDoc（**禁止**单行 `/** @todo xxx */`）
 - API 函数使用单行注释：`// xxx api`
+
+### Vue 方法 JSDoc 模板
+
+`@methods` 分区下每个 `const` 箭头函数**必须**使用以下多行格式（含 `@author:`、`@Date:` 两行，冒号后保留空格）：
+
+```ts
+/**
+ * @todo: <方法中文说明>
+ * @author: <git user.name>
+ * @Date: <current YYYY-MM-DD HH:mm:ss>
+ */
+const methodName = () => { ... };
+```
+
+有参数时追加 `@param`，有返回值时追加 `@return`：
+
+```ts
+/**
+ * @todo: 编辑用户
+ * @author: <git user.name>
+ * @Date: <current YYYY-MM-DD HH:mm:ss>
+ * @param row 当前行数据
+ * @param _index 行索引
+ */
+const editUser = (row: Recordable<any>, _index: number) => { ... };
+```
 
 ## UI 组件（Guava UI / guava-ui）
 
