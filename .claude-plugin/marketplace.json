@@ -1,7 +1,7 @@
 {
   "name": "guava-tools",
   "description": "Guava 前后端代码生成 Claude Code 插件市场",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "owner": {
     "name": "xukaixing<xukaixing@hotmail.com>"
   },
@@ -10,7 +10,7 @@
       "name": "guava-plugins",
       "source": "./plugins/guava-plugins",
       "description": "Guava 全栈生成：/guava-plugins:guava-front|guava-backend|guava-all",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "keywords": [
         "guava",
         "vue",
