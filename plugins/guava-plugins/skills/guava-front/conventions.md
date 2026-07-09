@@ -62,36 +62,38 @@ const editUser = (row: Recordable<any>, _index: number) => { ... };
 
 生成或修改 **Vue `<template>`** 时：
 
-- **必须** 使用 `guava-ui` 封装的 **`Gv*` 组件**
-- **禁止** 直接使用 Element Plus 的 `El*` 组件或 **`el-*` 标签**
+- **优先** 使用 npm 包 `guava-ui` 封装的 **`Gv*` 组件**
+- **仅当** `guava-ui` 中**不存在**对应 `Gv*` 封装时，才允许使用 Element Plus 的 **`el-*` 标签**（或 `El*` 组件）
+- 使用前须确认：`node_modules/guava-ui` 的导出 / 类型声明，或项目中已有 `Gv*` 用法；**禁止**在已有 `Gv*` 时仍写 `el-*`
 
-表单/表格字段优先通过 `helper.tsx` 的 `FormItem[]` / `TableHeadItem[]` + `GvForm :form-list` / `GvTable :table-head` 配置驱动（`type: text | dic | date | textarea` 等），**不要**在 template 手写 `<el-input>`、`<el-select>` 等。
+表单/表格字段优先通过 `helper.tsx` 的 `FormItem[]` / `TableHeadItem[]` + `GvForm :form-list` / `GvTable :table-head` 配置驱动（`type: text | dic | date | textarea` 等），**不要**在 template 手写 `<el-input>`、`<el-select>` 等（若 `GvForm` 已支持该字段类型）。
 
 ### 常用对照
 
-| 禁止 (Element Plus)       | 使用 (Guava UI)                                 |
-| ------------------------- | ----------------------------------------------- |
-| `el-form`                 | `GvForm`                                        |
-| `el-table`                | `GvTable`                                       |
-| `el-button`               | `GvButton`                                      |
-| `el-dialog`               | `GvDialog`                                      |
-| `el-drawer`               | `GvDrawer`                                      |
-| `el-select`               | `GvSelect`，或 form-list `type: dic`            |
-| `el-input`                | `GvInput`，或 form-list `type: text / textarea` |
-| `el-tabs` / `el-tab-pane` | `GvTabs` / `GvTabPane`                          |
-| `el-row` / `el-col`       | `GvRow` / `GvCol`                               |
-| `el-card`                 | `GvCard`                                        |
-| `el-divider`              | `GvDivider`                                     |
-| `el-tree`                 | `GvTree`                                        |
-| `el-upload`               | `GvUpload`                                      |
-| `el-icon`                 | `GvIcon`                                        |
+| Element Plus（无 Gv* 时回退） | 优先使用 (Guava UI)                             |
+| ------------------------------- | ----------------------------------------------- |
+| `el-form`                       | `GvForm`                                        |
+| `el-table`                      | `GvTable`                                       |
+| `el-button`                     | `GvButton`                                      |
+| `el-dialog`                     | `GvDialog`                                      |
+| `el-drawer`                     | `GvDrawer`                                      |
+| `el-select`                     | `GvSelect`，或 form-list `type: dic`            |
+| `el-input`                      | `GvInput`，或 form-list `type: text / textarea` |
+| `el-tabs` / `el-tab-pane`       | `GvTabs` / `GvTabPane`                          |
+| `el-row` / `el-col`             | `GvRow` / `GvCol`                               |
+| `el-card`                       | `GvCard`                                        |
+| `el-divider`                    | `GvDivider`                                     |
+| `el-tree`                       | `GvTree`                                        |
+| `el-upload`                     | `GvUpload`                                      |
+| `el-icon`                       | `GvIcon`                                        |
 
 页面级常用组合：`GvForm` + `GvSearchBar` + `GvButton`（搜索区）、`GvTable`（列表）、`GvDrawer` / `GvDialog`（编辑容器）。
 
 ### 例外
 
 - **类型**：`FormInstance`、`TableInstance` 等 ref 类型可从 `element-plus` 导入（已在上方说明）
-- **存量代码**：修改已有 legacy 页面时可与周边保持一致；**guava-front 新生成代码一律 Gv\***
+- **无 Gv* 封装**：`guava-ui` 未提供的组件 → 使用对应 `el-*`（如 `GvTimeline` 不存在时用 `el-timeline`）
+- **存量代码**：修改已有 legacy 页面时可与周边保持一致
 
 ## Vue 文件头
 

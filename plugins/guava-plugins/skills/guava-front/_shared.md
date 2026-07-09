@@ -15,7 +15,7 @@
 
 ## Vue 生成要点
 
-- template **仅用 Gv***（Guava UI），**禁止 el-***
+- template **优先 Gv***（Guava UI）；`guava-ui` 无对应封装时可用 `el-*`
 - 字段走 `GvForm`/`GvTable` + helper 的 `FormItem[]`/`TableHeadItem[]`
 - 新页面用 `create*List` + i18n，禁止 legacy 硬编码中文
 - 分区顺序见 conventions `@section`

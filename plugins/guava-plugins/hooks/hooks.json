@@ -1,5 +1,17 @@
 {
   "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|StrReplace",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/lint-fix.sh",
+            "timeout": 180
+          }
+        ]
+      }
+    ],
     "PostToolBatch": [
       {
         "hooks": [

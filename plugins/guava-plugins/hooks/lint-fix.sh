@@ -2,7 +2,7 @@
 # Plugin hook: 前端 eslint --fix / 后端 Java 格式化
 # CLAUDE_PROJECT_DIR = 消费项目（如 ses-web）；CLAUDE_PLUGIN_ROOT = 本插件目录
 
-set -euo pipefail
+set -uo pipefail
 
 PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
 PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"
@@ -13,9 +13,20 @@ mkdir -p "$CACHE_DIR"
 
 INPUT=$(cat)
 EVENT=$(echo "$INPUT" | jq -r '.hook_event_name // empty')
+case "$EVENT" in
+  postToolUse) EVENT="PostToolUse" ;;
+  postToolBatch) EVENT="PostToolBatch" ;;
+  stop) EVENT="Stop" ;;
+esac
+HOOK_CWD=$(echo "$INPUT" | jq -r '.cwd // empty')
 
 BACKEND_ROOT="${GUAVA_BACKEND_ROOT:-$PROJECT_DIR/../guava-admin}"
 JAVA_FORMAT_MODE="${GUAVA_JAVA_FORMAT:-auto}" # auto | google-java-format | spotless | none
+
+debug() {
+  [[ "${GUAVA_LINT_DEBUG:-}" == "1" ]] || return 0
+  echo "[lint-fix] $*" >&2
+}
 
 is_front_file() {
   local f="$1"
@@ -34,12 +45,18 @@ is_java_file() {
   return 0
 }
 
-collect_batch_files() {
-  echo "$INPUT" | jq -r '
-    .tool_calls[]?
-    | select(.tool_name == "Write" or .tool_name == "Edit")
-    | .tool_input.file_path // empty
-  '
+resolve_path() {
+  local f="$1"
+  [[ -n "$f" ]] || return 1
+  if [[ "$f" != /* ]]; then
+    if [[ -n "$HOOK_CWD" && -f "${HOOK_CWD%/}/$f" ]]; then
+      f="${HOOK_CWD%/}/$f"
+    elif [[ -f "$PROJECT_DIR/$f" ]]; then
+      f="$PROJECT_DIR/$f"
+    fi
+  fi
+  [[ -f "$f" ]] || return 1
+  printf '%s\n' "$f"
 }
 
 record_file() {
@@ -51,10 +68,27 @@ record_file() {
   fi
 }
 
+collect_post_tool_use_file() {
+  echo "$INPUT" | jq -r '
+    select(.tool_name == "Write" or .tool_name == "Edit" or .tool_name == "StrReplace")
+    | .tool_input.file_path // .tool_input.path // empty
+  '
+}
+
+collect_batch_files() {
+  echo "$INPUT" | jq -r '
+    .tool_calls[]?
+    | select(.tool_name == "Write" or .tool_name == "Edit" or .tool_name == "StrReplace")
+    | .tool_input.file_path // .tool_input.path // empty
+  '
+}
+
 build_list() {
   local src="$1" dst="$2" kind="$3"
   : > "$dst"
   while IFS= read -r fp; do
+    [[ -z "$fp" ]] && continue
+    fp="$(resolve_path "$fp" || true)"
     [[ -z "$fp" ]] && continue
     if [[ "$kind" == "front" ]] && is_front_file "$fp"; then
       echo "$fp" >> "$dst"
@@ -65,22 +99,62 @@ build_list() {
   sort -u "$dst" -o "$dst"
 }
 
+setup_path() {
+  export PATH="$PROJECT_DIR/node_modules/.bin:$PATH"
+  if [[ -d "$HOME/.nvm/versions/node" ]]; then
+    local latest_node
+    latest_node="$(ls -1 "$HOME/.nvm/versions/node" 2>/dev/null | sort -V | tail -1 || true)"
+    if [[ -n "$latest_node" ]]; then
+      export PATH="$HOME/.nvm/versions/node/$latest_node/bin:$PATH"
+    fi
+  fi
+}
+
+run_eslint() {
+  local -a args=("$@")
+  setup_path
+  cd "$PROJECT_DIR"
+  if [[ -x "$PROJECT_DIR/node_modules/.bin/eslint" ]]; then
+    "$PROJECT_DIR/node_modules/.bin/eslint" "${args[@]}"
+    return $?
+  fi
+  if command -v pnpm >/dev/null 2>&1; then
+    pnpm exec eslint "${args[@]}"
+    return $?
+  fi
+  if command -v npx >/dev/null 2>&1; then
+    npx eslint "${args[@]}"
+    return $?
+  fi
+  debug "eslint not found in PATH or node_modules/.bin"
+  return 127
+}
 run_eslint_fix() {
   local list="$1"
+  local -a files=()
   [[ -s "$list" ]] || return 0
-  cd "$PROJECT_DIR"
   while IFS= read -r f; do
-    [[ -n "$f" ]] && pnpm exec eslint --fix "$f"
+    [[ -n "$f" ]] && files+=("$f")
   done < "$list"
+  ((${#files[@]})) || return 0
+  debug "eslint --fix ${files[*]}"
+  run_eslint --cache --fix "${files[@]}" 2>&1 || true
 }
 
 run_eslint_check() {
   local list="$1"
+  local -a files=()
   [[ -s "$list" ]] || return 0
-  cd "$PROJECT_DIR"
   while IFS= read -r f; do
-    [[ -n "$f" ]] && pnpm exec eslint "$f"
+    [[ -n "$f" ]] && files+=("$f")
   done < "$list"
+  ((${#files[@]})) || return 0
+  local out
+  if ! out=$(run_eslint "${files[@]}" 2>&1); then
+    printf '%s\n' "$out"
+    return 1
+  fi
+  return 0
 }
 
 find_pom() {
@@ -170,28 +244,94 @@ run_java_check() {
   [[ -z "$err" ]] || { echo -e "$err"; return 1; }
 }
 
-emit_context() {
+emit_hook_context() {
   local event="$1" msg="$2"
   jq -nc --arg event "$event" --arg msg "$msg" \
     '{hookSpecificOutput: {hookEventName: $event, additionalContext: $msg}}'
 }
 
-if [[ "$EVENT" == "PostToolBatch" ]]; then
-  BATCH_RAW=$(mktemp)
+emit_stop_block() {
+  local reason="$1"
+  jq -nc --arg reason "$reason" '{decision: "block", reason: $reason}'
+}
+
+lint_front_and_java() {
+  local front_list="$1" java_list="$2"
+  run_eslint_fix "$front_list"
+  run_java_fix "$java_list"
+}
+
+collect_lint_errors() {
+  local front_list="$1" java_list="$2"
+  local err=""
+  local out=""
+  if ! out=$(run_eslint_check "$front_list" 2>&1); then
+    err+="[Frontend ESLint]\n${out}\n"
+  fi
+  if ! out=$(run_java_check "$java_list" 2>&1); then
+    err+="[Backend Java]\n${out}\n"
+  fi
+  printf '%b' "$err"
+}
+
+process_paths() {
+  local raw_file="$1"
+  local front_list="$2" java_list="$3"
+  local resolved
+  resolved=$(mktemp)
+  while IFS= read -r fp; do
+    [[ -z "$fp" ]] && continue
+    fp="$(resolve_path "$fp" || true)"
+    [[ -z "$fp" ]] && continue
+    record_file "$fp"
+    echo "$fp" >> "$resolved"
+  done < "$raw_file"
+  build_list "$resolved" "$front_list" front
+  build_list "$resolved" "$java_list" java
+  rm -f "$resolved"
+}
+
+handle_write_edit_lint() {
+  local event="$1" front_list="$2" java_list="$3"
+  lint_front_and_java "$front_list" "$java_list"
+  local err
+  err="$(collect_lint_errors "$front_list" "$java_list")"
+  if [[ -n "$err" ]]; then
+    if [[ "$event" == "Stop" ]]; then
+      emit_stop_block "生成代码 ESLint/Java 校验未通过，请修复后再结束：${err}"
+    else
+      emit_hook_context "$event" "已运行 eslint --fix，仍有错误需修复：${err}"
+    fi
+    return 1
+  fi
+  return 0
+}
+
+if [[ "$EVENT" == "PostToolUse" ]]; then
+  RAW=$(mktemp)
   FRONT_LIST=$(mktemp)
   JAVA_LIST=$(mktemp)
-  trap 'rm -f "$BATCH_RAW" "$FRONT_LIST" "$JAVA_LIST"' EXIT
+  trap 'rm -f "$RAW" "$FRONT_LIST" "$JAVA_LIST"' EXIT
 
-  collect_batch_files | sort -u > "$BATCH_RAW"
-  while IFS= read -r fp; do
-    [[ -n "$fp" ]] && record_file "$fp"
-  done < "$BATCH_RAW"
+  collect_post_tool_use_file | sort -u > "$RAW"
+  if [[ -s "$RAW" ]]; then
+    process_paths "$RAW" "$FRONT_LIST" "$JAVA_LIST"
+    handle_write_edit_lint "PostToolUse" "$FRONT_LIST" "$JAVA_LIST" || true
+  fi
+  exit 0
+fi
 
-  build_list "$BATCH_RAW" "$FRONT_LIST" front
-  build_list "$BATCH_RAW" "$JAVA_LIST" java
+if [[ "$EVENT" == "PostToolBatch" ]]; then
+  RAW=$(mktemp)
+  FRONT_LIST=$(mktemp)
+  JAVA_LIST=$(mktemp)
+  trap 'rm -f "$RAW" "$FRONT_LIST" "$JAVA_LIST"' EXIT
 
-  run_eslint_fix "$FRONT_LIST" || true
-  run_java_fix "$JAVA_LIST" || true
+  collect_batch_files | sort -u > "$RAW"
+  if [[ -s "$RAW" ]]; then
+    process_paths "$RAW" "$FRONT_LIST" "$JAVA_LIST"
+    handle_write_edit_lint "PostToolBatch" "$FRONT_LIST" "$JAVA_LIST" || true
+  fi
   exit 0
 fi
 
@@ -200,19 +340,27 @@ if [[ "$EVENT" == "Stop" ]]; then
   JAVA_LIST=$(mktemp)
   trap 'rm -f "$FRONT_LIST" "$JAVA_LIST"' EXIT
 
-  [[ -f "$FRONT_CACHE" ]] && build_list "$FRONT_CACHE" "$FRONT_LIST" front && : > "$FRONT_CACHE"
-  [[ -f "$JAVA_CACHE" ]] && build_list "$JAVA_CACHE" "$JAVA_LIST" java && : > "$JAVA_CACHE"
-
-  ERR=""
-  if ! out=$(run_eslint_check "$FRONT_LIST" 2>&1); then
-    ERR+="[Frontend ESLint]\n${out}\n"
+  RAW=$(mktemp)
+  trap 'rm -f "$FRONT_LIST" "$JAVA_LIST" "$RAW"' EXIT
+  if [[ -f "$FRONT_CACHE" ]]; then
+    cp "$FRONT_CACHE" "$RAW"
+  else
+    : > "$RAW"
   fi
-  if ! out=$(run_java_check "$JAVA_LIST" 2>&1); then
-    ERR+="[Backend Java]\n${out}\n"
+  if [[ -f "$JAVA_CACHE" ]]; then
+    cat "$JAVA_CACHE" >> "$RAW"
   fi
 
-  if [[ -n "$ERR" ]]; then
-    emit_context "Stop" "Lint 校验未通过（已尝试自动修复），请修复后再结束：${ERR}"
+  build_list "$RAW" "$FRONT_LIST" front
+  build_list "$RAW" "$JAVA_LIST" java
+
+  if [[ ! -s "$FRONT_LIST" && ! -s "$JAVA_LIST" ]]; then
+    exit 0
+  fi
+
+  if handle_write_edit_lint "Stop" "$FRONT_LIST" "$JAVA_LIST"; then
+    : > "$FRONT_CACHE"
+    : > "$JAVA_CACHE"
   fi
   exit 0
 fi
