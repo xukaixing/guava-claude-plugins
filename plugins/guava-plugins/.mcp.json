@@ -1,0 +1,200 @@
+{
+  "mcpServers": {
+    "guava-ui": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/mcp/guava-ui/server.mjs"
+      ]
+    },
+    "gv-anchor": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/mcp/components/GvAnchor/server.mjs"
+      ]
+    },
+    "gv-badge": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/mcp/components/GvBadge/server.mjs"
+      ]
+    },
+    "gv-body-dialog": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/mcp/components/GvBodyDialog/server.mjs"
+      ]
+    },
+    "gv-button": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/mcp/components/GvButton/server.mjs"
+      ]
+    },
+    "gv-card": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/mcp/components/GvCard/server.mjs"
+      ]
+    },
+    "gv-cascader": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/mcp/components/GvCascader/server.mjs"
+      ]
+    },
+    "gv-checkbox": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/mcp/components/GvCheckbox/server.mjs"
+      ]
+    },
+    "gv-checkbox-button": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/mcp/components/GvCheckboxButton/server.mjs"
+      ]
+    },
+    "gv-checkbox-group": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/mcp/components/GvCheckboxGroup/server.mjs"
+      ]
+    },
+    "gv-col": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/mcp/components/GvCol/server.mjs"
+      ]
+    },
+    "gv-dialog": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/mcp/components/GvDialog/server.mjs"
+      ]
+    },
+    "gv-drawer": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/mcp/components/GvDrawer/server.mjs"
+      ]
+    },
+    "gv-form": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/mcp/components/GvForm/server.mjs"
+      ]
+    },
+    "gv-input": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/mcp/components/GvInput/server.mjs"
+      ]
+    },
+    "gv-input-number": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/mcp/components/GvInputNumber/server.mjs"
+      ]
+    },
+    "gv-popover": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/mcp/components/GvPopover/server.mjs"
+      ]
+    },
+    "gv-radio": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/mcp/components/GvRadio/server.mjs"
+      ]
+    },
+    "gv-radio-button": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/mcp/components/GvRadioButton/server.mjs"
+      ]
+    },
+    "gv-radio-group": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/mcp/components/GvRadioGroup/server.mjs"
+      ]
+    },
+    "gv-row": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/mcp/components/GvRow/server.mjs"
+      ]
+    },
+    "gv-search-bar": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/mcp/components/GvSearchBar/server.mjs"
+      ]
+    },
+    "gv-select": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/mcp/components/GvSelect/server.mjs"
+      ]
+    },
+    "gv-table": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/mcp/components/GvTable/server.mjs"
+      ]
+    },
+    "gv-tabs": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/mcp/components/GvTabs/server.mjs"
+      ]
+    },
+    "gv-tree": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/mcp/components/GvTree/server.mjs"
+      ]
+    },
+    "gv-upload": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/mcp/components/GvUpload/server.mjs"
+      ]
+    },
+    "gv-validate": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/mcp/components/GvValidate/server.mjs"
+      ]
+    }
+  }
+}

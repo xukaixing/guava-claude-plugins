@@ -68,6 +68,7 @@ paths:                    # 必填
 - crud-module：必填
 - tabs：含 `search-table` Tab 时必填
 - form-only：**不使用**
+- **「校验」列必填**，取值见 [search-conditions.md](search-conditions.md)（对齐 `gv.validate.ts`）
 
 **表格** — 5 列：`名称 | 字段 | 宽度 | 筛选 | 类型`
 - crud-module：必填
@@ -78,9 +79,10 @@ paths:                    # 必填
 
 **编辑** — 7 列：`名称 | 字段 | 类型 | 必填 | 校验 | 长度 | 扩展`
 - 必填：`Y` → `required: true`，空 → `false`
+- **「校验」列必填**（与查询相同规则集；字典必填→`idDic`，非必填→`isDic`）
 - crud-module：add/edit 或 editPage 时必填
 - tabs：含 `inline-form` Tab 或 editMode=drawer 且 add/edit 时必填
-- form-only：**必填**（整页表单字段）
+- form-only：**必填**（整页表单字段，含校验列）
 
 ### 扩展列解析
 
@@ -236,9 +238,12 @@ src/locales/zh-CN.ts + en.ts
 
 | 配置 | FormItem |
 |------|----------|
-| 查询 | `format[0]=0` |
-| 编辑必填 Y | `format[0]=1`，字典用 `idDic` |
-| 编辑非必填 | `format[0]=0`，字典用 `isDic` |
+| 查询 | `format[0]=0`，`format[1]`=校验列（必填） |
+| 编辑必填 Y | `format[0]=1`，`format[1]`=校验列；字典用 `idDic` |
+| 编辑非必填 | `format[0]=0`，`format[1]`=校验列；字典用 `isDic` |
+| `isDouble` | `format[3]`=小数位数，如 `[0, 'isDouble', 10, 4]` |
+
+校验类型必须来自 [search-conditions.md](search-conditions.md)；空或未知则停止生成并确认。
 
 action 列按 `crud` 含 edit/delete 自动生成，不在表格配置中写。
 
@@ -251,21 +256,23 @@ action 列按 `crud` 含 edit/delete 自动生成，不在表格配置中写。
 - [ ] `crud` 含 `search`
 - [ ] `paths.find` 已填
 - [ ] 查询表、表格表有数据
+- [ ] 查询表每行「校验」已填且合法
+- [ ] 编辑表（若有）每行「校验」已填且合法
 - [ ] dic 字段扩展含 `dic=` 或类型列含 `dic:`
 
 ### tabs
 
 - [ ] `pageType: tabs`
 - [ ] `tabs` 数组至少 1 项
-- [ ] 含 `type: search-table` 时：查询表 + 表格表有数据，`crud` 含 `search`
-- [ ] 含 `type: inline-form` 时：编辑表有数据
+- [ ] 含 `type: search-table` 时：查询表 + 表格表有数据，`crud` 含 `search`，查询校验齐全
+- [ ] 含 `type: inline-form` 时：编辑表有数据且校验齐全
 
 ### form-only
 
 - [ ] `pageType: form-only`
 - [ ] `crud` 含 `load` 或等价 `get`
 - [ ] `paths.get`（或 `paths.find`）与 `paths.save` 已填
-- [ ] 编辑表有数据
+- [ ] 编辑表有数据且每行「校验」已填
 - [ ] **无**查询表、表格表要求
 
 ---

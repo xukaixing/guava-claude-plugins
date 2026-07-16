@@ -17,7 +17,7 @@ pnpm lint:lint-staged
 
 ## 生成要点
 
-- template **优先 Gv***；`guava-ui` 无对应组件时可用 `el-*`
+- template **优先 Gv***；写 template 前用插件 MCP（`guava-ui` / `gv-*`）；无对应组件时可用 `el-*`
 - 配置 → `/guava-plugins:guava-front src/pages/...md`
 - 示例：`src/pages/sysMng/userMng.md`
 - 覆盖策略：`skills/guava-front/_shared.md`

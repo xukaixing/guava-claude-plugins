@@ -1,41 +1,38 @@
 # Guava 全栈代码生成（guava-plugins）
 
-Claude Code 插件：从 `src/pages/**/*.md` 生成 Guava 前端（Vue/Gv\*）与后端（Spring Boot）。
+## 命令
 
-## 命令（安装后）
-
-| 命令                           | 范围                         |
-| ------------------------------ | ---------------------------- |
-| `/guava-plugins:guava-front`   | 当前项目前端 Vue/API/i18n    |
+| 命令 | 说明 |
+|------|------|
+| `/guava-plugins:guava-front` | 当前项目前端 Vue/API/i18n |
 | `/guava-plugins:guava-backend` | `GUAVA_BACKEND_ROOT` 下 Java |
-| `/guava-plugins:guava-all`     | 先 front 后 back             |
+| `/guava-plugins:guava-all` | 先 front 后 back |
 
-配置示例：`src/pages/sysMng/userMng.md`（ses-web 仓库）
+配置放在消费项目的 `src/pages/**/*.md`。
 
-## 按需 Read（勿预加载）
+## Skill + MCP
 
-| 文件                 | 何时                  |
-| -------------------- | --------------------- |
-| `context/front.md`   | front / all Phase A   |
-| `context/backend.md` | backend / all Phase B |
-| `skills/*/SKILL.md`  | 对应命令触发时        |
+安装本插件后同时获得：
 
-## 环境变量
+| 能力 | 来源 |
+|------|------|
+| 生成流程 / 模板 | `skills/guava-front` 等 |
+| Gv* 用法与 props | `.mcp.json` → `mcp/`（`guava-ui` + `gv-*`） |
 
-在**消费项目** `.claude/settings.json` 或 `settings.local.json` 配置：
+写 template 前用 MCP：`get_page_recipe` / `get_usage` / `get_props`。详见 [mcp/README.md](mcp/README.md)。
 
-- `GUAVA_BACKEND_ROOT` — 后端 Maven 根路径（默认 `${CLAUDE_PROJECT_DIR}/../guava-admin`）
-- `GUAVA_JAVA_FORMAT` — `auto` | `google-java-format` | `spotless` | `none`
+## 消费项目
 
-## Hooks
+```text
+/plugin marketplace add <guava-claude-plugins>
+/plugin install guava-plugins@guava-tools
+/reload-plugins
+```
 
-`hooks/lint-fix.sh`：Write/Edit/StrReplace 后自动 eslint（前端）+ Java 格式化（后端）。
+项目 `.claude/settings.json` 只需 `env`（如 `GUAVA_BACKEND_ROOT`）与 permissions；**不必**再放一份 MCP。保证已 `pnpm add guava-ui`。
 
-Hook 未触发时：在 Claude Code 执行 `/reload-plugins`；若用 Cursor Agent（非 Claude Code 插件），将 `hooks/cursor-hooks.json.example` 复制为消费项目 `.cursor/hooks.json` 并改脚本路径。
+- 前端 template 优先 **Gv\***；查 MCP 无对应封装时可用 `el-*`
 
-## 约束
+## Hook
 
-- 只 Write 代码；不改路由；未经要求不 git
-- 前端 template 优先 **Gv\***；`guava-ui` 无对应封装时可用 `el-*`
-
-文档：<http://www.ccexpert.top:8888/guava/>
+Hook 未触发时：`/reload-plugins`。Cursor Agent（非 Claude Code 插件）见 `hooks/cursor-hooks.json.example`。

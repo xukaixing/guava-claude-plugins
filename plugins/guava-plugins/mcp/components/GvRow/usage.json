@@ -1,0 +1,23 @@
+{
+  "gvName": "GvRow",
+  "docSlug": "row",
+  "tip": "Row 组件对应 `GvRow`。下方示例可直接交互，点击「显示代码」查看源码。",
+  "markdown": "# row 行组件\n\n行组件用于组织其他组件。\n\n::: tip\nRow 组件对应 `GvRow`。下方示例可直接交互，点击「显示代码」查看源码。\n:::\n\n## 基础用法\n\n<!-- example: see examples[] -->\n\n## 自定义元素标签用法\n\n<!-- example: see examples[] -->\n\n## API\n\n### Attributes\n\n| 属性名 | 说明                  | 类型     | 默认值 |\n| ------ | --------------------- | -------- | ------ |\n| gutter | row的列间距           | `number` | 0      |\n| tag    | row渲染的html tag属性 | `string` | div    |\n\n## 类型定义\n\n```typescript\ninterface RowProps {\n  gutter?: number;\n  tag?: string;\n}\n```",
+  "api": "## API\n\n### Attributes\n\n| 属性名 | 说明                  | 类型     | 默认值 |\n| ------ | --------------------- | -------- | ------ |\n| gutter | row的列间距           | `number` | 0      |\n| tag    | row渲染的html tag属性 | `string` | div    |",
+  "examples": [
+    {
+      "id": "RowBasic",
+      "file": "./examples/row/basic.vue",
+      "source": "<template>\n  <GvRow :gutter=\"24\">\n    <GvCol :span=\"6\">\n      <div class=\"vp-col\">列1</div>\n    </GvCol>\n    <GvCol :span=\"6\">\n      <div class=\"vp-col\">列2</div>\n    </GvCol>\n  </GvRow>\n  <GvRow :gutter=\"24\">\n    <GvCol :span=\"6\">\n      <div class=\"vp-col\">列1</div>\n    </GvCol>\n  </GvRow>\n</template>\n\n<script setup lang=\"ts\"></script>\n\n<style>\n.el-row {\n  margin-bottom: 10px;\n}\n\n.el-row:last-child {\n  margin-bottom: 0;\n}\n\n.el-col {\n  border-radius: 4px;\n}\n</style>"
+    },
+    {
+      "id": "Tag",
+      "file": "./examples/row/tag.vue",
+      "source": "<template>\n  <GvRow :gutter=\"24\" tag=\"section\">\n    <GvCol :span=\"6\">\n      <div class=\"vp-col\">列1</div>\n    </GvCol>\n    <GvCol :span=\"6\">\n      <div class=\"vp-col\">列2</div>\n    </GvCol>\n  </GvRow>\n</template>\n\n<script setup lang=\"ts\">\n\n</script>"
+    }
+  ],
+  "usageMarkdown": "> Row 组件对应 `GvRow`。下方示例可直接交互，点击「显示代码」查看源码。\n\n# row 行组件\n\n行组件用于组织其他组件。\n\n::: tip\nRow 组件对应 `GvRow`。下方示例可直接交互，点击「显示代码」查看源码。\n:::\n\n## 基础用法\n\n<!-- example: see examples[] -->\n\n## 自定义元素标签用法\n\n<!-- example: see examples[] -->\n\n## API\n\n### Attributes\n\n| 属性名 | 说明                  | 类型     | 默认值 |\n| ------ | --------------------- | -------- | ------ |\n| gutter | row的列间距           | `number` | 0      |\n| tag    | row渲染的html tag属性 | `string` | div    |\n\n## 类型定义\n\n```typescript\ninterface RowProps {\n  gutter?: number;\n  tag?: string;\n}\n```\n\n## 示例源码（已内嵌，无需 press）\n\n### RowBasic\n\n```vue\n<template>\n  <GvRow :gutter=\"24\">\n    <GvCol :span=\"6\">\n      <div class=\"vp-col\">列1</div>\n    </GvCol>\n    <GvCol :span=\"6\">\n      <div class=\"vp-col\">列2</div>\n    </GvCol>\n  </GvRow>\n  <GvRow :gutter=\"24\">\n    <GvCol :span=\"6\">\n      <div class=\"vp-col\">列1</div>\n    </GvCol>\n  </GvRow>\n</template>\n\n<script setup lang=\"ts\"></script>\n\n<style>\n.el-row {\n  margin-bottom: 10px;\n}\n\n.el-row:last-child {\n  margin-bottom: 0;\n}\n\n.el-col {\n  border-radius: 4px;\n}\n</style>\n```\n\n### Tag\n\n```vue\n<template>\n  <GvRow :gutter=\"24\" tag=\"section\">\n    <GvCol :span=\"6\">\n      <div class=\"vp-col\">列1</div>\n    </GvCol>\n    <GvCol :span=\"6\">\n      <div class=\"vp-col\">列2</div>\n    </GvCol>\n  </GvRow>\n</template>\n\n<script setup lang=\"ts\">\n\n</script>\n```",
+  "generatedAt": "2026-07-16T03:20:35.838Z",
+  "source": "guava-press (vendored at generate time)",
+  "inNpm": true
+}

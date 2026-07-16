@@ -132,11 +132,14 @@ export const create<Feature>EditTableHeadList = (actions: <Feature>EditTableActi
 
 ## format 差异
 
-| 场景 | required | 字典 validator |
-|------|----------|---------------|
-| 查询 | 始终 `0` | `isDic` |
-| 编辑必填 | `1` | `idDic` |
-| 编辑非必填 | `0` | `isDic` |
+| 场景 | required | validator（必填） |
+|------|----------|-------------------|
+| 查询 | 始终 `0` | 见 [search-conditions.md](../search-conditions.md)；字典用 `isDic` |
+| 编辑必填 | `1` | 同上；字典用 `idDic` |
+| 编辑非必填 | `0` | 同上；字典用 `isDic` |
+| `isDouble` | — | `format[3]` = 小数位数 |
+
+**查询 SearchList 与编辑 EditList / FormList 每条 FormItem 都必须带 `format[1]` 校验类型**，取值对齐 guava-ui `packages/utils/gv.validate.ts`。
 
 ## 表单/表格类型速查
 
@@ -156,7 +159,7 @@ export const create<Feature>EditTableHeadList = (actions: <Feature>EditTableActi
 |---------|---------|---------|
 | `create<Feature>FormList` | 始终 | 编辑表（整页表单字段） |
 
-字段 `format` 规则与 EditList 相同（必填 `1` + `idDic`，非必填 `0` + `isDic`）。**无** `operateType` / `disabledOnEdit`（纯配置页通常无新增/编辑模式区分；若扩展需要可保留）。
+字段 `format` 规则与 EditList 相同（必填 `1` + `idDic`，非必填 `0` + `isDic`；**每条须有 validator**）。**无** `operateType` / `disabledOnEdit`（纯配置页通常无新增/编辑模式区分；若扩展需要可保留）。
 
 ```typescript
 import { ref } from 'vue';

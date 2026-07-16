@@ -1,0 +1,18 @@
+{
+  "gvName": "GvDrawer",
+  "docSlug": "drawer",
+  "tip": "Drawer 组件对应 `GvDrawer`。下方示例可直接交互，点击「显示代码」查看源码。",
+  "markdown": "# Drawer 抽屉\n\n::: tip\nDrawer 组件对应 `GvDrawer`。下方示例可直接交互，点击「显示代码」查看源码。\n:::\n\n## 基本用法\n\n<!-- example: see examples[] -->\n\n## API\n\n### Attributes\n\n| 属性名    | 说明             | 类型      | 默认值 |\n| --------- | ---------------- | --------- | ------ |\n| visible   | 设置是否可见     | `boolean` | `true` |\n| title     | 设置抽屉标题     | `string`  | `标题` |\n| direction | 设置抽屉展开方向 | `string`  | `rtl`  |\n\n### Events\n\n| 事件名 | 说明             | 类型         |\n| ------ | ---------------- | ------------ |\n| open   | 打开窗口响应方法 | `() => void` |\n\n## 类型定义\n\n```typescript\n// direction 类型定义\ntype DrawerDirection = 'rtl' | 'ltr' | 'ttb' | 'btt';\n```",
+  "api": "## API\n\n### Attributes\n\n| 属性名    | 说明             | 类型      | 默认值 |\n| --------- | ---------------- | --------- | ------ |\n| visible   | 设置是否可见     | `boolean` | `true` |\n| title     | 设置抽屉标题     | `string`  | `标题` |\n| direction | 设置抽屉展开方向 | `string`  | `rtl`  |\n\n### Events\n\n| 事件名 | 说明             | 类型         |\n| ------ | ---------------- | ------------ |\n| open   | 打开窗口响应方法 | `() => void` |",
+  "examples": [
+    {
+      "id": "Drawer",
+      "file": "./examples/drawer/basic.vue",
+      "source": "<template>\n  <div>\n    <GvButton @click=\"drawerVisible = !drawerVisible\">浮动抽屉</GvButton>\n    <GvDrawer\n      title=\"抽屉标题\"\n      v-model:visible=\"drawerVisible\"\n    >\n      <div>\n        <p>抽屉窗口样例</p>\n      </div>\n      <template #footer>\n        <GvButton type=\"primary\" @click=\"drawerVisible = false\">确定</GvButton>\n      </template>\n    </GvDrawer>\n  </div>\n</template>\n\n<script setup lang=\"ts\">\nimport { ref } from 'vue';\n\nconst drawerVisible = ref(false)\n </script>\n\n<style scoped>\n:deep(.gv-drawer){\n  z-index:99 !important;\n}\n</style>\n"
+    }
+  ],
+  "usageMarkdown": "> Drawer 组件对应 `GvDrawer`。下方示例可直接交互，点击「显示代码」查看源码。\n\n# Drawer 抽屉\n\n::: tip\nDrawer 组件对应 `GvDrawer`。下方示例可直接交互，点击「显示代码」查看源码。\n:::\n\n## 基本用法\n\n<!-- example: see examples[] -->\n\n## API\n\n### Attributes\n\n| 属性名    | 说明             | 类型      | 默认值 |\n| --------- | ---------------- | --------- | ------ |\n| visible   | 设置是否可见     | `boolean` | `true` |\n| title     | 设置抽屉标题     | `string`  | `标题` |\n| direction | 设置抽屉展开方向 | `string`  | `rtl`  |\n\n### Events\n\n| 事件名 | 说明             | 类型         |\n| ------ | ---------------- | ------------ |\n| open   | 打开窗口响应方法 | `() => void` |\n\n## 类型定义\n\n```typescript\n// direction 类型定义\ntype DrawerDirection = 'rtl' | 'ltr' | 'ttb' | 'btt';\n```\n\n## 示例源码（已内嵌，无需 press）\n\n### Drawer\n\n```vue\n<template>\n  <div>\n    <GvButton @click=\"drawerVisible = !drawerVisible\">浮动抽屉</GvButton>\n    <GvDrawer\n      title=\"抽屉标题\"\n      v-model:visible=\"drawerVisible\"\n    >\n      <div>\n        <p>抽屉窗口样例</p>\n      </div>\n      <template #footer>\n        <GvButton type=\"primary\" @click=\"drawerVisible = false\">确定</GvButton>\n      </template>\n    </GvDrawer>\n  </div>\n</template>\n\n<script setup lang=\"ts\">\nimport { ref } from 'vue';\n\nconst drawerVisible = ref(false)\n </script>\n\n<style scoped>\n:deep(.gv-drawer){\n  z-index:99 !important;\n}\n</style>\n\n```",
+  "generatedAt": "2026-07-16T03:20:35.832Z",
+  "source": "guava-press (vendored at generate time)",
+  "inNpm": true
+}

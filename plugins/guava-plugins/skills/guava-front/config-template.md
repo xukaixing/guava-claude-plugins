@@ -32,9 +32,12 @@ paths:                    # 必填，端点路径（skill 推导 apiName / metho
 ---
 
 ## 查询
+<!-- 校验列必填，取值见 search-conditions.md（对齐 gv.validate.ts） -->
 
 | 名称 | 字段 | 类型 | 校验 | 长度 | 扩展 |
-| | | text | isAny | 30 | |
+| 用户账号 | u@account | text | isNumberLetter | 30 | |
+| 状态 | u@status | dic | isDic | 6 | dic=yxzt |
+| 创建时间 | createTime | date | isDate | 10 | date=daterange |
 
 ## 表格
 
@@ -42,9 +45,13 @@ paths:                    # 必填，端点路径（skill 推导 apiName / metho
 | | | 120 | | |
 
 ## 编辑
+<!-- 校验列必填；字典必填用 idDic，非必填用 isDic -->
 
 | 名称 | 字段 | 类型 | 必填 | 校验 | 长度 | 扩展 |
-| | | text | Y | isAny | 30 | |
+| 用户账号 | account | text | Y | isNumberLetter | 30 | disabledOnEdit |
+| 状态 | status | dic | Y | idDic | 6 | dic=yxzt |
+| 手机 | mobile | text | | isPhone | 11 | |
+| 备注 | remark | textarea | | isAny | 200 | |
 ```
 
 ## tabs 配置
@@ -102,11 +109,14 @@ paths:
 ---
 
 ## 编辑
+<!-- 校验列必填，取值见 search-conditions.md -->
 | 名称 | 字段 | 类型 | 必填 | 校验 | 长度 | 扩展 |
 | 站点名称 | siteName | text | Y | isAny | 60 | |
+| 维护模式 | maintenanceMode | dic | | isDic | 6 | dic=yxzt |
+| 备注 | remark | textarea | | isAny | 200 | |
 ```
 
-> form-only **不需要** ## 查询 / ## 表格 表。
+> form-only **不需要** ## 查询 / ## 表格 表；**编辑表校验列仍必填**。
 
 ## YAML 头说明
 
@@ -159,4 +169,4 @@ paths:
 | 名称 | 字段 | 宽度 | 类型 |
 ```
 
-字段规则详见 [search-conditions.md](search-conditions.md)。
+字段 `format` / 校验类型（查询 + 编辑均必填）详见 [search-conditions.md](search-conditions.md)，与 guava-ui `gv.validate.ts` 对齐。

@@ -64,7 +64,7 @@ const editUser = (row: Recordable<any>, _index: number) => { ... };
 
 - **优先** 使用 npm 包 `guava-ui` 封装的 **`Gv*` 组件**
 - **仅当** `guava-ui` 中**不存在**对应 `Gv*` 封装时，才允许使用 Element Plus 的 **`el-*` 标签**（或 `El*` 组件）
-- 使用前须确认：`node_modules/guava-ui` 的导出 / 类型声明，或项目中已有 `Gv*` 用法；**禁止**在已有 `Gv*` 时仍写 `el-*`
+- 使用前须通过插件 MCP **`guava-ui`** / **`gv-*`**（`get_usage` / `get_props` / `resolve_gv_component`）确认；**禁止**在已有 `Gv*` 时仍写 `el-*`
 
 表单/表格字段优先通过 `helper.tsx` 的 `FormItem[]` / `TableHeadItem[]` + `GvForm :form-list` / `GvTable :table-head` 配置驱动（`type: text | dic | date | textarea` 等），**不要**在 template 手写 `<el-input>`、`<el-select>` 等（若 `GvForm` 已支持该字段类型）。
 
@@ -183,10 +183,12 @@ src/views/svcProduct/svcLead/salesSkills/
 
 ## FormItem format 参考
 
-`format: [required, validator, maxlength, minlength?]`
+`format: [required, validator, maxlength, decimal?]`
 
+- 查询条件与编辑/form 表单：**validator 均必填**
 - 查询条件：`required` 固定为 `0`
-- 校验类型完整列表见 [search-conditions.md](search-conditions.md)
+- `isDouble` 时第 4 位为小数位数，如 `[0, 'isDouble', 10, 4]`
+- 校验类型完整列表（对齐 guava-ui `gv.validate.ts`）见 [search-conditions.md](search-conditions.md)
 
 ## crud API 参考
 

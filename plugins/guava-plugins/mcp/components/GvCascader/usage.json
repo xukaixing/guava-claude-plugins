@@ -1,0 +1,18 @@
+{
+  "gvName": "GvCascader",
+  "docSlug": "cascader",
+  "tip": "下方示例可直接交互，点击「显示代码」查看源码。",
+  "markdown": "# Cascader 级联选择器\n\n级联选择器组件，用于选择多个层级的选项。\n\n::: tip\n下方示例可直接交互，点击「显示代码」查看源码。\n:::\n\n## 基础用法\n\n<!-- example: see examples[] -->",
+  "api": null,
+  "examples": [
+    {
+      "id": "CascaderBasic",
+      "file": "./examples/cascader/basic.vue",
+      "source": "<template>\n  <div>\n    <GvForm ref-form=\"dictForm\" :form-list=\"dictFormList\" divider=\"级联字典组件\" :form-style=\"{width:'800px'}\" />\n  </div>\n</template>\n\n<script lang=\"ts\" setup>\nimport { ref } from 'vue';\nconst dictFormList = ref([\n  {\n    type: 'layer',\n    format: [0, 'isAny', 30],\n    label: '级联',\n    options: '',\n    field: 'xzqh4',\n  },\n])\ndictFormList.value[0].options = [\n  {\n    value: 'f1',\n    label: '一级1',\n    children: [\n      {\n        value: 's1',\n        label: '二级1',\n        children: [\n          {\n            value: 't1',\n            label: '三级1'\n          }, {\n            value: 't2',\n            label: '三级2'\n          }\n        ]\n      },\n      {\n        value: 's2',\n        label: '二级',\n        children: [\n          {\n            value: 't22',\n            label: '三级22'\n          }, {\n            value: 't23',\n            label: '三级23'\n          }\n        ]\n      }\n    ]\n  },\n  {\n    value: 'f2',\n    label: '一级2',\n    children: [{\n      value: 's3',\n      label: '二级3'\n    }, {\n      value: 't33',\n      label: '三级33'\n    }, {\n      value: 't34',\n      label: '三级44'\n    }]\n  }\n]\n</script>\n\n<style scoped>\n:deep(.gv-divider){\n  height: auto !important;\n}\n</style>"
+    }
+  ],
+  "usageMarkdown": "> 下方示例可直接交互，点击「显示代码」查看源码。\n\n# Cascader 级联选择器\n\n级联选择器组件，用于选择多个层级的选项。\n\n::: tip\n下方示例可直接交互，点击「显示代码」查看源码。\n:::\n\n## 基础用法\n\n<!-- example: see examples[] -->\n\n## 示例源码（已内嵌，无需 press）\n\n### CascaderBasic\n\n```vue\n<template>\n  <div>\n    <GvForm ref-form=\"dictForm\" :form-list=\"dictFormList\" divider=\"级联字典组件\" :form-style=\"{width:'800px'}\" />\n  </div>\n</template>\n\n<script lang=\"ts\" setup>\nimport { ref } from 'vue';\nconst dictFormList = ref([\n  {\n    type: 'layer',\n    format: [0, 'isAny', 30],\n    label: '级联',\n    options: '',\n    field: 'xzqh4',\n  },\n])\ndictFormList.value[0].options = [\n  {\n    value: 'f1',\n    label: '一级1',\n    children: [\n      {\n        value: 's1',\n        label: '二级1',\n        children: [\n          {\n            value: 't1',\n            label: '三级1'\n          }, {\n            value: 't2',\n            label: '三级2'\n          }\n        ]\n      },\n      {\n        value: 's2',\n        label: '二级',\n        children: [\n          {\n            value: 't22',\n            label: '三级22'\n          }, {\n            value: 't23',\n            label: '三级23'\n          }\n        ]\n      }\n    ]\n  },\n  {\n    value: 'f2',\n    label: '一级2',\n    children: [{\n      value: 's3',\n      label: '二级3'\n    }, {\n      value: 't33',\n      label: '三级33'\n    }, {\n      value: 't34',\n      label: '三级44'\n    }]\n  }\n]\n</script>\n\n<style scoped>\n:deep(.gv-divider){\n  height: auto !important;\n}\n</style>\n```",
+  "generatedAt": "2026-07-16T03:20:35.827Z",
+  "source": "guava-press (vendored at generate time)",
+  "inNpm": true
+}

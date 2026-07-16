@@ -1,0 +1,18 @@
+{
+  "gvName": "GvSearchBar",
+  "docSlug": "searchBar",
+  "tip": "SearchBar 组件对应 `GvSearchBar`。通常与`GvForm`组件结合使用，下方示例可直接交互，点击「显示代码」查看源码。",
+  "markdown": "# SearchBar 搜索栏\n\n搜索栏组件用于在列表中进行搜索。\n\n::: tip\nSearchBar 组件对应 `GvSearchBar`。通常与`GvForm`组件结合使用，下方示例可直接交互，点击「显示代码」查看源码。\n:::\n\n## 基础用法\n\n<!-- example: see examples[] -->\n\n## API\n\n### Form Attributes\n\n| 属性名 | 说明           | 类型      | 默认值 |\n| ------ | -------------- | --------- | ------ |\n| expand | 是否展开搜索栏 | `boolean` | true   |",
+  "api": "## API\n\n### Form Attributes\n\n| 属性名 | 说明           | 类型      | 默认值 |\n| ------ | -------------- | --------- | ------ |\n| expand | 是否展开搜索栏 | `boolean` | true   |",
+  "examples": [
+    {
+      "id": "SearchBarBasic",
+      "file": "./examples/searchBar/basic.vue",
+      "source": "<template>\n  <GvForm\n    ref=\"formRef\"\n    ref-form=\"formRef\"\n    :divider=\"t('searchBar.searchFilter')\"\n    :form-list=\"formList\"\n    :form-style=\"{ width: '800px' }\"\n  >\n    <GvSearchBar :expand=\"true\">\n      <GvButton @click=\"searchUserList\">{{ t('search') }}</GvButton>\n      <GvButton @click=\"resetForm\">{{ t('reset') }}</GvButton>\n    </GvSearchBar>\n  </GvForm>\n</template>\n\n<script lang=\"ts\" setup>\nimport type { FormInstance } from 'element-plus'\nimport { computed, ref } from 'vue'\nimport { useI18n } from '@/hook/web/useI18n'\n\nconst { t } = useI18n('searchBar')\nconst { t: td } = useI18n('demo')\n\nconst formRef = ref<FormInstance>(null)\nconst formList = computed(() => [\n  {\n    type: 'text',\n    format: [0, 'isNumberLetter', 30],\n    label: td('userAccount'),\n    field: 'account',\n  },\n  {\n    type: 'text',\n    format: [0, 'isAny', 60],\n    label: td('userName'),\n    field: 'u@userName',\n  },\n])\n\nconst searchUserList = () => {}\nconst resetForm = () => formRef.value?.resetFields?.()\n</script>\n\n<style scoped>\n:deep(.gv-search-bar) {\n  text-align: right !important;\n}\n</style>\n"
+    }
+  ],
+  "usageMarkdown": "> SearchBar 组件对应 `GvSearchBar`。通常与`GvForm`组件结合使用，下方示例可直接交互，点击「显示代码」查看源码。\n\n# SearchBar 搜索栏\n\n搜索栏组件用于在列表中进行搜索。\n\n::: tip\nSearchBar 组件对应 `GvSearchBar`。通常与`GvForm`组件结合使用，下方示例可直接交互，点击「显示代码」查看源码。\n:::\n\n## 基础用法\n\n<!-- example: see examples[] -->\n\n## API\n\n### Form Attributes\n\n| 属性名 | 说明           | 类型      | 默认值 |\n| ------ | -------------- | --------- | ------ |\n| expand | 是否展开搜索栏 | `boolean` | true   |\n\n## 示例源码（已内嵌，无需 press）\n\n### SearchBarBasic\n\n```vue\n<template>\n  <GvForm\n    ref=\"formRef\"\n    ref-form=\"formRef\"\n    :divider=\"t('searchBar.searchFilter')\"\n    :form-list=\"formList\"\n    :form-style=\"{ width: '800px' }\"\n  >\n    <GvSearchBar :expand=\"true\">\n      <GvButton @click=\"searchUserList\">{{ t('search') }}</GvButton>\n      <GvButton @click=\"resetForm\">{{ t('reset') }}</GvButton>\n    </GvSearchBar>\n  </GvForm>\n</template>\n\n<script lang=\"ts\" setup>\nimport type { FormInstance } from 'element-plus'\nimport { computed, ref } from 'vue'\nimport { useI18n } from '@/hook/web/useI18n'\n\nconst { t } = useI18n('searchBar')\nconst { t: td } = useI18n('demo')\n\nconst formRef = ref<FormInstance>(null)\nconst formList = computed(() => [\n  {\n    type: 'text',\n    format: [0, 'isNumberLetter', 30],\n    label: td('userAccount'),\n    field: 'account',\n  },\n  {\n    type: 'text',\n    format: [0, 'isAny', 60],\n    label: td('userName'),\n    field: 'u@userName',\n  },\n])\n\nconst searchUserList = () => {}\nconst resetForm = () => formRef.value?.resetFields?.()\n</script>\n\n<style scoped>\n:deep(.gv-search-bar) {\n  text-align: right !important;\n}\n</style>\n\n```",
+  "generatedAt": "2026-07-16T03:20:35.839Z",
+  "source": "guava-press (vendored at generate time)",
+  "inNpm": true
+}

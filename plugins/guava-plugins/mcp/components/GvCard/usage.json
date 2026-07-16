@@ -1,0 +1,18 @@
+{
+  "gvName": "GvCard",
+  "docSlug": "card",
+  "tip": "Card 组件对应 `GvCard`。下方示例可直接交互，点击「显示代码」查看源码。",
+  "markdown": "# Card 卡片\n\n::: tip\nCard 组件对应 `GvCard`。下方示例可直接交互，点击「显示代码」查看源码。\n:::\n\n## 基本用法\n\n<!-- example: see examples[] -->\n\n## API\n\n### Attributes\n\n| 属性名 | 说明         | 类型     | 默认值   |\n| ------ | ------------ | -------- | -------- |\n| header | 设置卡片标题 | `string` | ''       |\n| shadow | 设置卡片阴影 | `string` | `always` |\n| footer | 设置卡片页脚 | `string` | ''       |\n\n## 类型定义\n\n```typescript\n// shadow 类型\ntype CardShadowType = 'always' | 'hover' | 'never';\n```",
+  "api": "## API\n\n### Attributes\n\n| 属性名 | 说明         | 类型     | 默认值   |\n| ------ | ------------ | -------- | -------- |\n| header | 设置卡片标题 | `string` | ''       |\n| shadow | 设置卡片阴影 | `string` | `always` |\n| footer | 设置卡片页脚 | `string` | ''       |",
+  "examples": [
+    {
+      "id": "CardBasic",
+      "file": "./examples/card/basic.vue",
+      "source": "<template>\n  <GvRow :gutter=\"20\">\n    <GvCol :xs=\"24\" :sm=\"24\" :md=\"6\" :lg=\"6\" :xl=\"5\">\n      <GvCard header=\"个人信息\" shadow=\"never\" style=\"height:320px;\">\n        <template #default>\n          <p>卡片内容</p>\n        </template>\n      </GvCard>\n    </GvCol>\n    <GvCol :xs=\"24\" :sm=\"24\" :md=\"16\" :lg=\"18\" :xl=\"19\">\n      <GvCard style=\"height:320px;\">\n        <template #header>\n          <span>其他信息</span>\n        </template>\n        <template #default>\n          <p>卡片内容</p>\n        </template>\n      </GvCard>\n    </GvCol>\n  </GvRow>\n</template>\n\n<script setup lang=\"ts\">\n</script>\n\n<style scoped>\n  :deep(.gv-dialog-modal){\n    z-index:99 !important;\n  }\n</style>\n"
+    }
+  ],
+  "usageMarkdown": "> Card 组件对应 `GvCard`。下方示例可直接交互，点击「显示代码」查看源码。\n\n# Card 卡片\n\n::: tip\nCard 组件对应 `GvCard`。下方示例可直接交互，点击「显示代码」查看源码。\n:::\n\n## 基本用法\n\n<!-- example: see examples[] -->\n\n## API\n\n### Attributes\n\n| 属性名 | 说明         | 类型     | 默认值   |\n| ------ | ------------ | -------- | -------- |\n| header | 设置卡片标题 | `string` | ''       |\n| shadow | 设置卡片阴影 | `string` | `always` |\n| footer | 设置卡片页脚 | `string` | ''       |\n\n## 类型定义\n\n```typescript\n// shadow 类型\ntype CardShadowType = 'always' | 'hover' | 'never';\n```\n\n## 示例源码（已内嵌，无需 press）\n\n### CardBasic\n\n```vue\n<template>\n  <GvRow :gutter=\"20\">\n    <GvCol :xs=\"24\" :sm=\"24\" :md=\"6\" :lg=\"6\" :xl=\"5\">\n      <GvCard header=\"个人信息\" shadow=\"never\" style=\"height:320px;\">\n        <template #default>\n          <p>卡片内容</p>\n        </template>\n      </GvCard>\n    </GvCol>\n    <GvCol :xs=\"24\" :sm=\"24\" :md=\"16\" :lg=\"18\" :xl=\"19\">\n      <GvCard style=\"height:320px;\">\n        <template #header>\n          <span>其他信息</span>\n        </template>\n        <template #default>\n          <p>卡片内容</p>\n        </template>\n      </GvCard>\n    </GvCol>\n  </GvRow>\n</template>\n\n<script setup lang=\"ts\">\n</script>\n\n<style scoped>\n  :deep(.gv-dialog-modal){\n    z-index:99 !important;\n  }\n</style>\n\n```",
+  "generatedAt": "2026-07-16T03:20:35.826Z",
+  "source": "guava-press (vendored at generate time)",
+  "inNpm": true
+}

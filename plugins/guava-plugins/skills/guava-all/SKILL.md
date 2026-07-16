@@ -16,7 +16,7 @@ disable-model-invocation: true
 
 1. Read `src/pages/<config>.md` + [config-bridge.md](config-bridge.md) 推导前后端参数
 2. Read [../../context/front.md](../../context/front.md)（仅 Phase A 所需段落）
-3. **Phase A — guava-front**：严格按 [../guava-front/SKILL.md](../guava-front/SKILL.md) Write 本仓库文件
+3. **Phase A — guava-front**：严格按 [../guava-front/SKILL.md](../guava-front/SKILL.md) Write 本仓库文件（Vue 前用插件 MCP 查 Gv*）
 4. Read [../../context/backend.md](../../context/backend.md) + `GUAVA_BACKEND_ROOT`
 5. **Phase B — guava-backend**：严格按 [../guava-backend/SKILL.md](../guava-backend/SKILL.md) Write 后端文件
 6. 对齐检查：`apiBase`/`paths`/`field` 与前端 API 一致（见 config-bridge）
