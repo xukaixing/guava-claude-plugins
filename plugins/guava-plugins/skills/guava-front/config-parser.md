@@ -49,9 +49,9 @@ paths:                    # 必填
 
 | YAML 字段 | 映射 |
 |-----------|------|
-| `feature` | `featureName` |
+| `feature` | `featureName`（命名/i18n/方法前缀；**不是** views 目录） |
 | `title` | `moduleTitle` |
-| `view` | `viewPath` |
+| `view` | `viewPath` → **唯一**决定 `src/views/<view>/` |
 | `pageType` | 页面类型，默认 `crud-module` |
 | `api` | `apiModule` |
 | `apiBase` | `apiServicePath` |
@@ -61,6 +61,27 @@ paths:                    # 必填
 | `editMode` | tabs 列表 Tab 编辑方式 |
 | `tabs` | Tab 定义数组 |
 | `paths.*` | API 端点 |
+
+### 硬性规则：`view` 决定生成目录
+
+**`src/views/` 下的目录必须严格等于 YAML 的 `view` 字段**，禁止用配置文件路径、`feature`、或参考页路径替代。
+
+| 配置 | 正确输出根目录 | 错误（禁止） |
+|------|----------------|--------------|
+| 文件 `src/pages/sysMng/userMng.md` + `view: sysMng/userMng2` | `src/views/sysMng/userMng2/` | `src/views/sysMng/userMng/`（抄了 md 文件名） |
+| `feature: userMng` + `view: sysMng/userMng2` | 同上；组件名仍由 `feature`/`component` 推导为 `User` | 把 `feature` 当成目录段 |
+
+生成前**必须**先打印文件清单，且每条路径以 `src/views/<view>/` 开头，例如：
+
+```
+view = sysMng/userMng2   ← 来自 YAML，不是 pages 路径
+src/views/sysMng/userMng2/UserIndex.vue
+src/views/sysMng/userMng2/module/helper.tsx
+src/views/sysMng/userMng2/module/types.d.ts
+src/views/sysMng/userMng2/module/UserEdit.vue
+```
+
+若清单中的 views 路径与 `view` 不一致，**停止生成并修正**后再 Write。
 
 ### 三张表（crud-module / tabs 按需）
 
@@ -192,7 +213,7 @@ src/locales/zh-CN.ts + en.ts
 
 #### crud-module / tabs（layout 影响 module 子目录）
 
-根据 `view`、`layout`、`component`、`crud`、`editPage`、`pageType` 推导：
+根据 **YAML `view` 原文**、`layout`、`component`、`crud`、`editPage`、`pageType` 推导（`<view>` = YAML `view` 字符串，禁止改写）：
 
 ```
 src/api/<api>.ts
@@ -203,12 +224,19 @@ src/views/<view>/[module/]<Component>Edit.vue   ← editPage 且 add/edit（非 
 src/locales/zh-CN.ts + en.ts
 ```
 
+**对照示例**（配置文件在 `src/pages/sysMng/userMng.md`）：
+
+| YAML | 正确输出 | 错误（禁止） |
+|------|----------|--------------|
+| `view: sysMng/userMng2` | `src/views/sysMng/userMng2/UserIndex.vue` | `src/views/sysMng/userMng/...` |
+| `feature: userMng` | 文件名仍为 `UserIndex.vue` / i18n `userMng` | 把目录改成 `userMng` |
+
 | layout | helper / types / Edit 位置 |
 |--------|---------------------------|
-| `module` | `<view>/module/` |
-| `flat` | `<view>/` |
+| `module` | `src/views/<view>/module/` |
+| `flat` | `src/views/<view>/` |
 
-生成前 skill **展示**上述清单供确认；用户**无需**在 `.md` 里维护清单。
+生成前 skill **展示**上述清单（路径必须含完整 `view`）供确认；用户**无需**在 `.md` 里维护清单。
 
 ---
 

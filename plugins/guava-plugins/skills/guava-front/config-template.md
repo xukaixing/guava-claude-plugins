@@ -16,7 +16,7 @@
 ---
 feature: userMng          # 必填，camelCase
 title: 用户管理            # 必填，中文标题
-view: sysMng/userMng      # 必填，Index 页目录
+view: sysMng/userMng2     # 必填 → src/views/sysMng/userMng2/（可与 pages 文件名不同）
 pageType: crud-module     # 可选，省略时等同 crud-module
 api: admin/user           # 必填 → src/api/admin/user.ts
 apiBase: /sysuser         # 必填，后端根路径
@@ -124,7 +124,7 @@ paths:
 |------|------|------|
 | `feature` | ✅ | 业务域，如 `userMng` |
 | `title` | ✅ | 页面中文标题 |
-| `view` | ✅ | `src/views/` 下路径 |
+| `view` | ✅ | **唯一**决定 `src/views/<view>/`；勿用 pages 路径代替 |
 | `pageType` | | `crud-module`（默认）\| `tabs` \| `form-only` |
 | `api` | ✅ | API 文件，如 `admin/user` |
 | `apiBase` | ✅ | 后端根路径 |

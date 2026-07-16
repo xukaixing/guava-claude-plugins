@@ -6,7 +6,7 @@ guava-front 按 `pageType` 选择生成模板与输出文件。配置文件 YAML
 
 | pageType | 说明 | 参考页 | 配置示例 | 模板 |
 |----------|------|--------|---------|------|
-| `crud-module` | 搜索+表格+Drawer | `sysMng/userMng` | `src/pages/sysMng/userMng.md` | index-page / edit-page |
+| `crud-module` | 搜索+表格+Drawer | YAML `view`（如 `sysMng/userMng2`） | `src/pages/sysMng/userMng.md`（路径可与 view 不同） | index-page / edit-page |
 | `tabs` | GvTabs 多 Tab | `demo/demoFormTabs` | `src/pages/demo/demoFormTabs.md` | index-page-tabs |
 | `form-only` | 纯表单 | `sysMng/systemConfig` | `src/pages/sysMng/systemConfig.md` | form-only-page |
 

@@ -126,13 +126,16 @@ const editUser = (row: Recordable<any>, _index: number) => { ... };
 
 ## 目录结构
 
+**`src/views/` 下的目录 = YAML `view` 原文**，与 `src/pages/**/*.md` 路径无关。  
+例：`view: sysMng/userMng2` → `src/views/sysMng/userMng2/`（不是 `userMng`）。
+
 两种布局，由配置 `layout` 决定：
 
 ### layout=module（系统管理常用）
 
 ```
-src/views/sysMng/userMng/
-├── UserIndex.vue              ← Index 在 viewPath 根目录
+src/views/<view>/                 ← 例 view: sysMng/userMng2
+├── UserIndex.vue                 ← Index 在 view 根目录；文件名由 feature/component 推导
 └── module/
     ├── helper.tsx
     ├── types.d.ts
@@ -142,7 +145,7 @@ src/views/sysMng/userMng/
 ### layout=flat（业务模块常用）
 
 ```
-src/views/svcProduct/svcLead/salesSkills/
+src/views/<view>/                 ← 例 view: svcProduct/svcLead/salesSkills
 ├── SalesSkillsIndex.vue
 ├── SalesSkillsEdit.vue
 ├── helper.tsx
@@ -153,7 +156,7 @@ src/views/svcProduct/svcLead/salesSkills/
 
 | 项目               | 规范                           | 示例                      |
 | ------------------ | ------------------------------ | ------------------------- |
-| viewPath           | camelCase 路径                 | `sysMng/userMng`          |
+| viewPath           | **= YAML `view` 原文**         | `sysMng/userMng2`         |
 | componentBaseName  | PascalCase，去 Mng 后缀        | `User`, `SalesSkills`     |
 | 列表页             | `<Base>Index.vue`              | `UserIndex.vue`           |
 | 编辑页             | `<Base>Edit.vue`               | `UserEdit.vue`            |

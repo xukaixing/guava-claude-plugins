@@ -15,6 +15,7 @@
 
 ## Vue 生成要点
 
+- **输出目录**：`src/views/<YAML.view>/`；禁止用配置 `.md` 路径或 `feature` 当 views 目录（见 [config-parser.md](config-parser.md#硬性规则view-决定生成目录)）
 - template **优先 Gv***（Guava UI）；写 template 前用插件 MCP（`get_page_recipe` / `get_usage` / `get_props`）；无对应封装时才用 `el-*`
 - 字段走 `GvForm`/`GvTable` + helper 的 `FormItem[]`/`TableHeadItem[]`
 - 新页面用 `create*List` + i18n，禁止 legacy 硬编码中文

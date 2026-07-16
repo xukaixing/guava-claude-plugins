@@ -2,7 +2,7 @@
 
 > [\_shared.md](../_shared.md) · [conventions.md](../conventions.md)
 
-生成 `src/views/<viewPath>/<Base>Index.vue`。**仅生成 CRUD 配置中 enabled 的方法。**
+生成 `src/views/<view>/<Base>Index.vue`，其中 `<view>` = YAML **`view` 原文**（勿用 pages 路径）。**仅生成 CRUD 配置中 enabled 的方法。**
 
 ## 方法生成条件
 
