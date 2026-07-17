@@ -2,6 +2,8 @@
 
 同一 `src/pages/**/*.md` 驱动前后端。前端字段见 [../guava-front/config-parser.md](../guava-front/config-parser.md)。
 
+若 YAML **`frontendOnly: true`**：**不执行本桥接、不生成后端**（仅 front + `data.ts`）。
+
 ## YAML 扩展（可选）
 
 ```yaml

@@ -4,6 +4,10 @@
 
 生成或补全 `src/api/<apiModule>.ts`。**仅生成 enabled CRUD 的 API 函数。**
 
+## `frontendOnly: true`
+
+**整节跳过**：不创建、不追加、不修改任何 `src/api/**`。列表数据见 [data.md](data.md)。
+
 ## 生成前检查
 
 ```bash

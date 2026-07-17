@@ -26,8 +26,9 @@ feature: userMng          # 必填
 title: 用户管理            # 必填
 view: sysMng/userMng      # 必填
 pageType: crud-module     # 可选，默认 crud-module | tabs | form-only
-api: admin/user           # 必填
-apiBase: /sysuser         # 必填
+frontendOnly: false       # 可选，true=仅前端：不生成 api，列表数据用 data.ts
+api: admin/user           # frontendOnly 时省略
+apiBase: /sysuser         # frontendOnly 时省略
 layout: module            # 可选，默认 module
 crud: search, add, edit, delete   # 必填（form-only 见 page-types.md）
 editPage: true            # 可选
@@ -39,7 +40,7 @@ tabs:                     # pageType=tabs 时必填
     type: search-table
 component: User           # 可选，见推导规则
 i18n: userMng             # 可选，默认 = feature
-paths:                    # 必填
+paths:                    # frontendOnly 时省略
   find: /sysuser/findUsers
   save: /sysuser/saveUser
   update: /sysuser/updateUser/{id}
@@ -53,14 +54,43 @@ paths:                    # 必填
 | `title` | `moduleTitle` |
 | `view` | `viewPath` → **唯一**决定 `src/views/<view>/` |
 | `pageType` | 页面类型，默认 `crud-module` |
-| `api` | `apiModule` |
-| `apiBase` | `apiServicePath` |
+| `frontendOnly` | `true` = 仅前端：不生成 `src/api`、不调后端；生成 `data.ts`（默认 `false`） |
+| `api` | `apiModule`（`frontendOnly` 时忽略） |
+| `apiBase` | `apiServicePath`（`frontendOnly` 时忽略） |
 | `crud` | 启用的操作列表 |
 | `editPage` | `generateEditPage` |
 | `subTable` | `hasSubTable` |
 | `editMode` | tabs 列表 Tab 编辑方式 |
 | `tabs` | Tab 定义数组 |
-| `paths.*` | API 端点 |
+| `paths.*` | API 端点（`frontendOnly` 时忽略） |
+
+### `frontendOnly: true`（仅前端 / 无后端 API）
+
+| 项 | 行为 |
+|----|------|
+| `api` / `apiBase` / `paths` | **可不写**；写出也忽略 |
+| `src/api/**` | **不生成、不修改** |
+| `data.ts` | **必生成**，见 [templates/data.md](templates/data.md) |
+| 列表查询 | Index 读 `getListResult` / `filterListRecords`，禁止 `crud.search(…, *Api)` |
+| 编辑保存 | Edit 本地 `emit('saved')`，见 [templates/edit-page.md](templates/edit-page.md#frontendonly-true) |
+| guava-all / 后端 | **不生成** Java（见 guava-all config-bridge） |
+
+配置示例：
+
+```yaml
+---
+feature: userMng
+title: 用户管理（演示）
+view: demo/userMngLocal
+layout: module
+frontendOnly: true
+crud: search, add, edit, delete
+editPage: true
+---
+```
+
+可选追加 `## 示例数据` 表（列=字段名），用于填充 `mockListRecords`；没有则按 ## 表格字段自动造 2～3 条。  
+**`data.ts` 必须对齐后台 `datas`**：分页字段 + `records[0].transHash`（dic/date 列）+ 字典行 `{ c, v }`，见 [templates/data.md](templates/data.md)。
 
 ### 硬性规则：`view` 决定生成目录
 
@@ -191,8 +221,9 @@ Tab i18n：`tabs[].name` → `tab` + 首字母大写 name（`list` → `tabList`
 #### tabs 文件清单
 
 ```
-src/api/<api>.ts
+src/api/<api>.ts                               ← frontendOnly 时省略
 src/views/<view>/<Component>Index.vue      ← GvTabs
+src/views/<view>/[module/]data.ts          ← 仅 frontendOnly
 src/views/<view>/[module/]helper.tsx       ← 含 InlineEditList（有 inline-form Tab 时）
 src/views/<view>/[module/]types.d.ts
 src/views/<view>/[module/]<Component>Edit.vue   ← editMode=drawer 且 add/edit
@@ -202,8 +233,9 @@ src/locales/zh-CN.ts + en.ts
 #### form-only 文件清单
 
 ```
-src/api/<api>.ts
+src/api/<api>.ts                               ← frontendOnly 时省略
 src/views/<view>/<Component>.vue
+src/views/<view>/[module/]data.ts              ← 仅 frontendOnly（含 mockFormModel）
 src/views/<view>/helper.tsx
 src/views/<view>/types.d.ts
 src/locales/zh-CN.ts + en.ts
@@ -213,11 +245,12 @@ src/locales/zh-CN.ts + en.ts
 
 #### crud-module / tabs（layout 影响 module 子目录）
 
-根据 **YAML `view` 原文**、`layout`、`component`、`crud`、`editPage`、`pageType` 推导（`<view>` = YAML `view` 字符串，禁止改写）：
+根据 **YAML `view` 原文**、`layout`、`component`、`crud`、`editPage`、`pageType`、`frontendOnly` 推导（`<view>` = YAML `view` 字符串，禁止改写）：
 
 ```
-src/api/<api>.ts
+src/api/<api>.ts                               ← frontendOnly 时省略
 src/views/<view>/<Component>Index.vue          ← form-only 时为 <Component>.vue
+src/views/<view>/[module/]data.ts              ← 仅 frontendOnly
 src/views/<view>/[module/]helper.tsx           ← layout=module 时有 module/
 src/views/<view>/[module/]types.d.ts
 src/views/<view>/[module/]<Component>Edit.vue   ← editPage 且 add/edit（非 form-only）
@@ -230,13 +263,14 @@ src/locales/zh-CN.ts + en.ts
 |------|----------|--------------|
 | `view: sysMng/userMng2` | `src/views/sysMng/userMng2/UserIndex.vue` | `src/views/sysMng/userMng/...` |
 | `feature: userMng` | 文件名仍为 `UserIndex.vue` / i18n `userMng` | 把目录改成 `userMng` |
+| `frontendOnly: true` | 有 `…/data.ts`，**无** `src/api/...` | 仍生成 api 或仍 `crud.search(…, Api)` |
 
-| layout | helper / types / Edit 位置 |
+| layout | helper / types / Edit / data 位置 |
 |--------|---------------------------|
 | `module` | `src/views/<view>/module/` |
 | `flat` | `src/views/<view>/` |
 
-生成前 skill **展示**上述清单（路径必须含完整 `view`）供确认；用户**无需**在 `.md` 里维护清单。
+生成前 skill **展示**上述清单（路径必须含完整 `view`；标明是否 frontendOnly）供确认；用户**无需**在 `.md` 里维护清单。
 
 ---
 

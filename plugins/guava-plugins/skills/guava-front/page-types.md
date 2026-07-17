@@ -31,11 +31,12 @@ guava-front 按 `pageType` 选择生成模板与输出文件。配置文件 YAML
 | 字段 | 必填 | 说明 |
 |------|------|------|
 | `pageType` | | 省略或 `crud-module` |
+| `frontendOnly` | | `true`=仅前端：无 api，列表用 `data.ts` |
 | `layout` | | `module`（默认）或 `flat` |
 | `crud` | ✅ | `search, add, edit, delete` 子集，`search` 必选 |
 | `editPage` | | add/edit 启用时是否生成 Edit.vue |
 | `subTable` | | 是否主子表（Edit Variant B） |
-| `paths` | ✅ | find / save / update / delete |
+| `paths` | 有后端时 ✅ | find / save / update / delete；`frontendOnly` 时省略 |
 
 ### 配置表
 
@@ -45,12 +46,14 @@ guava-front 按 `pageType` 选择生成模板与输出文件。配置文件 YAML
 | 表格 | ✅ | 列表列 |
 | 编辑 | add/edit 时 | Drawer 表单 |
 | 子表列 | subTable 时 | 主子表明细 |
+| 示例数据 | frontendOnly 可选 | 填充 `data.ts` 的 records |
 
 ### 输出文件
 
 ```
-src/api/<api>.ts
+src/api/<api>.ts                         ← frontendOnly 时省略
 src/views/<view>/<Component>Index.vue
+src/views/<view>/[module/]data.ts        ← 仅 frontendOnly
 src/views/<view>/[module/]helper.tsx
 src/views/<view>/[module/]types.d.ts
 src/views/<view>/[module/]<Component>Edit.vue   ← editPage 且 add/edit
@@ -61,7 +64,8 @@ src/locales/zh-CN.ts + en.ts
 
 | 文件 | 模板 |
 |------|------|
-| Index | [templates/index-page.md](templates/index-page.md) |
+| Index | [templates/index-page.md](templates/index-page.md)（含 frontendOnly 分支） |
+| data.ts | [templates/data.md](templates/data.md)（仅 frontendOnly） |
 | Edit A（纯表单） | [templates/edit-page.md](templates/edit-page.md) Variant A |
 | Edit B（主子表） | [templates/edit-page.md](templates/edit-page.md) Variant B |
 
@@ -79,7 +83,7 @@ src/locales/zh-CN.ts + en.ts
 | `crud` | ✅ | 至少含 `search`；列表 Tab 的 add/edit/delete 同 crud-module |
 | `editMode` | | 列表 Tab 编辑方式：`drawer`（默认）或 `inline` |
 | `tabs` | ✅ | Tab 定义数组，见下 |
-| `paths` | ✅ | 同 crud-module |
+| `paths` | 有后端时 ✅ | 同 crud-module；`frontendOnly` 时省略 |
 
 ### tabs 数组项
 
@@ -113,8 +117,9 @@ tabs:
 ### 输出文件
 
 ```
-src/api/<api>.ts
+src/api/<api>.ts                               ← frontendOnly 时省略
 src/views/<view>/<Component>Index.vue      ← GvTabs 容器
+src/views/<view>/[module/]data.ts          ← 仅 frontendOnly
 src/views/<view>/[module/]helper.tsx
 src/views/<view>/[module/]types.d.ts
 src/views/<view>/[module/]<Component>Edit.vue   ← editMode=drawer 时
@@ -143,7 +148,7 @@ src/locales/zh-CN.ts + en.ts
 | `pageType` | ✅ | `form-only` |
 | `crud` | ✅ | `load, save` 或 `load, update`（无 search/add/delete） |
 | `layout` | | 通常 `flat`；helper/types 与 Index 同目录 |
-| `paths` | ✅ | `get`（或 `find`）+ `save`（或 `update`） |
+| `paths` | 有后端时 ✅ | `get`（或 `find`）+ `save`（或 `update`）；`frontendOnly` 时省略 |
 
 ```yaml
 crud: load, save
@@ -163,8 +168,9 @@ paths:
 ### 输出文件
 
 ```
-src/api/<api>.ts
+src/api/<api>.ts                               ← frontendOnly 时省略
 src/views/<view>/<Component>.vue           ← 主表单页（非 Index 后缀）
+src/views/<view>/[module/]data.ts          ← 仅 frontendOnly（mockFormModel）
 src/views/<view>/helper.tsx
 src/views/<view>/types.d.ts
 src/locales/zh-CN.ts + en.ts

@@ -4,6 +4,37 @@
 
 生成 `module/<Base>Edit.vue`（layout=module）或 `<Base>Edit.vue`（flat）。变体由 `hasSubTable` 决定。
 
+## `frontendOnly: true`
+
+- **禁止** `import … from '@/api/…'`
+- `<feature>Save` 不调 `crud.save` / `crud.update` API，改为 `getFormModel(fm)` 后 `emit('saved', …)`：
+
+```typescript
+const <feature>Save = async () => {
+  const fm = <feature>EditFm.value;
+  if (!fm) return;
+  try {
+    const model = getFormModel(fm) || {};
+    if (props.rowData?.id) {
+      emit('saved', {
+        type: 'update',
+        data: { ...props.rowData, ...model },
+        rownums: props.rowData?.rownums,
+      });
+    } else {
+      emit('saved', {
+        type: 'insert',
+        data: { ...model, id: model.id || `local-${Date.now()}` },
+      });
+    }
+  } catch (e) {
+    message(e, 'error');
+  }
+};
+```
+
+其余 Drawer / 表单结构与下方 Variant 相同。
+
 ## Variant A：纯表单（无子表格）
 
 ```vue

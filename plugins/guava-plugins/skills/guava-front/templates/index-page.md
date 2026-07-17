@@ -4,6 +4,53 @@
 
 生成 `src/views/<view>/<Base>Index.vue`，其中 `<view>` = YAML **`view` 原文**（勿用 pages 路径）。**仅生成 CRUD 配置中 enabled 的方法。**
 
+## `frontendOnly: true`
+
+- **禁止** `import … from '@/api/…'`
+- 生成并 import [data.md](data.md)：`getListResult` / `filterListRecords` / `mockListRecords` / `listTransHash`
+- `search*`：赋给 `search*Data` 的值 = 后台 **`datas`** 形态（含分页；`records[0]` 可为 `transHash`）
+- `delete*`：有 `id` 时从 `mockListRecords` 移除并刷新；无 API
+- add/edit：仍可用 Drawer；Edit 见 [edit-page.md](edit-page.md#frontendonly-true)；`save*Info` 仍用 `crud.insertResult` / `updateResult`（写入的行若含 dic 字段须为 `{c,v}`）
+
+### 查询方法（替换默认 search）
+
+```typescript
+  import { getFormModel } from 'guava-ui';
+  import { filterListRecords, getListResult, mockListRecords } from './module/data'; // flat: ./data
+
+  const search<Feature>List = async () => {
+    const fm = <feature>SearchFm.value;
+    try {
+      const query = fm ? getFormModel(fm) || {} : {};
+      const filtered = filterListRecords(query);
+      search<Feature>Data.value = getListResult(filtered);
+    } catch (e) {
+      message(e, 'error');
+    }
+  };
+
+  const delete<Feature> = (row: Recordable<any>, index: number) => {
+    confirm(t('<i18nKey>.deleteConfirm'))
+      .then(async () => {
+        try {
+          if (row.id) {
+            const i = mockListRecords.findIndex((r) => String(r.id) === String(row.id));
+            if (i >= 0) mockListRecords.splice(i, 1);
+            search<Feature>List();
+            message(t('<i18nKey>.deleteSuccess'), 'success');
+          } else {
+            crud.removeResult(<feature>TableList.value, index);
+          }
+        } catch (e) {
+          message(e, 'error');
+        }
+      })
+      .catch(() => {});
+  };
+```
+
+`save<Base>Info` 在 insert 时建议同步 `mockListRecords.push(payload.data)`，update 时按 `id` 写回 `mockListRecords`，再关 Drawer。
+
 ## 方法生成条件
 
 | 操作     | 方法             | 条件             |

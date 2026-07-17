@@ -8,10 +8,11 @@
 
 | 文件              | 模板                                                      | 条件                                      |
 | ----------------- | --------------------------------------------------------- | ----------------------------------------- |
-| API               | [api.md](api.md)                                          | 同 crud-module                            |
+| API               | [api.md](api.md)                                          | **非** frontendOnly                       |
+| data.ts           | [data.md](data.md)                                        | **仅** frontendOnly                       |
 | types.d.ts        | [types.md](types.md) + [types.md#tabs](types.md#tabs)     | 含 inline-form 时追加 `InlineEditActions` |
 | helper.tsx        | [helper.md](helper.md) + [helper.md#tabs](helper.md#tabs) | Search + Table + Edit + InlineEditList    |
-| `<Base>Index.vue` | 本文                                                      | 始终                                      |
+| `<Base>Index.vue` | 本文                                                      | 始终；frontendOnly 时列表查询同 [index-page.md](index-page.md#frontendonly-true) |
 | `<Base>Edit.vue`  | [edit-page.md](edit-page.md) Variant A                    | `editMode: drawer` 且 add/edit            |
 | i18n              | [i18n.md](i18n.md#tabs)                                   | Tab label + CRUD key                      |
 

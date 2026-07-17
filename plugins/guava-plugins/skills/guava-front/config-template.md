@@ -18,13 +18,14 @@ feature: userMng          # 必填，camelCase
 title: 用户管理            # 必填，中文标题
 view: sysMng/userMng2     # 必填 → src/views/sysMng/userMng2/（可与 pages 文件名不同）
 pageType: crud-module     # 可选，省略时等同 crud-module
-api: admin/user           # 必填 → src/api/admin/user.ts
-apiBase: /sysuser         # 必填，后端根路径
+frontendOnly: false       # 可选；true=仅前端，不生成 api，列表用 data.ts
+api: admin/user           # 有后端时必填；frontendOnly 时省略
+apiBase: /sysuser         # 有后端时必填；frontendOnly 时省略
 layout: module            # 可选 module | flat，默认 module
 crud: search, add, edit, delete   # 必填，search 始终要有
 editPage: true            # 可选，add/edit 有时默认 true
 subTable: false           # 可选，主子表
-paths:                    # 必填，端点路径（skill 推导 apiName / methodName）
+paths:                    # 有后端时必填；frontendOnly 时省略
   find: /sysuser/findUsers
   save: /sysuser/saveUser
   update: /sysuser/updateUser/{id}
@@ -53,6 +54,44 @@ paths:                    # 必填，端点路径（skill 推导 apiName / metho
 | 手机 | mobile | text | | isPhone | 11 | |
 | 备注 | remark | textarea | | isAny | 200 | |
 ```
+
+### 仅前端（`frontendOnly: true`）
+
+```markdown
+---
+feature: userMng
+title: 用户管理（本地数据）
+view: demo/userMngLocal
+layout: module
+frontendOnly: true
+crud: search, add, edit, delete
+editPage: true
+---
+
+## 查询
+| 名称 | 字段 | 类型 | 校验 | 长度 | 扩展 |
+| 用户账号 | account | text | isNumberLetter | 30 | |
+| 用户姓名 | userName | text | isAny | 60 | |
+
+## 表格
+| 名称 | 字段 | 宽度 | 筛选 | 类型 |
+| 用户账号 | account | 150 | Y | |
+| 用户姓名 | userName | 150 | Y | |
+| 状态 | status | 100 | | dic:yxzt |
+
+## 编辑
+| 名称 | 字段 | 类型 | 必填 | 校验 | 长度 | 扩展 |
+| 用户账号 | account | text | Y | isNumberLetter | 30 | |
+| 用户姓名 | userName | text | Y | isAny | 60 | |
+| 状态 | status | dic | Y | idDic | 6 | dic=yxzt |
+
+## 示例数据
+| id | account | userName | status |
+| 1 | admin | 管理员 | 10601 |
+| 2 | demo | 演示 | 10602 |
+```
+
+生成：`src/views/demo/userMngLocal/module/data.ts` + Index/Edit/helper…，**无** `src/api`。详见 [templates/data.md](templates/data.md)。
 
 ## tabs 配置
 
@@ -126,8 +165,9 @@ paths:
 | `title` | ✅ | 页面中文标题 |
 | `view` | ✅ | **唯一**决定 `src/views/<view>/`；勿用 pages 路径代替 |
 | `pageType` | | `crud-module`（默认）\| `tabs` \| `form-only` |
-| `api` | ✅ | API 文件，如 `admin/user` |
-| `apiBase` | ✅ | 后端根路径 |
+| `frontendOnly` | | `true`=仅前端：不生成 api，用 `data.ts`；默认 `false` |
+| `api` | 有后端时 ✅ | API 文件，如 `admin/user`；`frontendOnly` 时省略 |
+| `apiBase` | 有后端时 ✅ | 后端根路径；`frontendOnly` 时省略 |
 | `crud` | ✅ | 见 [page-types.md](page-types.md) 各类型说明 |
 | `layout` | | `module`（默认）或 `flat` |
 | `component` | | Vue 组件前缀，省略时从 feature 推导 |
@@ -136,7 +176,7 @@ paths:
 | `subTable` | | crud-module：是否主子表 |
 | `editMode` | | tabs：列表 Tab 编辑方式 `drawer`（默认）\| `inline` |
 | `tabs` | tabs 时 ✅ | Tab 定义数组，见 [page-types.md](page-types.md#tabs) |
-| `paths` | ✅ | 端点；crud-module/tabs 用 find/save/update/delete；form-only 用 get/save |
+| `paths` | 有后端时 ✅ | 端点；`frontendOnly` 时省略 |
 
 ## 扩展列（仅需要时填写）
 
