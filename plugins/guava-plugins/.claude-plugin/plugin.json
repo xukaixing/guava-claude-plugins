@@ -1,7 +1,7 @@
 {
   "name": "guava-plugins",
   "description": "Guava AI Coding Assistant Claude Code Plugin Market",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "author": {
     "name": "xukaixing<xukaixing@hotmail.com>",
     "email": "xukaixing@hotmail.com"
@@ -9,9 +9,13 @@
   "keywords": [
     "guava",
     "vue",
+    "guava-ui",
+    "element-plus",
+    "typescript",
     "spring-boot",
+    "spring-security",
+    "spring-cloud",
     "crud",
-    "codegen",
-    "ses-web"
+    "codegen"
   ]
 }
