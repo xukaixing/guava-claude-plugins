@@ -2,11 +2,20 @@
 
 > 规范 [conventions.md](conventions.md) · 项目 [../../README.md](../../README.md) · 路径 [../../context/backend.md](../../context/backend.md)
 
+## 环境要求
+
+| 项 | 要求 |
+|----|------|
+| JDK | **>= 25** |
+| 编译等级 | **>= 25**（`maven.compiler.release` / `source`+`target`） |
+
+生成与编译均按上述版本；不得使用更低 JDK 或更低 `--release`。
+
 ## 覆盖策略
 
 | 文件 | 已存在时 |
 |------|----------|
-| Controller / Service / ServiceImpl | **Write 覆盖**；保留 `@created`，更新 `@version` |
+| Controller / Service / ServiceImpl | **Write 覆盖**；保留类头与方法上的 `@since` / `@since:` |
 | Mapper / SqlProvider | 本 skill 默认不生成；用户要求时 **追加** 缺失方法 |
 
 禁止因已存在而跳过。仅补充缺失端点时 StrReplace 追加。

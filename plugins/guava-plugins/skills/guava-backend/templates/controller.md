@@ -4,6 +4,8 @@
 
 生成 `controller/{feature}/{Entity}Controller.java`。**仅生成 Step 1.3 选中的方法。**
 
+Javadoc 对齐 `guava-gateway-starter`（见 [conventions.md](../conventions.md)）。
+
 ## 文件头
 
 ```java
@@ -28,10 +30,11 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * <p> {中文模块名} controller</p>
- * @author: {git user.email}
- * @created: {YYYY-MM-DD}
- * @version v1.0.1
+ * {中文模块名} controller
+ * <p>{中文模块名} controller </p>
+ *
+ * @author {git user.name} <{git user.email}>
+ * @since {M/d/yy}
  */
 @Tag(name = "{swagger-tag}")
 @RestController
@@ -49,10 +52,10 @@ public class {Entity}Controller
 
 ```java
   /**
-   * <p> 查询{中文名}信息 </p>
-   * @author: {author}
-   * @date: {date}
-   * @version: 1.0.1
+   * 查询{中文名}信息
+   * @param: params
+   * @return: com.baomidou.mybatisplus.core.metadata.IPage<java.util.Map<java.lang.String, java.lang.Object>>
+   * @since: {M/d/yy}
    */
   @Operation(summary = "查询->{中文名}信息", description = "查询{中文名}信息")
   @PostMapping(value = "/find{Entity}")
@@ -69,6 +72,12 @@ public class {Entity}Controller
 ### 新增
 
 ```java
+  /**
+   * 保存{中文名}
+   * @param: param
+   * @return: java.util.Map<java.lang.String, java.lang.Object>
+   * @since: {M/d/yy}
+   */
   @Operation(summary = "保存->{中文名}", description = "保存{中文名}")
   @MarkLog(value = "新增{中文名}-[{0}]", param = "{logField}")
   @PostMapping(value = "/save{Entity}")
@@ -81,6 +90,13 @@ public class {Entity}Controller
 ### 更新
 
 ```java
+  /**
+   * 更新{中文名}
+   * @param: id
+   * @param: param
+   * @return: java.util.Map<java.lang.String, java.lang.Object>
+   * @since: {M/d/yy}
+   */
   @Operation(summary = "更新->{中文名}", description = "更新{中文名}")
   @MarkLog(value = "更新{中文名}-[{0}]", param = "{logField}")
   @PutMapping(value = "/update{Entity}/{id}")
@@ -95,6 +111,12 @@ public class {Entity}Controller
 ### 删除
 
 ```java
+  /**
+   * 删除{中文名}
+   * @param: id
+   * @return: java.lang.Integer
+   * @since: {M/d/yy}
+   */
   @Operation(summary = "删除->{中文名}", description = "删除{中文名}")
   @MarkLog(value = "删除{中文名}")
   @PostMapping(value = "/remove{Entity}/{id}")
@@ -107,6 +129,12 @@ public class {Entity}Controller
 ### 状态变更
 
 ```java
+  /**
+   * 更新{中文名}状态
+   * @param: params
+   * @return: java.util.Map<java.lang.String, java.lang.Object>
+   * @since: {M/d/yy}
+   */
   @Operation(summary = "更新->{中文名}状态", description = "更新{中文名}状态")
   @MarkLog(value = "更新{中文名}状态-[{0}]", param = "{logField}")
   @PostMapping(value = "/update{Entity}Status")
@@ -121,6 +149,13 @@ public class {Entity}Controller
 ### 导出
 
 ```java
+  /**
+   * 导出{中文名}
+   * @param: response
+   * @param: param
+   * @return: void
+   * @since: {M/d/yy}
+   */
   @Operation(summary = "导出->{中文名}", description = "导出{中文名}")
   @PostMapping(value = "/export{Entity}Data")
   public void export{Entity}Data(
@@ -138,5 +173,6 @@ public class {Entity}Controller
 - 新增/更新用 `@RequestBody Map<String, Object>`
 - 更新路径参数 `@PathVariable("id") Long id`
 - 写操作加 `@MarkLog`
+- 每个 public 方法必须带方法注释：描述 + `@param:` + `@return:` + `@since:`
 - 仅生成 Step 1.3 选中的方法
 - 端点路径与前端 `src/api/` 保持一致

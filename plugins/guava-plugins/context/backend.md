@@ -35,10 +35,14 @@ backend:
   entity: SysUserPO
 ```
 
+## 环境
+
+- JDK **>= 25**，编译等级 **>= 25**
+
 ## 命令
 
 ```bash
-# 在 GUAVA_BACKEND_ROOT 下
+# 在 GUAVA_BACKEND_ROOT 下（需 JDK >= 25）
 mvn -pl guava-admin-starter -am compile -q
 mvn spotless:apply          # 若项目已配 spotless
 ```

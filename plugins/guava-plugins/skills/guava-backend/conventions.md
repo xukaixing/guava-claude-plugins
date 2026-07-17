@@ -102,14 +102,38 @@ public IPage<Map<String, Object>> findXxx(@RequestBody String params)
 
 ## Javadoc 规范
 
+对齐 `guava-gateway-starter`（类头 + 方法注释）。author / 时间取自 `git config` 与当前系统时间。
+
+### 类头（Controller / Service / ServiceImpl）
+
 ```java
 /**
- * <p> 查询业务参数配置表信息 </p>
- * @author: wcz
- * @date: 2022-07-01
- * @version: 1.0.1
+ * {中文标题}
+ * <p>{中文描述} </p>
+ *
+ * @author {git user.name} <{git user.email}>
+ * @since {M/d/yy}
  */
 ```
+
+- `@since` 格式如 `7/17/26`；新建写入，覆盖时**保留**原 `@since`
+- 可多行 `@author`（与 gateway 一致）
+
+### 方法注释（Controller / ServiceImpl 每个 public 方法）
+
+```java
+/**
+ * 查询业务参数配置表信息
+ * @param: params
+ * @return: com.baomidou.mybatisplus.core.metadata.IPage<java.util.Map<java.lang.String, java.lang.Object>>
+ * @since: 7/5/26
+ */
+```
+
+- 首行纯中文描述，**不要**包 `<p>`
+- 使用 `@param:` / `@return:` / `@since:`（冒号后空格），**不要**用标准 `@param` / `@return`
+- `@since:` 格式如 `7/5/26`；覆盖已有方法时**保留**原 `@since:`
+- Service 接口方法可用简短首行描述，可省略 `@param:` / `@return:`
 
 Swagger 方法注解：
 
@@ -127,6 +151,11 @@ Swagger 方法注解：
 | `AssertMyUtil.notNull / notEmpty / errMsg` | 参数校验、业务异常 |
 | `transResultService.transResult(data, transHash)` | 字典/日期/用户翻译 |
 | `ContextHolder.getDeptId()` | 当前登录用户部门 |
+
+## 环境 / 编译
+
+- JDK **>= 25**
+- 编译等级 **>= 25**（`maven.compiler.release` 或等价 `source`/`target`）
 
 ## 代码风格
 
