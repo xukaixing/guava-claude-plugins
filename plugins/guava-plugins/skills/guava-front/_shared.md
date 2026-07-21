@@ -25,4 +25,5 @@
 
 ## 生成后
 
-`hooks/lint-fix.sh`（插件）：`PostToolBatch` 前端 `eslint --fix`；`Stop` 校验。见 [../../context/front.md](../../context/front.md)。
+1. **本次生成代码检查（必做）**：按 [code-review.md](code-review.md) 做规范 / 安全 / 性能三检；Critical 修复后再结束。
+2. `hooks/lint-fix.sh`（插件）：`PostToolBatch` 前端 `eslint --fix`；`Stop` 校验。见 [../../context/front.md](../../context/front.md)。

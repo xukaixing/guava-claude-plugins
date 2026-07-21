@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 # guava-backend
 
-> [_shared.md](_shared.md) · [conventions.md](conventions.md) · [../../context/backend.md](../../context/backend.md)
+> [_shared.md](_shared.md) · [conventions.md](conventions.md) · [code-review.md](code-review.md) · [../../context/backend.md](../../context/backend.md)
 
 ## 流程
 
@@ -30,4 +30,8 @@ Step 2–4：Write Controller → Service → ServiceImpl（覆盖策略 [_share
 | Service | [service.md](templates/service.md) |
 | ServiceImpl | [service-impl.md](templates/service-impl.md) |
 
-Step 5：Mapper/SqlProvider、`getTransHash()`、`@MarkLog`、与前端 `paths` 对齐 · `lint-fix.sh` Java 格式化无报错。
+Step 5：Mapper/SqlProvider、`getTransHash()`、`@MarkLog`、与前端 `paths` 对齐。
+
+Step 6 — 本次生成代码检查（必做）：按 [code-review.md](code-review.md) 对本轮 Java 做三检（**规范** / **安全** / **性能**）。Critical 须修复并再检；通过后输出三行简报。
+
+Step 7：Step 6 通过 · `lint-fix.sh` Java 格式化无报错。

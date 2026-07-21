@@ -26,4 +26,5 @@
 
 ## 生成后
 
-`hooks/lint-fix.sh` 对 Java 自动格式化；`Stop` 时校验。失败须修复后再结束。
+1. **本次生成代码检查（必做）**：按 [code-review.md](code-review.md) 做规范 / 安全 / 性能三检；Critical 修复后再结束。
+2. `hooks/lint-fix.sh` 对 Java 自动格式化；`Stop` 时校验。失败须修复后再结束。
