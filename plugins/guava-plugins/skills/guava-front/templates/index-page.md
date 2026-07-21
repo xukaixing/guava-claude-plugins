@@ -23,7 +23,11 @@
     try {
       const query = fm ? getFormModel(fm) || {} : {};
       const filtered = filterListRecords(query);
-      search<Feature>Data.value = getListResult(filtered);
+      // 查询重置到第 1 页；分页字段对齐后台 datas
+      search<Feature>Data.value = getListResult(filtered, {
+        current: 1,
+        size: search<Feature>Data.value?.size || 10,
+      });
     } catch (e) {
       message(e, 'error');
     }

@@ -13,17 +13,19 @@
 { "code": 200, "status": "ok", "message": "success", "datas": { /* 见下 */ } }
 ```
 
-`frontendOnly` 的 `getListResult()` **直接返回 `datas` 这一层**（与 `crud.search` 赋给 `search*Data` 的值相同）：
+`frontendOnly` 的 `getListResult(rows?, query?)` **直接返回 `datas` 这一层**（与 `crud.search` 赋给 `search*Data` 的值相同），且 **必须带分页**：
 
 ```json
 {
-  "records": [ /* 见下 */ ],
+  "records": [ /* 当前页行；有 dic/date 时第 0 条为 transHash */ ],
   "total": 1,
   "size": 10,
   "current": 1,
   "pages": 1
 }
 ```
+
+`query` 可带 `pageinfo.currentpagenum` / `pageinfo.recordsperpage`（或 `current` / `size`）；函数按页切片后返回上述字段。
 
 ### `records` 结构
 
@@ -75,7 +77,7 @@
 
 1. 根据 ## 表格列生成 `listTransHash`（仅 dic/date/dept/user）。
 2. 生成 **2～3 条** `mockListRecords`（**不含** transHash）；`id`、`rownums` 必填；dic 列必须 `{ c, v }`。
-3. `getListResult(rows?)`：`records = [ { transHash }, ...rows ]`（有 transHash 时）+ `total/size/current/pages`。
+3. `getListResult(rows?, query?)`：**必须**返回分页字段 `total/size/current/pages`；按 `query.pageinfo`（或 `current`/`size`）切片当前页；`records = [ { transHash }, ...pageRows ]`（有 transHash 时）。
 4. `filterListRecords`：dic 字段用 `row.field?.c`（或 string）与查询条件比较。
 5. 可选 `## 示例数据` 表优先填充；dic 列可写 `码|文案` 或仅码（文案用码占位）。
 6. form-only 另导出 `mockFormModel`（编辑态常用码值 string，不必 `{c,v}`）。
@@ -126,25 +128,35 @@ export const mockListRecords: Recordable<any>[] = [
 ];
 
 /**
- * @todo: 构造 GvTable table-data（= 后台 datas）
+ * @todo: 构造 GvTable table-data（= 后台 datas：records + 分页）
+ * @param records 业务行（已过滤）
+ * @param query 可带 pageinfo / current / size（对齐 crud.search 入参）
  */
-export const getListResult = (records: Recordable<any>[] = mockListRecords): Recordable<any> => {
+export const getListResult = (
+  records: Recordable<any>[] = mockListRecords,
+  query: Recordable<any> = {},
+): Recordable<any> => {
   const list = [...(records ?? [])];
-  // 重算 rownums
-  list.forEach((row, i) => {
-    row.rownums = i + 1;
-  });
-  const size = 10;
+  const pageinfo = query?.pageinfo || {};
+  const size = Number(pageinfo.recordsperpage ?? query.size ?? 10) || 10;
+  const current = Number(pageinfo.currentpagenum ?? query.current ?? 1) || 1;
   const total = list.length;
+  const pages = Math.max(1, Math.ceil(total / size) || 1);
+  const safeCurrent = Math.min(Math.max(current, 1), pages);
+  const start = (safeCurrent - 1) * size;
+  const pageList = list.slice(start, start + size);
+  pageList.forEach((row, i) => {
+    row.rownums = start + i + 1;
+  });
   const recordsOut: Recordable<any>[] = listTransHash
-    ? [{ transHash: { ...listTransHash } }, ...list]
-    : list;
+    ? [{ transHash: { ...listTransHash } }, ...pageList]
+    : pageList;
   return {
     records: recordsOut,
     total,
     size,
-    current: 1,
-    pages: Math.max(1, Math.ceil(total / size) || 1),
+    current: safeCurrent,
+    pages,
   };
 };
 

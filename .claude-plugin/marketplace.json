@@ -1,7 +1,7 @@
 {
   "name": "guava-tools",
   "description": "Guava AI Coding Assistant Claude Code Plugin Market",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "owner": {
     "name": "xukaixing<xukaixing@hotmail.com>"
   },
@@ -10,7 +10,7 @@
       "name": "guava-plugins",
       "source": "./plugins/guava-plugins",
       "description": "Guava 全栈生成 + Gv* MCP：/guava-plugins:guava-front|guava-backend|guava-all",
-      "version": "1.0.9",
+      "version": "1.0.10",
       "keywords": [
         "guava",
         "vue",
