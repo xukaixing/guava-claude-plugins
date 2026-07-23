@@ -37,31 +37,28 @@ import { findDictFromTableApi } from '@/api/admin/user';
 
 ## 函数命名
 
-使用配置 CRUD 表中的 `apiName` 列。
+从 `api.operations` 的 key + 路径末段推导 API 函数名：
 
-## HTTP 方法
+| operations key | 默认 HTTP | 函数名模板 | 方法名 |
+|----------------|-----------|-----------|--------|
+| `list` | POST | `{末段}Api` | `search{Entity}List` |
+| `create` | POST | `{末段}Api` | `add{Entity}` |
+| `update` | PUT | `{末段}Api` | `edit{Entity}` |
+| `delete` | POST | `{末段}Api` | `delete{Entity}` |
 
-| 操作 | 默认 HTTP | 模板 |
-|------|----------|------|
-| 查询列表 | POST | `fetch.post(endpoint, datas)` |
-| 新增 | POST | `fetch.post(endpoint, datas)` |
-| 更新 | PUT | `fetch.put(\`${endpoint}/${id}\`, datas)` |
-| 删除 | POST | `fetch.post(endpoint, datas)` |
-| 子表查询 | POST | `fetch.post(endpoint, datas)` |
-| form-only 加载 | GET | `fetch.get(endpoint, { params: datas })` |
-| form-only 保存 | POST | `fetch.post(endpoint, datas)` |
+示例：`api.operations.list: /sysuser/findUsers` → API `findUsersApi`，方法 `searchUserList`
 
-`httpMethod` 列可覆盖默认值。`gateway` 来自配置（默认 `gateway_admin`）。
+`gateway` 来自配置（默认 `gateway_admin`）。
 
 ## form-only
 
-**仅生成** `crud` 含 `load` / `save` 的 API。不生成 find/add/edit/delete 列表接口。
+**仅生成** `api.operations` 含 `get` / `save` 的 API。不生成 list/create/update/delete 列表接口。
 
-| 操作 | API 名 | 默认 HTTP | 端点 |
-|------|--------|-----------|------|
-| load | `get{Component}Api` | GET | `paths.get`（或 `paths.find`） |
-| save | `save{Component}Api` | POST | `paths.save` |
-| update（crud 含 update 无 save） | `update{Component}Api` | PUT | `paths.update` |
+| operations key | API 名 | 默认 HTTP | 端点 |
+|----------------|--------|-----------|------|
+| `get` 或 `find` | `get{Component}Api` | GET | `api.operations.get` |
+| `save` | `save{Component}Api` | POST | `api.operations.save` |
+| `update` | `update{Component}Api` | PUT | `api.operations.update` |
 
 ```typescript
 // get <feature> api  ← load enabled

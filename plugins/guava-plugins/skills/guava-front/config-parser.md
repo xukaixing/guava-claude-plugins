@@ -26,11 +26,10 @@ feature: userMng          # 必填
 title: 用户管理            # 必填
 view: sysMng/userMng      # 必填
 pageType: crud-module     # 可选，默认 crud-module | tabs | form-only
-frontendOnly: false       # 可选，true=仅前端：不生成 api，列表数据用 data.ts
-api: admin/user           # frontendOnly 时省略
-apiBase: /sysuser         # frontendOnly 时省略
 layout: module            # 可选，默认 module
-crud: search, add, edit, delete   # 必填（form-only 见 page-types.md）
+
+i18n: false               # 可选，是否生成多语言；默认 false = 仅中文（不更新 zh-CN.ts/en.ts，模板/label 硬编码中文，不走 t()）
+
 editPage: true            # 可选
 subTable: false           # 可选，默认 false
 editMode: drawer          # tabs 可选：drawer | inline
@@ -39,12 +38,15 @@ tabs:                     # pageType=tabs 时必填
     label: 查询-列表
     type: search-table
 component: User           # 可选，见推导规则
-i18n: userMng             # 可选，默认 = feature
-paths:                    # frontendOnly 时省略
-  find: /sysuser/findUsers
-  save: /sysuser/saveUser
-  update: /sysuser/updateUser/{id}
-  delete: /sysuser/deleteUser
+# ↓ 有后端时声明 api 节点；frontendOnly: true 时整个节点省略
+api:
+  module: admin/user          # API 文件路径 -> src/api/admin/user.ts
+  base: /sysuser              # 后端根路径（注释参考用）
+  operations:                 # 操作端点（key = 操作名，自动生成方法名 + API 名）
+    list: /sysuser/findUsers
+    create: /sysuser/saveUser
+    update: /sysuser/updateUser/{id}
+    delete: /sysuser/deleteUser
 ---
 ```
 
@@ -54,21 +56,22 @@ paths:                    # frontendOnly 时省略
 | `title` | `moduleTitle` |
 | `view` | `viewPath` → **唯一**决定 `src/views/<view>/` |
 | `pageType` | 页面类型，默认 `crud-module` |
-| `frontendOnly` | `true` = 仅前端：不生成 `src/api`、不调后端；生成 `data.ts`（默认 `false`） |
-| `api` | `apiModule`（`frontendOnly` 时忽略） |
-| `apiBase` | `apiServicePath`（`frontendOnly` 时忽略） |
-| `crud` | 启用的操作列表 |
+| `layout` | `module`（默认）或 `flat` |
+| `i18n` | 是否生成多语言；`false` = 仅中文（**默认**）：不更新 `zh-CN.ts`/`en.ts`，模板/label 硬编码中文，不走 `t()`；`true` = 双语言 + `t()` |
 | `editPage` | `generateEditPage` |
 | `subTable` | `hasSubTable` |
 | `editMode` | tabs 列表 Tab 编辑方式 |
 | `tabs` | Tab 定义数组 |
-| `paths.*` | API 端点（`frontendOnly` 时忽略） |
+| `api` | 后端 API 配置节点（`frontendOnly: true` 时省略） |
+| `api.module` | API 文件路径，如 `admin/user` -> `src/api/admin/user.ts` |
+| `api.base` | 后端根路径（仅注释参考） |
+| `api.operations` | 操作端点映射（key = 操作名，自动生成方法名和 API 名） |
 
 ### `frontendOnly: true`（仅前端 / 无后端 API）
 
 | 项 | 行为 |
 |----|------|
-| `api` / `apiBase` / `paths` | **可不写**；写出也忽略 |
+| `api` 节点 | **省略**（整个 api 节点不写） |
 | `src/api/**` | **不生成、不修改** |
 | `data.ts` | **必生成**，见 [templates/data.md](templates/data.md) |
 | 列表查询 | Index 读 `getListResult` / `filterListRecords`，禁止 `crud.search(…, *Api)` |
@@ -84,7 +87,6 @@ title: 用户管理（演示）
 view: demo/userMngLocal
 layout: module
 frontendOnly: true
-crud: search, add, edit, delete
 editPage: true
 ---
 ```
@@ -128,9 +130,11 @@ src/views/sysMng/userMng2/module/UserEdit.vue
 - 筛选：`Y` → `query: true`，空 → `false`
 - 类型：空 → text；`dic:yxzt` → dic；`date:datetime` → date
 
-**编辑** — 7 列：`名称 | 字段 | 类型 | 必填 | 校验 | 长度 | 扩展`
-- 必填：`Y` → `required: true`，空 → `false`
+**编辑** — 9 列：`名称 | 字段 | 类型 | 必填 | 校验 | 长度 | 只读 | 占用列 | 扩展`
+- 必填：`Y` → `required: true`，`N` → `false`
 - **「校验」列必填**（与查询相同规则集；字典必填→`idDic`，非必填→`isDic`）
+- 只读：`Y` → `readonly: true`，`N` → 不生成（每行必须填 Y 或 N，不可留空）
+- 占用列：`≥2` → `colspan: N`，`1` → 不生成（默认占 1 列）；名称含「备注/地址/详情/审核意见/描述/说明」时默认 `colspan: 3`（每行必须填数字，不可留空）
 - crud-module：add/edit 或 editPage 时必填
 - tabs：含 `inline-form` Tab 或 editMode=drawer 且 add/edit 时必填
 - form-only：**必填**（整页表单字段，含校验列）
@@ -144,6 +148,61 @@ src/views/sysMng/userMng2/module/UserEdit.vue
 | `remote=findDictFromTableApi` | `dicRemote` + import |
 | `disabledOnEdit` | 编辑时 `disabled` |
 | `multiple` | `multiple: true` |
+
+#### 表格工具栏（可选，独立小节）
+
+`## 表格工具栏` 为 GvTable 上方按钮区域，两行格式：
+- 第 1 行：逗号分隔的中文按钮名 → 生成 `<GvButton>`，首个按钮默认绑定 `add<Feature>`（add enabled 时），其余需在 Index 声明对应方法
+- 第 2 行：`import,export` → 生成 `#import` / `#export` 插槽（需 paths 中声明对应端点）
+
+不声明时仅生成默认"新增"按钮（add enabled 时）。
+
+#### 操作列与扩展列（表格级，独立小节）
+
+操作列与扩展列为表格级属性，通过 `## 操作列` / `## 扩展列` 独立小节声明，**不从表格列定义解析**。
+
+**`## 操作列`**（必须）：逗号分隔的中文按钮名 → `content` + `action`
+- `编辑` → `content: ['编辑']` + `action: [actions.edit<Feature>]`
+- `删除` → `content: ['删除']` + `action: [actions.delete<Feature>]`
+- 自定义名（如 `停用`）→ 需在 `TableActions` 声明对应方法
+- **不生成 `icon` 属性**
+
+**`## 扩展列`**（可选）：含 `expand` → 生成 `type: 'expand'` 列
+- 追加 `create<Feature>ExpandTableHeadList` 工厂
+- 追加 `expandMap` 到 `TableActions`
+- Index 页 GvTable 绑定 `@expand-change`
+
+#### 改进（可选，二次优化）
+
+`## 改进` 为可选小节，用于对首次生成的代码进行**二次优化调整**。
+
+**格式**：无序列表，每条为自然语言描述的改进项。
+
+**解析规则**：
+- 生成完所有文件后，读取 `## 改进` 内容
+- 逐条分析改进项，转换为代码修改
+- 改进项仅做局部调整，不改变整体结构
+
+**支持的改进类型**：
+
+| 改进描述 | 代码修改 |
+|---------|---------|
+| Drawer 宽度 | 修改 Edit 组件 `size` 属性 |
+| 表格列 fixed/width | 修改 helper TableHeadItem |
+| 查询默认值 | 修改 SearchList 默认值 |
+| 操作列按钮文案/确认文案 | 修改 action 逻辑 |
+| 表单字段顺序 | 调整 EditList 顺序 |
+| 样式调整 | 修改 template 内联样式 |
+
+**配置示例**：
+
+```markdown
+## 改进
+- 编辑页 Drawer 宽度改为 60%（默认 50%）
+- 表格列「用户账号」增加 fixed: left
+- 查询条件中「状态」默认选中「启用」状态（10601）
+- 操作列按钮「删除」增加二次确认提示文案："确认删除该用户？"
+```
 
 ---
 
@@ -159,28 +218,30 @@ src/views/sysMng/userMng2/module/UserEdit.vue
 
 规则：去掉 `Mng` 后缀 → PascalCase；或读 YAML `component`。
 
-### CRUD 方法名 / API 名
+### 操作名 / 方法名 / API 名推导
 
-从 `paths` 最后路径段 + `component` 推导：
+从 `api.operations` 的 key + `component` 推导：
 
-| 操作 | 方法名 | API 名 | HTTP |
-|------|--------|--------|------|
-| find | `search{Entity}List` | `{segment}Api` | POST |
-| save | `add{Entity}` | `{segment}Api` | POST |
-| update | `edit{Entity}` | `{segment}Api` | PUT |
-| delete | `delete{Entity}` | `{segment}Api` | POST |
+| operations key | 方法名 | API 名 | HTTP |
+|----------------|--------|--------|------|
+| `list` | `search{Entity}List` | `{list 末段}Api` | POST |
+| `create` | `add{Entity}` | `{create 末段}Api` | POST |
+| `update` | `edit{Entity}` | `{update 末段}Api` | PUT |
+| `delete` | `delete{Entity}` | `{delete 末段}Api` | POST |
 
-示例 `paths.find: /sysuser/findUsers` → `findUsersApi`，`searchUserList`
+示例 `api.operations.list: /sysuser/findUsers` → API 名 `findUsersApi`，方法名 `searchUserList`
+
+operations key 可自定义（如 `detail`、`enable` 等），方法名按规则拼接。
 
 配置中可显式覆盖（旧格式表格的 methodName / apiName 列）。
 
 ### form-only 方法名 / API 名
 
-| 操作 | crud | 方法名 | API 名 | HTTP | paths |
-|------|------|--------|--------|------|-------|
-| 加载 | load | `load{Component}` | `get{Component}Api` | GET | `get` 或 `find` |
-| 保存 | save | `save{Component}` | `save{Component}Api` | POST | `save` |
-| 更新 | update | `save{Component}` | `update{Component}Api` | PUT | `update` |
+| operations key | 方法名 | API 名 | HTTP |
+|----------------|--------|--------|------|
+| `get` 或 `find` | `load{Component}` | `get{Component}Api` | GET |
+| `save` | `save{Component}` | `save{Component}Api` | POST |
+| `update` | `save{Component}` | `update{Component}Api` | PUT |
 
 示例 `feature: systemConfig` → `loadSystemConfig`、`getSystemConfigApi`、`saveSystemConfigApi`。
 
@@ -290,7 +351,7 @@ src/locales/zh-CN.ts + en.ts
 | `hasSubTable` | `subTable` |
 | `pageType` | `pageType`（旧配置缺省 → crud-module） |
 
-旧版「## 5. CRUD 操作」宽表仍有效；有则优先于 paths 推导。
+旧版「## 5. CRUD 操作」宽表仍有效；有则优先于 api.operations 推导。
 
 ---
 
@@ -307,7 +368,7 @@ src/locales/zh-CN.ts + en.ts
 
 校验类型必须来自 [search-conditions.md](search-conditions.md)；空或未知则停止生成并确认。
 
-action 列按 `crud` 含 edit/delete 自动生成，不在表格配置中写。
+action 列按 `## 操作列` 配置生成。
 
 ---
 
@@ -315,8 +376,7 @@ action 列按 `crud` 含 edit/delete 自动生成，不在表格配置中写。
 
 ### crud-module（默认）
 
-- [ ] `crud` 含 `search`
-- [ ] `paths.find` 已填
+- [ ] `api.operations.list` 已填（有后端时）
 - [ ] 查询表、表格表有数据
 - [ ] 查询表每行「校验」已填且合法
 - [ ] 编辑表（若有）每行「校验」已填且合法

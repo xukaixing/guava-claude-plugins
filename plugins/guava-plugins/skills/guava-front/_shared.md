@@ -17,13 +17,13 @@
 
 - **输出目录**：`src/views/<YAML.view>/`；禁止用配置 `.md` 路径或 `feature` 当 views 目录（见 [config-parser.md](config-parser.md#硬性规则view-决定生成目录)）
 - **`frontendOnly: true`**：不生成 api；列表/表单数据在 `data.ts`（见 [templates/data.md](templates/data.md)）
+- **`i18n`**（默认 `false`）：`false` = 仅中文，不更新 `zh-CN.ts`/`en.ts`，模板/label 硬编码中文，不走 `t()`；`true` = 双语言 + `t()`（见 [config-parser.md](config-parser.md#i18n)）
 - template **优先 Gv***（Guava UI）；写 template 前用插件 MCP（`get_page_recipe` / `get_usage` / `get_props`）；无对应封装时才用 `el-*`
 - 字段走 `GvForm`/`GvTable` + helper 的 `FormItem[]`/`TableHeadItem[]`
-- 新页面用 `create*List` + i18n，禁止 legacy 硬编码中文
+- 新页面用 `create*List` +（可选）i18n；`i18n: false` 时禁止 legacy 硬编码中文走 `t()`，直接写中文字符串
 - 分区顺序见 conventions `@section`
 - `@methods` 下每个方法使用多行 JSDoc（`@todo:` / `@author:` / `@Date:`），禁止单行 `/** @todo xxx */`
 
 ## 生成后
 
-1. **本次生成代码检查（必做）**：按 [code-review.md](code-review.md) 做规范 / 安全 / 性能三检；Critical 修复后再结束。
-2. `hooks/lint-fix.sh`（插件）：`PostToolBatch` 前端 `eslint --fix`；`Stop` 校验。见 [../../context/front.md](../../context/front.md)。
+`hooks/lint-fix.sh`（插件）：`PostToolBatch` 前端 `eslint --fix`；`Stop` 校验。见 [../../context/front.md](../../context/front.md)。

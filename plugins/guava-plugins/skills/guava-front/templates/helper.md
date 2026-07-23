@@ -4,6 +4,13 @@
 
 生成 `helper.tsx`（module 在 `module/` 下）。`ItemForm`/`TableHeadItem`/`Recordable` 为全局类型，禁止 import。
 
+## `i18n` 开关
+
+| `i18n` | 行为 |
+|--------|------|
+| `false`（**默认**） | label 直接写硬编码中文（如 `label: '用户账号'`），不 `import useI18n`，工厂函数内不 `const { t } = useI18n()` |
+| `true` | label 使用 `t('i18nKey.xxx')`，需 `import useI18n` 并在工厂内调用 `useI18n()` |
+
 ## 按操作选择生成
 
 | 工厂函数 | 生成条件 | 数据来源 |
@@ -20,16 +27,32 @@
 | 无字典联动 | `create<Feature>SearchList = () => { ... }` |
 | 有字典 cb/clear | `create<Feature>SearchList = (handlers: FormHandlers) => { ... }` |
 
-## Action 列规则
+## 操作列（必须，表格级）
 
-| enabled 操作 | content | action |
-|-------------|---------|--------|
-| edit + delete | `[t('common.edit'), t('common.delete')]` | `[actions.edit*, actions.delete*]` |
-| 仅 edit | `[t('common.edit')]` | `[actions.edit*]` |
-| 仅 delete | `[t('common.delete')]` | `[actions.delete*]` |
-| 无 | 不生成 action 列 | — |
+操作列为表格级属性，在 `## 操作列` 单独声明（见 [config-template.md](../config-template.md#操作列--扩展列配置)），**不写在表格列定义中**。
+
+| 配置写法 | 生成结果 |
+|---------|---------|
+| `编辑,删除` | `content: ['编辑', '删除']` + `action: [actions.edit<Feature>, actions.delete<Feature>]` |
+| `编辑` | 仅编辑按钮 |
+| `编辑,停用,详情` | 多按钮，自定义名需在 `TableActions` 声明对应方法 |
+
+按钮名与 `TableActions` 方法一一对应：`编辑` → `edit<Feature>`，`删除` → `delete<Feature>`，自定义名（如 `停用`）→ 需在 `TableActions` 声明对应方法（如 `disable<Feature>`）。
+
+**不生成 `icon` 属性**，仅生成 `content` + `action`。
 
 action 列 `label` 使用 `t('table.action')`。
+
+## 扩展列（可选，表格级）
+
+扩展列（`type: 'expand'`）为表格级属性，在 `## 扩展列` 单独声明，**不写在表格列定义中**。
+
+| 配置写法 | 生成结果 |
+|---------|---------|
+| `expand` | 生成 expand 列 + `create<Feature>ExpandTableHeadList` 子表列工厂 + `expandMap` 缓存 + `expandChange` 事件 |
+| 空 / 不声明 | 不生成 expand 列 |
+
+展开行数据通过 `expandMap`（`reactive<Recordable<Recordable<any>>>`）缓存，行唯一标识为 `row.id`。
 
 ## 模板
 
@@ -41,6 +64,9 @@ import type { <Feature>TableActions, <Feature>EditActions } from './types';
 import type { <Feature>EditTableActions } from './types';
 // ↓ only if dicRemote in config:
 import { findDictFromTableApi } from '@/api/<apiModule>';
+// ↓ only if expand enabled:
+import { ElForm, ElFormItem } from 'element-plus';
+import { GvTable } from 'guava-ui';
 
 export const create<Feature>SearchList = () => {
   const { t } = useI18n();
@@ -68,15 +94,58 @@ export const create<Feature>SearchList = () => {
   ]);
 };
 
+// ↓ only if expand enabled: 展开行子表列
+export const create<Feature>ExpandTableHeadList = () => {
+  const { t } = useI18n();
+  return ref<TableHeadItem[]>([
+    { label: t('<i18nKey>.account'), prop: 'account' },
+    { label: t('<i18nKey>.userName'), prop: 'userName' },
+    { label: t('<i18nKey>.userSn'), prop: 'userSn' },
+    { label: t('<i18nKey>.mobile'), prop: 'mobile' },
+  ]);
+};
+
 export const create<Feature>TableHeadList = (actions: <Feature>TableActions) => {
   const { t } = useI18n();
   return ref<TableHeadItem[]>([
+    // ↓ only if expand enabled: 扩展列（可选，配置扩展列含 expand 时生成）
+    {
+      type: 'expand',
+      label: t('table.expand'),
+      prop: 'expand',
+      render: (scope) => {
+        const rowId = scope.row.id;
+        const expandData = actions.expandMap[rowId];
+        return (
+          <div v-loading={!!scope.row._expandLoading}>
+            <ElForm label-position="left" inline class="gv-table-expand">
+              <ElFormItem label={t('<i18nKey>.userName')}>
+                <span>{scope.row.userName}</span>
+              </ElFormItem>
+              <ElFormItem label={t('<i18nKey>.account')}>
+                <span>{scope.row.account}</span>
+              </ElFormItem>
+            </ElForm>
+            <GvTable
+              refTable={`<feature>ExpandTable-${scope.$index}`}
+              tableHead={create<Feature>ExpandTableHeadList().value}
+              tableType="expand"
+              tableData={expandData}
+              isShowPage={false}
+              preserveExpanded={true}
+              style={{ maxWidth: '60%', width: 'auto' }}
+            />
+          </div>
+        );
+      },
+    },
+    // 操作列（必须）— 按钮由 ## 操作列 配置推导，无 icon
     {
       type: 'action',
-      label: t('table.action'),
       prop: '',
-      content: [t('common.edit')],
-      action: [actions.edit<Feature>],
+      label: t('table.action'),
+      content: [t('common.edit'), t('common.delete')],
+      action: [actions.edit<Feature>, actions.delete<Feature>],
     },
     { label: t('<i18nKey>.account'), prop: 'account', query: true, width: '120px' },
     { type: 'dic', label: t('<i18nKey>.status'), prop: 'status', dicType: 'yxzt', width: '100px' },
@@ -109,6 +178,14 @@ export const create<Feature>EditList = (actions: <Feature>EditActions, operateTy
       format: [0, 'isAny', 200],
       label: t('<i18nKey>.remark'),
       field: 'remark',
+      colspan: 4,              // ← 占用列=4（空/1 则不生成）
+    },
+    {
+      type: 'text',
+      format: [0, 'isNumber', 20],
+      label: t('<i18nKey>.createBy'),
+      field: 'createBy',
+      readonly: true,           // ← 只读=Y（空则不生成）
     },
   ]);
 };
@@ -150,6 +227,30 @@ export const create<Feature>EditTableHeadList = (actions: <Feature>EditTableActi
 | `date` | dateType |
 | `textarea` | format, colspan |
 | `switch`（表格 render） | remark=switch:handlerName |
+
+## 只读与占用列
+
+| 配置列 | 生成属性 | 规则 |
+|--------|---------|------|
+| 只读 | `readonly: true` | `Y` 时生成；空 → 不生成 |
+| 占用列 | `colspan: N` | 数字 N（≥2）时生成 `colspan: N`；空/1 → 不生成（默认占 1 列）；名称含「备注/地址/详情/审核意见/描述/说明」时默认 `colspan: 3` |
+
+```typescript
+{
+  type: 'text',
+  format: [0, 'isNumber', 20],
+  label: t('<i18nKey>.createBy'),
+  field: 'createBy',
+  readonly: true,           // ← 只读=Y
+},
+{
+  type: 'textarea',
+  format: [0, 'isAny', 200],
+  label: t('<i18nKey>.remark'),
+  field: 'remark',
+  colspan: 4,               // ← 占用列=4
+},
+```
 
 ## form-only
 

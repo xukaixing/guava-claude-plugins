@@ -182,7 +182,7 @@ src/views/<view>/                 ← 例 view: svcProduct/svcLead/salesSkills
 ### Legacy 模式（勿用于新页面）
 
 旧页面可能使用 `buildSearchFilter` / `buildUserHeadList`、硬编码中文 label、无 i18n。
-新页面统一用 `create*List` 工厂 + `useI18n()` + `t('i18nKey.field')`。
+新页面统一用 `create*List` 工厂；i18n 行为由 YAML `i18n` 决定（**默认 `false` = 仅中文**：label 硬编码中文、不走 `t()`；`true` 时走 `useI18n()` + `t('i18nKey.field')`，并更新 `zh-CN.ts`/`en.ts`）。
 
 ## FormItem format 参考
 

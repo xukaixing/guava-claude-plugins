@@ -333,10 +333,11 @@ const init = () => {
 
 - 容器 `GvDrawer` / `GvDialog`
 - Props 类型使用 `useUtil().propTypes`：`visible`/`rowData`/`operateType`
-- `@hook` 放 `useI18n()` + `useNotify()`（非 `@data`）
+- `@hook` 放 `useI18n()` + `useNotify()`（非 `@data`）；`i18n: false` 时省略 `useI18n()`
 - `@bizData` 放 helper `.value` 赋值
 - `@watch` 模式：`({ visible }) => { if (visible) init(); }`
 - 表单使用 `formKey` computed 触发响应式重渲染
+- **`i18n: false`（默认）**：template 内 `t('xxx')` 替换为硬编码中文字符串；不 `import useI18n`
 
 ## Variant B 专属规则
 

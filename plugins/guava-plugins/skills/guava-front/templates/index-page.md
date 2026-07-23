@@ -90,6 +90,10 @@
   import { saveXxxApi } from '@/api/<apiModule>';        // ← add enabled
   import { updateXxxApi } from '@/api/<apiModule>';     // ← edit enabled
   import { deleteXxxApi } from '@/api/<apiModule>';     // ← delete enabled
+  // ↓ only if tableBar import enabled:
+  // import { importXxxApi, exportXxxApi, findExportFieldsApi, saveExportFieldsApi } from '@/api/<apiModule>';
+  // import { GvImportDialog } from '@/components/GvImportDialog';
+  // import { GvExportDialog } from '@/components/GvExportDialog';
   import { crud } from '@/hook/service/useCrud';
   import { useNotify } from '@/hook/web/useNotify';
   import { useI18n } from '@/hook/web/useI18n';
@@ -200,11 +204,38 @@
     dialogVisible.value = false;
   };
 
+  // ↓ only if tableBar custom buttons enabled（如 校验编辑行）:
+  // const check<Feature> = () => { ... };
+
+  // ↓ only if expand enabled: 展开行数据缓存
+  // const expandMap = reactive<Recordable<Recordable<any>>>({});
+
+  // ↓ only if expand enabled: 展开行事件
+  // const loadExpandRow = async (row: Recordable<any>) => {
+  //   const rowId = row.id;
+  //   if (expandMap[rowId] || row._expandLoading) return;
+  //   row._expandLoading = true;
+  //   try {
+  //     expandMap[rowId] = await fetchExpandTableData(row);
+  //   } catch (e) {
+  //     message(e, 'error');
+  //   } finally {
+  //     row._expandLoading = false;
+  //   }
+  // };
+  // const expandChange = async (row: Recordable<any>, expandedRows: Recordable<any>[]) => {
+  //   const expanded = expandedRows.includes(row);
+  //   if (!expanded) return;
+  //   await loadExpandRow(row);
+  // };
+
   // @bizData
   <feature>SearchList.value = create<Feature>SearchList().value;
   <feature>TableHeadList.value = create<Feature>TableHeadList({
     edit<Feature>: edit<Feature>,    // ← edit enabled
     delete<Feature>: delete<Feature>, // ← delete enabled
+    // ↓ only if expand enabled:
+    // expandMap,
   }).value;
 
   // @mounted
@@ -231,8 +262,20 @@
       ref="<feature>TableList"
       ref-table="<feature>TableList"
       :table-head="<feature>TableHeadList"
-      :table-data="search<Feature>Data">
+      :table-data="search<Feature>Data"
+      @expand-change="expandChange">  <!-- ← only if expand enabled -->
       <GvButton @click="add<Feature>()">{{ t('common.add') }}</GvButton>  <!-- add enabled -->
+      <!-- ↓ only if tableBar buttons enabled（自定义按钮，新增编辑行/校验编辑行 等） -->
+      <!-- <GvButton @click="add()">{{ t('tableBar.addEditRow') }}</GvButton> -->
+      <!-- <GvButton @click="check()">{{ t('tableBar.checkEditRow') }}</GvButton> -->
+      <!-- ↓ only if tableBar import enabled: -->
+      <!-- <template #import> -->
+      <!--   <GvImportDialog :import="importXxxApi" :params="importParams" :cb="importCb" /> -->
+      <!-- </template> -->
+      <!-- ↓ only if tableBar export enabled: -->
+      <!-- <template #export> -->
+      <!--   <GvExportDialog :export="exportXxxApi" :findExportFields="findExportFieldsApi" :saveExportFields="saveExportFieldsApi" /> -->
+      <!-- </template> -->
     </GvTable>
     <<Base>Edit
       v-model:visible="dialogVisible"
@@ -247,7 +290,8 @@
 ## 关键规则
 
 - 删除使用 `crud.submit(api, { id: row.id })`
-- `@hook` 放 `useI18n` + `useNotify`
+- `@hook` 放 `useI18n` + `useNotify`（`i18n: false` 时省略 `useI18n`）
 - `@bizData` 放 helper `.value` 赋值
 - Edit 组件传 `:title="title"`（与 salesSkills / companyBusiness 一致）
 - 无 add/edit 时省略 dialog 相关 state 和 Edit 组件
+- **`i18n: false`（默认）**：template 内 `t('xxx')` 替换为硬编码中文字符串；不 `import useI18n`

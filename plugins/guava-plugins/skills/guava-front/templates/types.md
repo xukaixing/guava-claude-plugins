@@ -16,6 +16,10 @@
 export interface <Feature>TableActions {
   edit<Feature>: TableRowFn;   // ← only if 编辑
   delete<Feature>: TableRowFn; // ← only if 删除
+  // ↓ 操作列自定义按钮时声明对应方法（如停用、详情等）
+  // customAction: TableRowFn;
+  // ↓ only if expand enabled: 展开行数据缓存
+  // expandMap: Recordable<Recordable<any>>;
 }
 
 // <feature>-编辑页表单回调方法赋类型  ← only if 新增 or 编辑
