@@ -1,13 +1,15 @@
 # 编辑页模板
 
-> [\_shared.md](../_shared.md) · [conventions.md](../conventions.md)
+> [\_shared.md](../_shared.md)
 
 生成 `module/<Base>Edit.vue`（layout=module）或 `<Base>Edit.vue`（flat）。变体由 `hasSubTable` 决定。
 
-## `frontendOnly: true`
+---
 
-- **禁止** `import … from '@/api/…'`
-- `<feature>Save` 不调 `crud.save` / `crud.update` API，改为 `getFormModel(fm)` 后 `emit('saved', …)`：
+## 1. frontendOnly
+
+- **禁止** `@/api` import
+- `<feature>Save` 不调 `crud.save` / `crud.update`，改为 `getFormModel(fm)` 后 `emit('saved', …)`：
 
 ```typescript
 const <feature>Save = async () => {
@@ -16,16 +18,9 @@ const <feature>Save = async () => {
   try {
     const model = getFormModel(fm) || {};
     if (props.rowData?.id) {
-      emit('saved', {
-        type: 'update',
-        data: { ...props.rowData, ...model },
-        rownums: props.rowData?.rownums,
-      });
+      emit('saved', { type: 'update', data: { ...props.rowData, ...model }, rownums: props.rowData?.rownums });
     } else {
-      emit('saved', {
-        type: 'insert',
-        data: { ...model, id: model.id || `local-${Date.now()}` },
-      });
+      emit('saved', { type: 'insert', data: { ...model, id: model.id || `local-${Date.now()}` } });
     }
   } catch (e) {
     message(e, 'error');
@@ -33,17 +28,17 @@ const <feature>Save = async () => {
 };
 ```
 
-其余 Drawer / 表单结构与下方 Variant 相同。
+---
 
-## Variant A：纯表单（无子表格）
+## 2. Variant A：纯表单（无子表）
 
 ```vue
 <!--
  * @title: <Feature>编辑页
  * @author: <git user.email>
  * @date: <current YYYY-MM-DD HH:mm:ss>
- * @LastEditors: andy.ten@tom.com
- * @LastEditTime: 2026-07-09 12:48:47
+ * @LastEditors: <git user.name>
+ * @LastEditTime: <current YYYY-MM-DD HH:mm:ss>
  * @version: 1.0.1
 -->
 <script lang="tsx" setup>
@@ -130,11 +125,7 @@ const init = () => {
 
 // @watch
 watch(
-  () => ({
-    visible: props.visible,
-    rowId: props.rowData?.id,
-    operateType: props.operateType,
-  }),
+  () => ({ visible: props.visible, rowId: props.rowData?.id, operateType: props.operateType }),
   ({ visible }) => {
     if (visible) init();
   },
@@ -143,12 +134,10 @@ watch(
 
 <template>
   <div>
-    <GvDrawer :title="props.title || (props.rowData?.id ? t('<i18nKey>.edit<Base>') : t('<i18nKey>.add<Base>'))" v-model:visible="isShow" size="50%">
-      <GvForm :key="formKey" ref="<feature>EditFm" ref-form="<feature>EditFm" :divider="t('<i18nKey>.<feature>Management')" :form-list="<feature>EditList" />
+    <GvDrawer :title="props.title || (props.rowData?.id ? '编辑' : '新增')" v-model:visible="isShow" size="50%">
+      <GvForm :key="formKey" ref="<feature>EditFm" ref-form="<feature>EditFm" :divider="'编辑信息'" :form-list="<feature>EditList" />
       <template #footer>
-        <GvButton type="primary" confirm="false" @click="<feature>Save">
-          {{ t('common.save') }}
-        </GvButton>
+        <GvButton type="primary" confirm="false" @click="<feature>Save">保存</GvButton>
       </template>
     </GvDrawer>
   </div>
@@ -157,14 +146,11 @@ watch(
 
 ---
 
-## Variant B：表单 + 子表格（主子表）
-
-基于 SalesSkillsEdit / CompanyBusinessEdit 模式。
+## 3. Variant B：表单 + 子表格（主子表）
 
 ```vue
 <script lang="tsx" setup>
 import { save<Feature>Api, update<Feature>Api } from '@/api/<apiModule>';
-// ↓ sub-table APIs:
 import { find<Feature>DtlApi, save<Feature>DtlApi, delete<Feature>DtlApi } from '@/api/<apiModule>';
 import { crud } from '@/hook/service/useCrud';
 import { propTypes, useUtil } from '@/hook/service/useUtil';
@@ -174,47 +160,20 @@ import { ref, watch, computed, nextTick } from 'vue';
 import { useI18n } from '@/hook/web/useI18n';
 import { create<Feature>EditList, create<Feature>EditTableHeadList } from './helper';
 
-// @define name
-defineOptions({ name: '<Base>Edit' });
-
-// @props, @emit, @hook (same as Variant A)
+// @define name / @props / @emit / @hook（同 Variant A）
 
 // @data
 const <feature>EditFm = ref<FormInstance>();
 const <feature>EditList = ref<FormItem[]>([]);
-// ↓ sub-table:
 const <feature>DtlTableList = ref<TableInstance>();
 const <feature>DtlTableHeadList = ref<TableHeadItem[]>([]);
 const search<Feature>DtlData = ref<Recordable<any>>({});
 const masterId = ref<number>(0);
-// formKey, isShow (same as Variant A)
+// formKey, isShow（同 Variant A）
 
 // @methods
-/**
- * @todo: 保存<Feature>
- * @author: <git user.name>
- * @Date: <current YYYY-MM-DD HH:mm:ss>
- */
-const <feature>Save = async () => {
-  const fm = <feature>EditFm.value;
-  if (!fm) return;
-  try {
-    if (props.rowData?.id) {
-      const updateData = await crud.update(fm, props.rowData.id, update<Feature>Api);
-      if (updateData) emit('saved', { type: 'update', data: updateData, rownums: props.rowData?.rownums });
-    } else {
-      const saveData = await crud.save(fm, save<Feature>Api, true);
-      if (saveData) {
-        masterId.value = saveData.id;
-        emit('saved', { type: 'insert', data: saveData });
-      }
-    }
-  } catch (e) {
-    message(e, 'error');
-  }
-};
+// <feature>Save（同 Variant A，但 save 成功后设置 masterId）
 
-// 查询子表数据
 /**
  * @todo: 查询<Feature>明细
  * @author: <git user.name>
@@ -223,17 +182,12 @@ const <feature>Save = async () => {
 const find<Feature>Dtl = async () => {
   if (!<feature>DtlTableList.value) return;
   try {
-    search<Feature>DtlData.value = await crud.searchNoFm(
-      <feature>DtlTableList.value,
-      find<Feature>DtlApi,
-      { <feature>Id: masterId.value }
-    );
+    search<Feature>DtlData.value = await crud.searchNoFm(<feature>DtlTableList.value, find<Feature>DtlApi, { <feature>Id: masterId.value });
   } catch (e) {
     message(e, 'error');
   }
 };
 
-// 新增明细行
 /**
  * @todo: 新增<Feature>明细行
  * @author: <git user.name>
@@ -241,14 +195,9 @@ const find<Feature>Dtl = async () => {
  */
 const add<Feature>Dtl = () => {
   if (!<feature>DtlTableList.value) return;
-  search<Feature>DtlData.value.records.unshift({
-    id: null,
-    <feature>Id: masterId.value,
-    // ... default field values
-  });
+  search<Feature>DtlData.value.records.unshift({ id: null, <feature>Id: masterId.value });
 };
 
-// 保存明细行
 /**
  * @todo: 保存<Feature>明细行
  * @author: <git user.name>
@@ -265,7 +214,6 @@ const save<Feature>Dtl = async (row: Recordable<any>, _index: number) => {
   }
 };
 
-// 删除明细行
 /**
  * @todo: 删除<Feature>明细行
  * @author: <git user.name>
@@ -285,11 +233,6 @@ const delete<Feature>Dtl = async (row: Recordable<any>, index: number) => {
 const dictCB: DictSelectedFn = (_res, _field, _dicType) => {};
 const dictClearCB: DictSelectedFn = (_res, _field, _dicType) => {};
 
-/**
- * @todo: 初始化编辑表单
- * @author: <git user.name>
- * @Date: <current YYYY-MM-DD HH:mm:ss>
- */
 const init = () => {
   const rowData = props.rowData;
   if (rowData?.id) {
@@ -307,40 +250,44 @@ const init = () => {
 <feature>EditList.value = create<Feature>EditList({ dictCB, dictClearCB }, props.operateType).value;
 <feature>DtlTableHeadList.value = create<Feature>EditTableHeadList({ save<Feature>Dtl, delete<Feature>Dtl }).value;
 
-// @watch (same as Variant A)
+// @watch（同 Variant A）
 </script>
 
 <template>
   <div>
-    <GvDrawer :title="props.title || (props.rowData?.id ? t('<i18nKey>.edit<Base>') : t('<i18nKey>.add<Base>'))" v-model:visible="isShow" size="80%">
-      <GvForm :key="formKey" ref="<feature>EditFm" ref-form="<feature>EditFm" :divider="t('<i18nKey>.basicInfo')" :form-list="<feature>EditList" label-width="85" />
+    <GvDrawer :title="props.title || (props.rowData?.id ? '编辑' : '新增')" v-model:visible="isShow" size="80%">
+      <GvForm :key="formKey" ref="<feature>EditFm" ref-form="<feature>EditFm" :divider="'基本信息'" :form-list="<feature>EditList" label-width="85" />
       <div v-show="masterId !== 0">
-        <GvTable ref="<feature>DtlTableList" ref-table="<feature>DtlTableList" :table-head="<feature>DtlTableHeadList" :table-data="search < Feature > DtlData">
-          <GvButton @click="add < Feature > Dtl">{{ t('tableBar.add') }}</GvButton>
+        <GvTable ref="<feature>DtlTableList" ref-table="<feature>DtlTableList" :table-head="<feature>DtlTableHeadList" :table-data="search<Feature>DtlData">
+          <GvButton @click="add<Feature>Dtl()">新增</GvButton>
         </GvTable>
       </div>
       <template #footer>
-        <GvButton type="primary" confirm="false" @click="<feature>Save">
-          {{ t('common.save') }}
-        </GvButton>
+        <GvButton type="primary" confirm="false" @click="<feature>Save()">保存</GvButton>
       </template>
     </GvDrawer>
   </div>
 </template>
 ```
 
-## 关键规则（两种变体通用）
+---
 
-- 容器 `GvDrawer` / `GvDialog`
-- Props 类型使用 `useUtil().propTypes`：`visible`/`rowData`/`operateType`
-- `@hook` 放 `useI18n()` + `useNotify()`（非 `@data`）；`i18n: false` 时省略 `useI18n()`
-- `@bizData` 放 helper `.value` 赋值
-- `@watch` 模式：`({ visible }) => { if (visible) init(); }`
-- 表单使用 `formKey` computed 触发响应式重渲染
-- **`i18n: false`（默认）**：template 内 `t('xxx')` 替换为硬编码中文字符串；不 `import useI18n`
+## 4. 关键规则（两种变体通用）
 
-## Variant B 专属规则
+| 规则 | 说明 |
+| ---- | ---- |
+| 容器 | `GvDrawer` / `GvDialog` |
+| Props 类型 | `useUtil().propTypes` |
+| `@hook` | `useI18n()` + `useNotify()`（`i18n: false` 时省略 `useI18n`） |
+| `@bizData` | helper `.value` 赋值 |
+| `@watch` | `({ visible }) => { if (visible) init(); }` |
+| 表单 | 使用 `formKey` computed 触发响应式重渲染 |
+| `i18n: false` | template 内 `t('xxx')` 替换为硬编码中文 |
 
-- 子表数据用 `crud.searchNoFm()` 获取（无搜索表单）
-- `v-show="masterId !== 0"` 控制子表显隐
-- Drawer 尺寸 `size="80%"`（比纯表单的 `50%` 更宽）
+## 5. Variant B 专属
+
+| 规则 | 说明 |
+| ---- | ---- |
+| 子表查询 | `crud.searchNoFm()` |
+| 子表显隐 | `v-show="masterId !== 0"` |
+| Drawer 尺寸 | `size="80%"`（比纯表单的 `50%` 更宽） |

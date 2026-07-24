@@ -14,16 +14,16 @@ Form 组件对应 `GvForm`。下方示例可直接交互，点击「显示代码
 
 ### Form Attributes
 
-| 属性名      | 说明                        | 类型              | 默认值     |
-| ----------- | --------------------------- | ----------------- | ---------- |
-| ref-form    | 设置form的ref属性           | `string`          | —          |
-| form-list   | 设置form的表单域list        | `array`           | —          |
-| divider     | 设置form的分栏标题          | `string`          | `检索分栏` |
-| is-divider  | 设置是否默认自带分栏        | `boolean`         | true       |
-| size        | 设置form大小                | `string`          | `default`  |
-| form-style  | 设置form风格样式            | `object`          | `{}`       |
-| label-width | 设置label宽度(不带px的数字) | `number`/`string` | -          |
-| scroller    | 设置是否开启滚动条          | `boolean`         | true       |
+| 属性名      | 说明                        | 类型                    | 默认值     |
+| ----------- | --------------------------- | ----------------------- | ---------- |
+| ref-form    | 设置form的ref属性（必填）   | `string`                | —          |
+| form-list   | 设置form的表单域list（必填）| `FormItem[]`            | —          |
+| divider     | 设置form的分栏标题          | `string`                | `undefined`|
+| is-divider  | 设置是否默认自带分栏        | `boolean`               | `true`     |
+| size        | 设置form大小                | `ComponentSize`         | `undefined`|
+| form-style  | 设置form风格样式（响应式布局）| `object`              | `{}`       |
+| label-width | 设置label宽度               | `number`/`string`       | `100`      |
+| scroller    | 设置是否开启滚动条          | `boolean`               | `true`     |
 
 ### Form Slots
 

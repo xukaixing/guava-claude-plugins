@@ -1,48 +1,54 @@
 # 配置文件解析规则
 
-读取 `.md` 配置文件 → 解析 → **自动推导**路径/方法名/API 名 → 生成代码。
+读取 `.md` 配置 → 解析 → **自动推导** 路径 / 方法名 / API 名 → 生成代码。
 
-支持两种格式：**精简格式（推荐）** 与 **旧版表格格式（兼容）**。
-
-## 解析流程
-
-```
-读取 .md → 解析 YAML 头 + pageType → 解析配置表 → 推导命名/文件清单 → Write 目标文件
-```
-
-**文件清单勿写入配置文件**，由本节规则自动推导并在生成前展示。
-
-`pageType` 省略时视为 `crud-module`。类型总览见 [page-types.md](page-types.md)。
+支持两种格式：**精简格式（推荐）** 与 **旧版格式（兼容）**。
 
 ---
 
-## 0. 精简格式（推荐）
+## 0. CRUD 方法来源
 
-### YAML 头
+生成代码时，`crud.*` 方法签名以 **GvCrud MCP**（对齐 `gv.crud.ts`）为准：
+
+| 场景 | crud 方法 |
+| ---- | --------- |
+| 列表查询（有表单） | `crud.search(fm, table, fetch)` |
+| 列表查询（无表单） | `crud.searchNoFm(table, fetch, data)` |
+| 通用获取 | `crud.fetchData(fetch, data)` |
+| 通用提交 | `crud.submit(fetch, data, hasMsg?, msg?)` |
+| 新增保存 | `crud.save(fm, fetch, check?, msg?)` |
+| 编辑保存 | `crud.update(fm, id, fetch, check?, msg?)` |
+| 表单回填 | `crud.setEditValue(formList, rowData)` |
+| 表单重置 | `crud.resetEditValue(formList)` |
+| 本地插入行 | `crud.insertResult(searchData, result)` |
+| 本地更新行 | `crud.updateResult(searchData, result, rownums)` |
+| 本地删除行 | `crud.removeResult(searchData, index)` |
+| 多表单校验 | `crud.checkForms(fmNodes)` |
+| 分页查询 | `crud.toNewPageSearch(tabNode, filterConditions, fetch, pageInfo)` |
+
+> **导入**：`import { crud } from 'guava-ui'` 或 `import { crud } from '@/hook/service/useCrud'`
+
+---
+
+## 1. 精简格式（推荐）
+
+### 1.1 YAML 头
 
 ```yaml
 ---
 feature: userMng          # 必填
 title: 用户管理            # 必填
-view: sysMng/userMng      # 必填
-pageType: crud-module     # 可选，默认 crud-module | tabs | form-only
+view: sysMng/userMng2     # 必填 → src/views/sysMng/userMng2/
+pageType: crud-module     # 可选，默认 crud-module
 layout: module            # 可选，默认 module
-
-i18n: false               # 可选，是否生成多语言；默认 false = 仅中文（不更新 zh-CN.ts/en.ts，模板/label 硬编码中文，不走 t()）
-
+i18n: false               # 可选，默认 false = 仅中文
 editPage: true            # 可选
-subTable: false           # 可选，默认 false
-editMode: drawer          # tabs 可选：drawer | inline
-tabs:                     # pageType=tabs 时必填
-  - name: list
-    label: 查询-列表
-    type: search-table
-component: User           # 可选，见推导规则
-# ↓ 有后端时声明 api 节点；frontendOnly: true 时整个节点省略
-api:
-  module: admin/user          # API 文件路径 -> src/api/admin/user.ts
-  base: /sysuser              # 后端根路径（注释参考用）
-  operations:                 # 操作端点（key = 操作名，自动生成方法名 + API 名）
+subTable: false           # 可选
+component: User           # 可选，覆盖推导
+api:                      # frontendOnly 时省略
+  module: admin/user
+  base: /sysuser
+  operations:
     list: /sysuser/findUsers
     create: /sysuser/saveUser
     update: /sysuser/updateUser/{id}
@@ -51,296 +57,154 @@ api:
 ```
 
 | YAML 字段 | 映射 |
-|-----------|------|
-| `feature` | `featureName`（命名/i18n/方法前缀；**不是** views 目录） |
-| `title` | `moduleTitle` |
-| `view` | `viewPath` → **唯一**决定 `src/views/<view>/` |
-| `pageType` | 页面类型，默认 `crud-module` |
-| `layout` | `module`（默认）或 `flat` |
-| `i18n` | 是否生成多语言；`false` = 仅中文（**默认**）：不更新 `zh-CN.ts`/`en.ts`，模板/label 硬编码中文，不走 `t()`；`true` = 双语言 + `t()` |
-| `editPage` | `generateEditPage` |
-| `subTable` | `hasSubTable` |
-| `editMode` | tabs 列表 Tab 编辑方式 |
-| `tabs` | Tab 定义数组 |
-| `api` | 后端 API 配置节点（`frontendOnly: true` 时省略） |
-| `api.module` | API 文件路径，如 `admin/user` -> `src/api/admin/user.ts` |
-| `api.base` | 后端根路径（仅注释参考） |
-| `api.operations` | 操作端点映射（key = 操作名，自动生成方法名和 API 名） |
+| --------- | ---- |
+| `feature` | 命名 / i18n / 方法前缀（**不是** views 目录） |
+| `title` | 页面中文标题 |
+| `view` | **唯一**决定 `src/views/<view>/` |
+| `pageType` | `crud-module`（默认）\| `tabs` \| `form-only` \| `free` |
+| `layout` | `module`（默认）\| `flat` |
+| `i18n` | `false` = 仅中文（默认）；`true` = 双语言 + `t()` |
+| `api.module` | API 文件路径 → `src/api/<module>.ts` |
+| `api.operations` | 操作端点（key = 操作名） |
 
-### `frontendOnly: true`（仅前端 / 无后端 API）
+### 1.2 frontendOnly
 
 | 项 | 行为 |
-|----|------|
-| `api` 节点 | **省略**（整个 api 节点不写） |
+| ---- | ---- |
+| `api` 节点 | **省略** |
 | `src/api/**` | **不生成、不修改** |
-| `data.ts` | **必生成**，见 [templates/data.md](templates/data.md) |
+| `data.ts` | **必生成**（[templates/data.md](templates/data.md)） |
 | 列表查询 | Index 读 `getListResult` / `filterListRecords`，禁止 `crud.search(…, *Api)` |
-| 编辑保存 | Edit 本地 `emit('saved')`，见 [templates/edit-page.md](templates/edit-page.md#frontendonly-true) |
-| guava-all / 后端 | **不生成** Java（见 guava-all config-bridge） |
+| 编辑保存 | Edit 本地 `emit('saved')`（[templates/edit.md](templates/edit.md#frontendonly-true)） |
 
-配置示例：
+### 1.3 硬性规则：view = 目录
 
-```yaml
----
-feature: userMng
-title: 用户管理（演示）
-view: demo/userMngLocal
-layout: module
-frontendOnly: true
-editPage: true
----
-```
+**`src/views/` 下的目录必须严格等于 YAML `view` 字段**。
 
-可选追加 `## 示例数据` 表（列=字段名），用于填充 `mockListRecords`；没有则按 ## 表格字段自动造 2～3 条。  
-**`data.ts` 必须对齐后台 `datas`**：分页字段 + `records[0].transHash`（dic/date 列）+ 字典行 `{ c, v }`，见 [templates/data.md](templates/data.md)。
+| 配置 | 正确 | 错误 |
+| ---- | ---- | ---- |
+| `view: sysMng/userMng2` | `src/views/sysMng/userMng2/` | `src/views/sysMng/userMng/` |
 
-### 硬性规则：`view` 决定生成目录
+生成前**必须**先打印文件清单供确认。
 
-**`src/views/` 下的目录必须严格等于 YAML 的 `view` 字段**，禁止用配置文件路径、`feature`、或参考页路径替代。
-
-| 配置 | 正确输出根目录 | 错误（禁止） |
-|------|----------------|--------------|
-| 文件 `src/pages/sysMng/userMng.md` + `view: sysMng/userMng2` | `src/views/sysMng/userMng2/` | `src/views/sysMng/userMng/`（抄了 md 文件名） |
-| `feature: userMng` + `view: sysMng/userMng2` | 同上；组件名仍由 `feature`/`component` 推导为 `User` | 把 `feature` 当成目录段 |
-
-生成前**必须**先打印文件清单，且每条路径以 `src/views/<view>/` 开头，例如：
-
-```
-view = sysMng/userMng2   ← 来自 YAML，不是 pages 路径
-src/views/sysMng/userMng2/UserIndex.vue
-src/views/sysMng/userMng2/module/helper.tsx
-src/views/sysMng/userMng2/module/types.d.ts
-src/views/sysMng/userMng2/module/UserEdit.vue
-```
-
-若清单中的 views 路径与 `view` 不一致，**停止生成并修正**后再 Write。
-
-### 三张表（crud-module / tabs 按需）
+### 1.4 三张配置表
 
 **查询** — 6 列：`名称 | 字段 | 类型 | 校验 | 长度 | 扩展`
-- crud-module：必填
-- tabs：含 `search-table` Tab 时必填
-- form-only：**不使用**
-- **「校验」列必填**，取值见 [search-conditions.md](search-conditions.md)（对齐 `gv.validate.ts`）
+- crud-module / tabs 必填
+- **「校验」列必填**（[search-conditions.md](search-conditions.md)）
+- **「字段」列保留 `u@` 前缀**
 
 **表格** — 5 列：`名称 | 字段 | 宽度 | 筛选 | 类型`
-- crud-module：必填
-- tabs：含 `search-table` Tab 时必填
-- form-only：**不使用**
-- 筛选：`Y` → `query: true`，空 → `false`
-- 类型：空 → text；`dic:yxzt` → dic；`date:datetime` → date
+- 筛选：`Y` → `query: true`
+- 类型：空 → text；`dic:yxzt` → dic；`date:datetime` → date；`amount` → 金额列
+- **「字段」列不带 `u@`**
 
 **编辑** — 9 列：`名称 | 字段 | 类型 | 必填 | 校验 | 长度 | 只读 | 占用列 | 扩展`
-- 必填：`Y` → `required: true`，`N` → `false`
-- **「校验」列必填**（与查询相同规则集；字典必填→`idDic`，非必填→`isDic`）
-- 只读：`Y` → `readonly: true`，`N` → 不生成（每行必须填 Y 或 N，不可留空）
-- 占用列：`≥2` → `colspan: N`，`1` → 不生成（默认占 1 列）；名称含「备注/地址/详情/审核意见/描述/说明」时默认 `colspan: 3`（每行必须填数字，不可留空）
-- crud-module：add/edit 或 editPage 时必填
-- tabs：含 `inline-form` Tab 或 editMode=drawer 且 add/edit 时必填
-- form-only：**必填**（整页表单字段，含校验列）
+- 必填：`Y` → `required: true`
+- **「校验」列必填**（字典必填 → `idDic`，非必填 → `isDic`）
+- 只读：`Y` → `readonly: true`（必须填 Y/N，不可空）
+- 占用列：`≥2` → `colspan: N`；名称含「备注/地址/详情/描述」默认 `colspan: 3`
 
-### 扩展列解析
+### 1.5 表格级独立声明
 
-| 扩展值 | 生成属性 |
-|--------|---------|
-| `dic=yxzt` | `dicType: 'yxzt'` |
-| `date=daterange` | `dateType: 'daterange'` |
-| `remote=findDictFromTableApi` | `dicRemote` + import |
-| `disabledOnEdit` | 编辑时 `disabled` |
-| `multiple` | `multiple: true` |
+| 小节 | 必须 | 说明 |
+| ---- | ---- | ---- |
+| `## 操作列` | ✅ | 逗号分隔按钮名 → `content` + `action`（无 icon） |
+| `## 扩展列` | | 含 `expand` → 展开列 |
+| `## 表格工具栏` | | 第 1 行：按钮名；第 2 行：`import,export` |
 
-#### 表格工具栏（可选，独立小节）
+### 1.6 多表格
 
-`## 表格工具栏` 为 GvTable 上方按钮区域，两行格式：
-- 第 1 行：逗号分隔的中文按钮名 → 生成 `<GvButton>`，首个按钮默认绑定 `add<Feature>`（add enabled 时），其余需在 Index 声明对应方法
-- 第 2 行：`import,export` → 生成 `#import` / `#export` 插槽（需 paths 中声明对应端点）
+`## 表格2`、`## 表格3`... 追加第二个以后表格（无查询条件）。
 
-不声明时仅生成默认"新增"按钮（add enabled 时）。
+| 项 | 说明 |
+| ---- | ---- |
+| ref 命名 | `xxxTableList2`... |
+| helper 工厂 | `create<Feature>TableHeadList2`... |
+| 操作列 | `## 操作列2`（可选） |
 
-#### 操作列与扩展列（表格级，独立小节）
+### 1.7 改进（二次优化）
 
-操作列与扩展列为表格级属性，通过 `## 操作列` / `## 扩展列` 独立小节声明，**不从表格列定义解析**。
+`## 改进` 小节支持页面布局、样式、交互的全方位微调。生成后逐条应用。
 
-**`## 操作列`**（必须）：逗号分隔的中文按钮名 → `content` + `action`
-- `编辑` → `content: ['编辑']` + `action: [actions.edit<Feature>]`
-- `删除` → `content: ['删除']` + `action: [actions.delete<Feature>]`
-- 自定义名（如 `停用`）→ 需在 `TableActions` 声明对应方法
-- **不生成 `icon` 属性**
-
-**`## 扩展列`**（可选）：含 `expand` → 生成 `type: 'expand'` 列
-- 追加 `create<Feature>ExpandTableHeadList` 工厂
-- 追加 `expandMap` 到 `TableActions`
-- Index 页 GvTable 绑定 `@expand-change`
-
-#### 改进（可选，二次优化）
-
-`## 改进` 为可选小节，用于对首次生成的代码进行**二次优化调整**。
-
-**格式**：无序列表，每条为自然语言描述的改进项。
-
-**解析规则**：
-- 生成完所有文件后，读取 `## 改进` 内容
-- 逐条分析改进项，转换为代码修改
-- 改进项仅做局部调整，不改变整体结构
-
-**支持的改进类型**：
-
-| 改进描述 | 代码修改 |
-|---------|---------|
-| Drawer 宽度 | 修改 Edit 组件 `size` 属性 |
-| 表格列 fixed/width | 修改 helper TableHeadItem |
-| 查询默认值 | 修改 SearchList 默认值 |
-| 操作列按钮文案/确认文案 | 修改 action 逻辑 |
-| 表单字段顺序 | 调整 EditList 顺序 |
-| 样式调整 | 修改 template 内联样式 |
-
-**配置示例**：
-
-```markdown
-## 改进
-- 编辑页 Drawer 宽度改为 60%（默认 50%）
-- 表格列「用户账号」增加 fixed: left
-- 查询条件中「状态」默认选中「启用」状态（10601）
-- 操作列按钮「删除」增加二次确认提示文案："确认删除该用户？"
-```
+**约束**：所有调整必须基于 guava-ui（Gv*）组件库，调整前需查询 MCP。
 
 ---
 
-## 1. 自动推导
+## 2. 自动推导
 
-### componentBaseName
+### 2.1 componentBaseName
 
 | feature | 推导结果 |
-|---------|---------|
-| `userMng` | `User` |
+| ------- | -------- |
+| `userMng` | `User`（去 Mng 后缀 → PascalCase） |
 | `salesSkills` | `SalesSkills` |
 | 含 `component:` | 使用配置值 |
 
-规则：去掉 `Mng` 后缀 → PascalCase；或读 YAML `component`。
+### 2.2 操作名 / 方法名 / API 名
 
-### 操作名 / 方法名 / API 名推导
-
-从 `api.operations` 的 key + `component` 推导：
+从 `api.operations` 的 key 推导：
 
 | operations key | 方法名 | API 名 | HTTP |
-|----------------|--------|--------|------|
-| `list` | `search{Entity}List` | `{list 末段}Api` | POST |
-| `create` | `add{Entity}` | `{create 末段}Api` | POST |
-| `update` | `edit{Entity}` | `{update 末段}Api` | PUT |
-| `delete` | `delete{Entity}` | `{delete 末段}Api` | POST |
+| -------------- | ------ | ------ | ---- |
+| `list` | `search{Entity}List` | `{末段}Api` | POST |
+| `create` | `add{Entity}` | `{末段}Api` | POST |
+| `update` | `edit{Entity}` | `{末段}Api` | PUT |
+| `delete` | `delete{Entity}` | `{末段}Api` | POST |
 
-示例 `api.operations.list: /sysuser/findUsers` → API 名 `findUsersApi`，方法名 `searchUserList`
+> 示例：`list: /sysuser/findUsers` → API `findUsersApi`，方法 `searchUserList`
 
-operations key 可自定义（如 `detail`、`enable` 等），方法名按规则拼接。
+### 2.3 form-only 方法名
 
-配置中可显式覆盖（旧格式表格的 methodName / apiName 列）。
+| operations key | 方法名 | API 名 |
+| -------------- | ------ | ------ |
+| `get` / `find` | `load{Component}` | `get{Component}Api` |
+| `save` | `save{Component}` | `save{Component}Api` |
+| `update` | `save{Component}` | `update{Component}Api` |
 
-### form-only 方法名 / API 名
-
-| operations key | 方法名 | API 名 | HTTP |
-|----------------|--------|--------|------|
-| `get` 或 `find` | `load{Component}` | `get{Component}Api` | GET |
-| `save` | `save{Component}` | `save{Component}Api` | POST |
-| `update` | `save{Component}` | `update{Component}Api` | PUT |
-
-示例 `feature: systemConfig` → `loadSystemConfig`、`getSystemConfigApi`、`saveSystemConfigApi`。
-
-可选 `loadParams` 对象 → 写入 `crud.fetchData(api, loadParams)`。
-
-### componentBaseName 补充
-
-| feature | 推导结果 |
-|---------|---------|
-| `systemConfig` | `SystemConfig` |
-| `userMng` | `User`（去 Mng） |
-
-无 `Mng` 后缀时：首字母大写保留已有驼峰 → PascalCase（`systemConfig` → `SystemConfig`，`demoFormTabs` → `DemoFormTabs`）。
-
-### tabs 方法名 / inline 保存
+### 2.4 tabs 方法名
 
 | 方法 | 命名 | 条件 |
-|------|------|------|
+| ---- | ---- | ---- |
 | inline 保存 | `save{Component}Inline` | 含 `inline-form` Tab |
 | Tab 切换 | `handleTabClick` | 含 `inline-form` Tab |
 
-Tab i18n：`tabs[].name` → `tab` + 首字母大写 name（`list` → `tabList`）。
+---
 
-`editPage` 默认：tabs + `editMode: drawer` + crud 含 add/edit → 生成 Edit.vue。
+## 3. 输出文件清单（自动推导）
 
-### 输出文件清单（自动，勿手写进配置）
+### pageType 分支
 
-#### pageType 分支
+| pageType | 主 Vue | Edit | helper/types |
+| -------- | ------ | ---- | ------------ |
+| `crud-module` | `<Component>Index.vue` | `<Component>Edit.vue`（editPage） | `module/` 或根目录 |
+| `tabs` | `<Component>Index.vue`（GvTabs） | drawer 时 | 同上 |
+| `form-only` | `<Component>.vue` | — | 同上 |
+| `free` | `<Feature>.vue` | — | 不生成 |
 
-| pageType | 主 Vue | Edit 子组件 | helper/types | 模板 | 生成状态 |
-|----------|--------|------------|--------------|------|---------|
-| `crud-module` | `<Component>Index.vue` | `<Component>Edit.vue`（editPage） | 同下 | index-page / edit-page | ✅ |
-| `tabs` | `<Component>Index.vue`（GvTabs） | `<Component>Edit.vue`（editMode=drawer） | 同下 | index-page-tabs | ✅ |
-| `form-only` | `<Component>.vue` | 无 | `<view>/helper.tsx` | form-only-page | ✅ |
-
-**未实现类型**：无（三种 pageType 均已支持）。
-
-#### tabs 文件清单
+### crud-module 文件清单
 
 ```
-src/api/<api>.ts                               ← frontendOnly 时省略
-src/views/<view>/<Component>Index.vue      ← GvTabs
-src/views/<view>/[module/]data.ts          ← 仅 frontendOnly
-src/views/<view>/[module/]helper.tsx       ← 含 InlineEditList（有 inline-form Tab 时）
+src/api/<api>.ts                              ← frontendOnly 时省略
+src/views/<view>/[module/]data.ts             ← 仅 frontendOnly
+src/views/<view>/<Component>Index.vue
+src/views/<view>/[module/]helper.tsx
 src/views/<view>/[module/]types.d.ts
-src/views/<view>/[module/]<Component>Edit.vue   ← editMode=drawer 且 add/edit
+src/views/<view>/[module/]<Component>Edit.vue  ← editPage 且 add/edit
 src/locales/zh-CN.ts + en.ts
 ```
 
-#### form-only 文件清单
-
-```
-src/api/<api>.ts                               ← frontendOnly 时省略
-src/views/<view>/<Component>.vue
-src/views/<view>/[module/]data.ts              ← 仅 frontendOnly（含 mockFormModel）
-src/views/<view>/helper.tsx
-src/views/<view>/types.d.ts
-src/locales/zh-CN.ts + en.ts
-```
-
-**不生成** `<Component>Index.vue`、`<Component>Edit.vue`。`layout: module` 时 helper/types 仍在 `module/` 子目录。
-
-#### crud-module / tabs（layout 影响 module 子目录）
-
-根据 **YAML `view` 原文**、`layout`、`component`、`crud`、`editPage`、`pageType`、`frontendOnly` 推导（`<view>` = YAML `view` 字符串，禁止改写）：
-
-```
-src/api/<api>.ts                               ← frontendOnly 时省略
-src/views/<view>/<Component>Index.vue          ← form-only 时为 <Component>.vue
-src/views/<view>/[module/]data.ts              ← 仅 frontendOnly
-src/views/<view>/[module/]helper.tsx           ← layout=module 时有 module/
-src/views/<view>/[module/]types.d.ts
-src/views/<view>/[module/]<Component>Edit.vue   ← editPage 且 add/edit（非 form-only）
-src/locales/zh-CN.ts + en.ts
-```
-
-**对照示例**（配置文件在 `src/pages/sysMng/userMng.md`）：
-
-| YAML | 正确输出 | 错误（禁止） |
-|------|----------|--------------|
-| `view: sysMng/userMng2` | `src/views/sysMng/userMng2/UserIndex.vue` | `src/views/sysMng/userMng/...` |
-| `feature: userMng` | 文件名仍为 `UserIndex.vue` / i18n `userMng` | 把目录改成 `userMng` |
-| `frontendOnly: true` | 有 `…/data.ts`，**无** `src/api/...` | 仍生成 api 或仍 `crud.search(…, Api)` |
-
-| layout | helper / types / Edit / data 位置 |
-|--------|---------------------------|
+| layout | helper / types / Edit 位置 |
+| ------ | -------------------------- |
 | `module` | `src/views/<view>/module/` |
 | `flat` | `src/views/<view>/` |
 
-生成前 skill **展示**上述清单（路径必须含完整 `view`；标明是否 frontendOnly）供确认；用户**无需**在 `.md` 里维护清单。
-
 ---
 
-## 2. 旧版格式（兼容）
-
-仍支持「## 1. 基本信息」表格 + 宽表头格式。字段映射：
+## 4. 旧版格式（兼容）
 
 | 旧字段 | 新字段 |
-|--------|--------|
+| ------ | ------ |
 | `featureName` | `feature` |
 | `moduleTitle` | `title` |
 | `viewPath` | `view` |
@@ -349,74 +213,44 @@ src/locales/zh-CN.ts + en.ts
 | `modulePath: x/module` | `view: x`, `layout: module` |
 | `generateEditPage` | `editPage` |
 | `hasSubTable` | `subTable` |
-| `pageType` | `pageType`（旧配置缺省 → crud-module） |
 
 旧版「## 5. CRUD 操作」宽表仍有效；有则优先于 api.operations 推导。
 
 ---
 
-## 3. 查询 / 表格 / 编辑 → 代码
+## 5. 校验清单
 
-（与旧规则相同，扩展列等价于原 remark / dicType / dateType）
-
-| 配置 | FormItem |
-|------|----------|
-| 查询 | `format[0]=0`，`format[1]`=校验列（必填） |
-| 编辑必填 Y | `format[0]=1`，`format[1]`=校验列；字典用 `idDic` |
-| 编辑非必填 | `format[0]=0`，`format[1]`=校验列；字典用 `isDic` |
-| `isDouble` | `format[3]`=小数位数，如 `[0, 'isDouble', 10, 4]` |
-
-校验类型必须来自 [search-conditions.md](search-conditions.md)；空或未知则停止生成并确认。
-
-action 列按 `## 操作列` 配置生成。
-
----
-
-## 4. 校验清单
-
-### crud-module（默认）
+### crud-module
 
 - [ ] `api.operations.list` 已填（有后端时）
-- [ ] 查询表、表格表有数据
-- [ ] 查询表每行「校验」已填且合法
+- [ ] 查询表、表格表有数据，每行「校验」已填且合法
 - [ ] 编辑表（若有）每行「校验」已填且合法
 - [ ] dic 字段扩展含 `dic=` 或类型列含 `dic:`
 
 ### tabs
 
-- [ ] `pageType: tabs`
 - [ ] `tabs` 数组至少 1 项
-- [ ] 含 `type: search-table` 时：查询表 + 表格表有数据，`crud` 含 `search`，查询校验齐全
-- [ ] 含 `type: inline-form` 时：编辑表有数据且校验齐全
+- [ ] 含 `search-table` 时：查询 + 表格有数据，校验齐全
+- [ ] 含 `inline-form` 时：编辑表有数据且校验齐全
 
 ### form-only
 
-- [ ] `pageType: form-only`
 - [ ] `crud` 含 `load` 或等价 `get`
-- [ ] `paths.get`（或 `paths.find`）与 `paths.save` 已填
 - [ ] 编辑表有数据且每行「校验」已填
 - [ ] **无**查询表、表格表要求
 
 ---
 
-## 5. 生成顺序
-
-覆盖策略 → [_shared.md](_shared.md)
+## 6. 生成顺序
 
 | 顺序 | 文件 | 策略 |
-|------|------|------|
+| ---- | ---- | ---- |
 | 0 | Read 已有文件 | 保留 Vue `@date` |
 | 1 | API | 缺函数追加 |
 | 2 | types.d.ts | 覆盖 |
 | 3 | helper.tsx | 覆盖 |
-| 4 | Index.vue / `<Base>.vue` | 覆盖（form-only 为 `<Base>.vue`） |
-| 5 | Edit.vue | 覆盖（editPage 时；form-only 跳过） |
-| 6 | i18n | 替换分组 |
-
----
-
-## 6. 不做的事
-
-- 不修改路由
-- 不执行 git 命令
-- **不在配置文件里要求用户维护文件清单**
+| 4 | data.ts（frontendOnly） | 覆盖 |
+| 5 | Vue 主页 | 覆盖 |
+| 6 | Vue Edit | 覆盖 |
+| 7 | i18n | 替换分组 |
+| 8 | 应用 `## 改进` | 局部调整 |

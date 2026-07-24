@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git config *)",
+      "Read(~/.claude/plugins/cache/guava-tools/**)",
+      "Read(~/.claude/plugins/marketplaces/guava-tools/**)",
+      "mcp__ide__getDiagnostics",
+      "Bash(git -C /Users/andyhsu/Workspace/ses-web config user.name)",
+      "Bash(git -C /Users/andyhsu/Workspace/ses-web config user.email)",
+      "Bash(./node_modules/.bin/eslint --cache --fix src/views/sysMng/userMng2/UserIndex.vue src/views/sysMng/userMng2/module/helper.tsx src/views/sysMng/userMng2/module/data.ts src/views/sysMng/userMng2/module/types.d.ts src/views/sysMng/userMng2/module/UserEdit.vue src/locales/zh-CN.ts src/locales/en.ts)",
+      "Bash(node_modules/.bin/eslint --cache --fix src/views/sysMng/userMng2/UserIndex.vue src/views/sysMng/userMng2/module/data.ts src/views/sysMng/userMng2/module/helper.tsx src/views/sysMng/userMng2/module/types.d.ts src/views/sysMng/userMng2/module/UserEdit.vue src/locales/zh-CN.ts src/locales/en.ts)",
+      "Bash(node_modules/.bin/eslint src/views/sysMng/userMng2/UserIndex.vue src/views/sysMng/userMng2/module/data.ts src/views/sysMng/userMng2/module/helper.tsx src/views/sysMng/userMng2/module/types.d.ts src/views/sysMng/userMng2/module/UserEdit.vue src/locales/zh-CN.ts src/locales/en.ts)",
+      "Bash(ls -la /Users/andyhsu/.claude/skills/ 2>/dev/null)",
+      "Read(//Users/andyhsu/.claude/**)",
+      "Edit(/.claude/skills/guava-front/**)",
+      "mcp__plugin_guava-plugins_guava-ui__get_page_recipe",
+      "mcp__plugin_guava-plugins_gv-table__get_props",
+      "Bash(cp edit-page.md edit.md)",
+      "Bash(cp form-only-page.md form.md)",
+      "Bash(cp index-page-tabs.md tabs.md)",
+      "Bash(cp index-page.md crud.md)",
+      "Bash(rm edit-page.md form-only-page.md index-page-tabs.md index-page.md)",
+      "Read(//Users/andyhsu/Workspace/guava/guava-press/**)",
+      "Read(//Users/andyhsu/Workspace/**)",
+      "Bash(mkdir -p /Users/andyhsu/Workspace/ses-web/.claude/mcp/components/GvCrud)"
+    ],
+    "additionalDirectories": [
+      "~/.claude/plugins/cache/guava-tools",
+      "~/.claude/plugins/marketplaces/guava-tools",
+      "/Users/andyhsu/Workspace/ses-web/.claude/skills/guava-front/templates",
+      "/Users/andyhsu/Workspace/ses-web/.claude/mcp/components"
+    ]
+  },
+  "enabledMcpjsonServers": [
+    "guava-ui"
+  ]
+}

@@ -14,28 +14,42 @@ Table 组件对应 `GvTable`，下方示例可直接交互，点击「显示代�
 
 ### Table Attributes
 
-| 属性名         | 说明                                     | 类型               | 默认值  |
-| -------------- | ---------------------------------------- | ------------------ | ------- |
-| ref-table      | 设置table的ref属性                       | `String`           | —       |
-| table-head     | 设置table的表头                          | `Array`            | —       |
-| table-type     | 设置表格类型                             | `String`           | —       |
-| table-data     | 设置table的内容                          | `Object`, `Array`  | —       |
-| visible        | 设置是否可见                             | `Boolean`          | `true`  |
-| table-sort     | 设置排序组件是否可见                     | `Boolean`          | `true`  |
-| is-show-page   | 设置分页组件是否可见                     | `Boolean`          | `true`  |
-| multi          | 设置多选表格                             | `Boolean`          | `false` |
-| height         | 设置table的高度                          | `Number`, `String` | —       |
-| max-height     | 设置table的最大高度                      | `Number`, `String` | `384`   |
-| page-size      | 设置table的每页大小                      | `Number`, `String` | `10`    |
-| layout         | 设置table的分页插件布局                  | `String`           | —       |
-| table-fetch    | 设置table的查询方法(render方式table有效) | `Function`         | —       |
-| row-class-name | 设置行样式方法                           | `Function`         | —       |
-| row-style      | 设置行样式方法                           | `Function`         | —       |
-| cell-style     | 设置单元格样式方法                       | `Function`         | —       |
-| before-import  | 设置导入前置方法                         | `Function`         | —       |
-| table-filter   | 表格查询的过滤条件                       | `Object`           | —       |
-| table-cb       | 表格加载完成后的回调方法                 | `Function`         | —       |
-| table-init     | 表格初始化渲染方法                       | `Function`         | —       |
+| 属性名           | 说明                                     | 类型                           | 默认值                                              |
+| ---------------- | ---------------------------------------- | ------------------------------ | --------------------------------------------------- |
+| ref-table        | 设置table的ref属性                       | `String`                       | `undefined`                                         |
+| table-head       | 设置table的表头（必填）                  | `TableHeadItem[]`              | `[]`                                                |
+| table-data       | 设置table的内容                          | `Recordable<any>`              | `{}`                                                |
+| height           | 设置table的高度                          | `number`/`string`              | `undefined`                                         |
+| max-height       | 设置table的最大高度                      | `number`/`string`/`undefined`  | `undefined`                                         |
+| max-width        | 设置table的最大宽度                      | `number`/`string`              | `undefined`                                         |
+| visible          | 设置是否可见                             | `Boolean`                      | `true`                                              |
+| page-size        | 设置table的每页大小                      | `Number`                       | `10`                                                |
+| row-class-name   | 设置行样式方法                           | `Function`                     | `() => {}`                                          |
+| row-style        | 设置行样式方法                           | `Function`                     | `() => {}`                                          |
+| span-method      | 设置合并行/列方法                        | `Function`                     | `() => {}`                                          |
+| cell-style       | 设置单元格样式方法                       | `Function`                     | `() => {}`                                          |
+| table-type       | 设置表格类型（detail/expand 等）         | `String`                       | `undefined`                                         |
+| table-sort       | 设置排序组件是否可见                     | `Boolean`                      | `undefined`                                         |
+| table-kit        | 设置表格工具条                           | `Boolean`                      | `undefined`                                         |
+| table-bar        | 设置表格工具栏是否显示                   | `Boolean`                      | `true`                                              |
+| border           | 设置表格边框                             | `Boolean`                      | `true`                                              |
+| table-fetch      | 设置table的查询方法(render方式table有效) | `Function`                     | `() => {}`                                          |
+| multi            | 设置多选表格                             | `Boolean`                      | `false`                                             |
+| layout           | 设置table的分页插件布局                  | `String`                       | `total, sizes, prev, pager, next, jumper`           |
+| is-show-page     | 设置分页组件是否可见                     | `Boolean`                      | `true`                                              |
+| total            | 设置是否显示合计行                       | `Boolean`                      | `false`                                             |
+| size             | 设置table大小                            | `ComponentSize`                | `default`                                           |
+| table-init       | 设置表格初始化渲染                       | `Boolean`                      | `false`                                             |
+| before-import    | 设置导入前置方法                         | `Function`                     | `undefined`                                         |
+| table-filter     | 表格查询的过滤条件                       | `Object`                       | `undefined`                                         |
+| table-cb         | 表格加载完成后的回调方法                 | `Function`                     | `undefined`                                         |
+| expand-row-keys  | 设置展开行 keys                          | `Array`                        | `undefined`                                         |
+| limit-height     | 设置是否限制高度                         | `Boolean`                      | `true`                                              |
+| table-action     | 设置操作列位置                           | `String`                       | `left`                                              |
+| table-action-icon| 设置操作列是否显示图标                   | `Boolean`                      | `true`                                              |
+| preserve-expanded| 设置是否保留展开状态                     | `Boolean`                      | `true`                                              |
+
+> **注意**：`stripe`（斑马纹）在 GvTable 内部固定为 `true`，无需传入。
 
 ### Table Events
 
@@ -44,6 +58,7 @@ Table 组件对应 `GvTable`，下方示例可直接交互，点击「显示代�
 | row-dblclick     | 双击行触发事件 | `(row, column, event) => void` |
 | row-click        | 点击行触发事件 | `(row, column, event) => void` |
 | selection-change | 多选行选中事件 | `(selection) => void`          |
+| expand-change    | 展开行变化事件 | `(row, expanded) => void`      |
 
 ### Table Slots
 

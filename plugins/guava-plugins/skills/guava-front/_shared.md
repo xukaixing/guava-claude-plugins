@@ -1,7 +1,9 @@
 # guava-front 共享规则
 
-> 代码风格 · Gv* 组件 · 命名 · 文件头 → [conventions.md](conventions.md)  
+> 代码风格 · Gv* 组件 · 命名 · 文件头 → [conventions.md](conventions.md)
 > Git · 安全 · 命令 → [../../README.md](../../README.md)
+
+---
 
 ## 覆盖策略
 
@@ -13,16 +15,22 @@
 
 禁止因「已存在」跳过 Write。API 已存在不阻页面生成。
 
+---
+
 ## Vue 生成要点
 
-- **输出目录**：`src/views/<YAML.view>/`；禁止用配置 `.md` 路径或 `feature` 当 views 目录（见 [config-parser.md](config-parser.md#硬性规则view-决定生成目录)）
-- **`frontendOnly: true`**：不生成 api；列表/表单数据在 `data.ts`（见 [templates/data.md](templates/data.md)）
-- **`i18n`**（默认 `false`）：`false` = 仅中文，不更新 `zh-CN.ts`/`en.ts`，模板/label 硬编码中文，不走 `t()`；`true` = 双语言 + `t()`（见 [config-parser.md](config-parser.md#i18n)）
-- template **优先 Gv***（Guava UI）；写 template 前用插件 MCP（`get_page_recipe` / `get_usage` / `get_props`）；无对应封装时才用 `el-*`
-- 字段走 `GvForm`/`GvTable` + helper 的 `FormItem[]`/`TableHeadItem[]`
-- 新页面用 `create*List` +（可选）i18n；`i18n: false` 时禁止 legacy 硬编码中文走 `t()`，直接写中文字符串
-- 分区顺序见 conventions `@section`
-- `@methods` 下每个方法使用多行 JSDoc（`@todo:` / `@author:` / `@Date:`），禁止单行 `/** @todo xxx */`
+| 项 | 规则 |
+|----|------|
+| **输出目录** | `src/views/<YAML.view>/`（[config-parser.md](config-parser.md#硬性规则view-决定生成目录)） |
+| **frontendOnly** | 不生成 api；列表 / 表单数据在 `data.ts`（[templates/data.md](templates/data.md)） |
+| **i18n** | `false`（默认）= 仅中文，不走 `t()`；`true` = 双语言 + `t()` |
+| **template** | 优先 `Gv*`；写前用 MCP（`get_page_recipe` / `get_usage` / `get_props`）；无对应封装时才用 `el-*` |
+| **字段配置** | 走 `GvForm` / `GvTable` + helper 的 `FormItem[]` / `TableHeadItem[]` |
+| **工厂函数** | 新页面用 `create*List`；`i18n: false` 时禁止 `t()` |
+| **@section 顺序** | conventions 规定，禁止数字注释 |
+| **JSDoc** | `@methods` 下每个方法多行 JSDoc（禁止单行 `/** @todo xxx */`） |
+
+---
 
 ## 生成后
 

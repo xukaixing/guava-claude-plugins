@@ -1,24 +1,28 @@
-# 类型定义模板
+# 类型定义
 
-> [_shared.md](../_shared.md)
+> [\_shared.md](../_shared.md)
 
 生成 `types.d.ts`。**仅为 enabled CRUD 操作定义接口。**
 
-## 全局类型（已存在，禁止重复定义）
+---
+
+## 全局类型（禁止重复定义）
 
 - `TableRowFn` = `(row: Recordable<any>, index: number) => void`
 - `DictSelectedFn` = `(row: Recordable<any>, field: string, dicType: string) => void`
+
+---
 
 ## 模板
 
 ```typescript
 // <feature>-表格页回调方法赋类型
 export interface <Feature>TableActions {
-  edit<Feature>: TableRowFn;   // ← only if 编辑
-  delete<Feature>: TableRowFn; // ← only if 删除
-  // ↓ 操作列自定义按钮时声明对应方法（如停用、详情等）
+  edit<Feature>: TableRowFn;    // ← only if 编辑
+  delete<Feature>: TableRowFn;  // ← only if 删除
+  // ↓ 操作列自定义按钮时声明对应方法
   // customAction: TableRowFn;
-  // ↓ only if expand enabled: 展开行数据缓存
+  // ↓ only if expand enabled
   // expandMap: Recordable<Recordable<any>>;
 }
 
@@ -35,16 +39,19 @@ export interface <Feature>EditTableActions {
 }
 ```
 
+---
+
 ## 关键规则
 
 - `TableActions` 仅包含选中的操作属性
-- `EditActions` 仅当选中新增/编辑时生成
+- `EditActions` 仅当选中新增 / 编辑时生成
 - `EditTableActions` 仅当选中子表格时生成
-- 使用中文注释：`// <feature>-xxx回调方法赋类型`
+
+---
 
 ## form-only
 
-**仅生成** `FormActions`，不生成 `TableActions` / `EditActions` / `EditTableActions`。
+**仅生成** `FormActions`：
 
 ```typescript
 // <feature>-表单页回调方法赋类型
@@ -54,13 +61,13 @@ export interface <Feature>FormActions {
 }
 ```
 
-无字典字段时可省略 `dictCB` / `dictClearCB`，helper 工厂改为无参 `create<Feature>FormList = () => { ... }`。
+无字典字段时可省略 `dictCB` / `dictClearCB`，helper 工厂改为无参。
+
+---
 
 ## tabs
 
-与 crud-module 相同，生成 `TableActions` + `EditActions`（Drawer 用）。
-
-含 `inline-form` Tab 时追加（可与 `EditActions` 结构相同，二选一）：
+与 crud-module 相同。含 `inline-form` Tab 时追加：
 
 ```typescript
 // <feature>-Tab 内嵌表单回调方法赋类型
@@ -69,7 +76,3 @@ export interface <Feature>InlineEditActions {
   dictClearCB: DictSelectedFn;
 }
 ```
-
-若 Index 与 Edit 共用 `EditActions`，可只生成一个 `EditActions` 接口。
-
----
