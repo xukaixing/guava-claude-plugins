@@ -18,12 +18,13 @@ import { GvSwitch } from 'guava-ui';
 
 | 属性名 | 说明 | 类型 | 默认值 |
 | ------ | ---- | ---- | ------ |
-| `value` | 绑定值（Boolean / Number / String） | `boolean \| number \| string` | `undefined` |
-| `disabled` | 是否禁用 | `boolean` | `undefined` |
-| `columnKey` | 列标识（用于表单字段名） | `string` | `undefined` |
-| `id` | 原生 input id | `string` | `undefined` |
-| `name` | 原生 input name | `string` | `undefined` |
-| `target` | 目标值（等于此值时开关为开启状态） | `number \| string` | `'100201'` |
+| `value` | 绑定值（Boolean / Number / String） | `boolean \| number \| string` | — |
+| `target` | 目标值（等于此值时开关开启） | `number \| string` | `'100201'` |
+| `key` | 列标识（render 中响应式更新） | `string` | — |
+| `disabled` | 禁用（**仅需要时添加**） | `boolean` | 不生成 |
+| `columnKey` | 表单字段名（**仅表单集成时添加**） | `string` | 不生成 |
+| `id` | 原生 input id | `string` | 不生成 |
+| `name` | 原生 input name | `string` | 不生成 |
 
 ### Switch Events
 
@@ -33,7 +34,7 @@ import { GvSwitch } from 'guava-ui';
 
 ## 使用示例
 
-### 在 GvTable 列 render 中使用
+### 在 GvTable 列 render 中使用（推荐）
 
 参考 `sysMng/deptMng/module/helper.tsx`：
 
@@ -47,57 +48,37 @@ import { GvSwitch } from 'guava-ui';
     <GvSwitch
       value={scope.row.status.c}
       key={scope.column.columnKey}
+      target="100201"
       onChange={(newValue) => handlers.updateStatus(newValue, scope)}
     />
   ),
 }
 ```
 
+> **注意**：默认只生成 `value` + `key` + `target` + `onChange`，**不生成** `disabled`。
+
 ### 基本用法
 
 ```vue
 <template>
-  <GvSwitch
-    :value="row.status"
-    target="100201"
-    @change="handleStatusChange"
-  />
+  <GvSwitch :value="row.status" target="100201" @change="handleChange" />
 </template>
 
 <script setup lang="ts">
 import { GvSwitch } from 'guava-ui';
-
-const handleStatusChange = (newStatus: boolean, oldValue: any) => {
-  console.log('状态变化:', newStatus);
-};
+const handleChange = (newStatus: boolean, oldValue: any) => { console.log(newStatus); };
 </script>
 ```
 
-### 带 columnKey（表单集成）
+### 需要禁用时
 
 ```typescript
-<GvSwitch
-  value={scope.row.status}
-  columnKey="status"
-  target="100201"
-  onChange={(newValue) => updateStatus(newValue, scope)}
-/>
-```
-
-### 禁用状态
-
-```typescript
-<GvSwitch
-  value={scope.row.status}
-  disabled={true}
-  target="100201"
-/>
+<GvSwitch value={scope.row.status} disabled={true} target="100201" />
 ```
 
 ## 关键规则
 
-- `value` 为当前值，`target` 为开启状态对应的值
-- 当 `value === target` 时，开关显示为开启状态
-- `change` 事件回调：`(newStatus: boolean, oldValue: any)`
-- 在 GvTable 中使用时，建议传入 `key={scope.column.columnKey}` 确保响应式更新
-- 字典字段（`{ c, v }`）需要取 `.c` 作为 value：`value={scope.row.status.c}`
+- **默认只生成**：`value` + `key` + `target` + `onChange`
+- **不生成** `disabled`（仅配置明确需要时添加）
+- `value === target` 时开关开启
+- 字典字段取 `.c`：`value={scope.row.status.c}`

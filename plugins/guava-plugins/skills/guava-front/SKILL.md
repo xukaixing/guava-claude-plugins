@@ -1,9 +1,9 @@
 ---
 name: guava-front
 description: >
-  Frontend: Vue 3 + Guava UI from src/pages/*.md. Prefer Gv* via plugin MCP
-  (guava-ui / gv-form / gv-table…); use el-* only if no Gv* wrapper.
-  Invoke /guava-plugins:guava-front. Read context/front.md + this SKILL. No routes/git.
+  Frontend: Vue 3 + Guava UI. Config from custom path or src/pages/*.md.
+  Prefer Gv* via plugin MCP (guava-ui / gv-form / gv-table…); use el-* only if no Gv* wrapper.
+  Invoke /guava-plugins:guava-front <path>. Read context/front.md + this SKILL. No routes/git.
 disable-model-invocation: true
 ---
 
@@ -53,14 +53,27 @@ fallback 查找顺序：
 ## 2. 生成流程
 
 ```
-有 src/pages/**/*.md？
-  是 → Read 配置 → config-parser + page-types → MCP page recipe → Write 全部 → Step 8
-  否 → Interactive 逐步确认 → 同上
+用户指定了配置文件路径？
+  是 → Read 指定路径 → config-parser + page-types → MCP page recipe → Write 全部 → Step 8
+  否 → 搜索 src/pages/**/*.md → 同上
+      没找到 → Interactive 逐步确认 → 同上
 ```
 
 ### Step 0：准备
 
 Read 同 pageType 参考页（[page-types.md](page-types.md)）+ 目标 `api` / `helper` / `types` / `locales`。
+
+### 配置文件路径
+
+**优先级**：
+1. **用户指定路径**：`/guava-front template/frontend/crudPage.md` → 直接使用
+2. **默认搜索**：`src/pages/**/*.md`（递归查找）
+
+| 用法 | 示例 |
+|------|------|
+| 指定路径 | `/guava-front template/frontend/crudPage.md` |
+| 指定路径 | `/guava-front src/pages/sysMng/userMng.md` |
+| 默认搜索 | `/guava-front` → 自动搜索 `src/pages/**/*.md` |
 
 ### Config File Mode
 

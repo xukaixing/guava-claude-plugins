@@ -2,14 +2,14 @@
 
 > [\_shared.md](../_shared.md)
 
-生成 `module/<Base>Edit.vue`（layout=module）或 `<Base>Edit.vue`（flat）。变体由 `hasSubTable` 决定。
+生成 `module/<Base>Edit.vue`（layout=module）或 `<Base>Edit.vue`（flat）。
 
 ---
 
 ## 1. frontendOnly
 
-- **禁止** `@/api` import
-- `<feature>Save` 不调 `crud.save` / `crud.update`，改为 `getFormModel(fm)` 后 `emit('saved', …)`：
+- 禁止 `@/api` import
+- `emit('saved', ...)` 替代 `crud.save/update`
 
 ```typescript
 const <feature>Save = async () => {
@@ -17,30 +17,17 @@ const <feature>Save = async () => {
   if (!fm) return;
   try {
     const model = getFormModel(fm) || {};
-    if (props.rowData?.id) {
-      emit('saved', { type: 'update', data: { ...props.rowData, ...model }, rownums: props.rowData?.rownums });
-    } else {
-      emit('saved', { type: 'insert', data: { ...model, id: model.id || `local-${Date.now()}` } });
-    }
-  } catch (e) {
-    message(e, 'error');
-  }
+    if (props.rowData?.id) emit('saved', { type: 'update', data: { ...props.rowData, ...model }, rownums: props.rowData?.rownums });
+    else emit('saved', { type: 'insert', data: { ...model, id: model.id || `local-${Date.now()}` } });
+  } catch (e) { message(e, 'error'); }
 };
 ```
 
 ---
 
-## 2. Variant A：纯表单（无子表）
+## 2. Variant A：纯表单
 
 ```vue
-<!--
- * @title: <Feature>编辑页
- * @author: <git user.email>
- * @date: <current YYYY-MM-DD HH:mm:ss>
- * @LastEditors: <git user.name>
- * @LastEditTime: <current YYYY-MM-DD HH:mm:ss>
- * @version: 1.0.1
--->
 <script lang="tsx" setup>
 import { save<Feature>Api, update<Feature>Api } from '@/api/<apiModule>';
 import { crud } from '@/hook/service/useCrud';
@@ -48,97 +35,41 @@ import { propTypes, useUtil } from '@/hook/service/useUtil';
 import { useNotify } from '@/hook/web/useNotify';
 import type { FormInstance } from 'element-plus';
 import { ref, watch, computed } from 'vue';
-import { useI18n } from '@/hook/web/useI18n';
 import { create<Feature>EditList } from './helper';
 
-// @define name
 defineOptions({ name: '<Base>Edit' });
-
-// @props
-const props = defineProps({
-  visible: propTypes.bool.def(false),
-  rowData: propTypes.object,
-  operateType: propTypes.string,
-  title: propTypes.string,
-});
-
-// @emit
+const props = defineProps({ visible: propTypes.bool.def(false), rowData: propTypes.object, operateType: propTypes.string, title: propTypes.string });
 const emit = defineEmits(['update:visible', 'saved']);
-
-// @hook
 const { message } = useNotify();
-const { t } = useI18n();
 const { getFormModel } = useUtil();
 
-// @data
 const <feature>EditFm = ref<FormInstance>();
 const <feature>EditList = ref<FormItem[]>([]);
-const formKey = computed(() => {
-  if (!props.visible) return 'closed';
-  return props.rowData?.id ?? `add-${props.operateType}`;
-});
+const formKey = computed(() => (!props.visible ? 'closed' : (props.rowData?.id ?? `add-${props.operateType}`)));
+const isShow = computed({ get: () => props.visible, set: (v) => emit('update:visible', v) });
 
-// @computed
-const isShow = computed({
-  get: () => props.visible,
-  set: (value: boolean) => emit('update:visible', value),
-});
-
-// @methods
-/**
- * @todo: 保存<Feature>
- * @author: <git user.name>
- * @Date: <current YYYY-MM-DD HH:mm:ss>
- */
 const <feature>Save = async () => {
   const fm = <feature>EditFm.value;
   if (!fm) return;
   try {
-    if (props.rowData?.id) {
-      const updateData = await crud.update(fm, props.rowData.id, update<Feature>Api);
-      if (updateData) emit('saved', { type: 'update', data: updateData, rownums: props.rowData?.rownums });
-    } else {
-      const saveData = await crud.save(fm, save<Feature>Api, true);
-      if (saveData) emit('saved', { type: 'insert', data: saveData });
-    }
-  } catch (e) {
-    message(e, 'error');
-  }
+    if (props.rowData?.id) { const d = await crud.update(fm, props.rowData.id, update<Feature>Api); if (d) emit('saved', { type: 'update', data: d, rownums: props.rowData?.rownums }); }
+    else { const d = await crud.save(fm, save<Feature>Api, true); if (d) emit('saved', { type: 'insert', data: d }); }
+  } catch (e) { message(e, 'error'); }
 };
 
-const dictCB: DictSelectedFn = (_res, _field, _dicType) => {};
-const dictClearCB: DictSelectedFn = (_res, _field, _dicType) => {};
+const dictCB = (_, __, ___) => {};
+const dictClearCB = (_, __, ___) => {};
+const init = () => { const row = props.rowData; if (row?.id) crud.setEditValue(<feature>EditList.value, row); else crud.resetEditValue(<feature>EditList.value); };
 
-/**
- * @todo: 初始化编辑表单
- * @author: <git user.name>
- * @Date: <current YYYY-MM-DD HH:mm:ss>
- */
-const init = () => {
-  const rowData = props.rowData;
-  if (rowData?.id) crud.setEditValue(<feature>EditList.value, rowData);
-  else crud.resetEditValue(<feature>EditList.value);
-};
-
-// @bizData
 <feature>EditList.value = create<Feature>EditList({ dictCB, dictClearCB }, props.operateType).value;
-
-// @watch
-watch(
-  () => ({ visible: props.visible, rowId: props.rowData?.id, operateType: props.operateType }),
-  ({ visible }) => {
-    if (visible) init();
-  },
-);
+watch(() => ({ visible: props.visible, rowId: props.rowData?.id, operateType: props.operateType }), ({ visible }) => { if (visible) init(); });
 </script>
 
 <template>
   <div>
     <GvDrawer :title="props.title || (props.rowData?.id ? '编辑' : '新增')" v-model:visible="isShow" size="50%">
       <GvForm :key="formKey" ref="<feature>EditFm" ref-form="<feature>EditFm" :divider="'编辑信息'" :form-list="<feature>EditList" />
-      <template #footer>
-        <GvButton type="primary" confirm="false" @click="<feature>Save">保存</GvButton>
-      </template>
+      <template #footer><GvButton type="primary" confirm="false" @click="<feature>Save">保存</GvButton></template>
     </GvDrawer>
   </div>
 </template>
@@ -146,7 +77,7 @@ watch(
 
 ---
 
-## 3. Variant B：表单 + 子表格（主子表）
+## 3. Variant B：主子表
 
 ```vue
 <script lang="tsx" setup>
@@ -157,100 +88,44 @@ import { propTypes, useUtil } from '@/hook/service/useUtil';
 import { useNotify } from '@/hook/web/useNotify';
 import type { FormInstance, TableInstance } from 'element-plus';
 import { ref, watch, computed, nextTick } from 'vue';
-import { useI18n } from '@/hook/web/useI18n';
 import { create<Feature>EditList, create<Feature>EditTableHeadList } from './helper';
 
-// @define name / @props / @emit / @hook（同 Variant A）
+defineOptions({ name: '<Base>Edit' });
+const props = defineProps({ visible: propTypes.bool.def(false), rowData: propTypes.object, operateType: propTypes.string, title: propTypes.string });
+const emit = defineEmits(['update:visible', 'saved']);
+const { message } = useNotify();
+const { getFormModel } = useUtil();
 
-// @data
 const <feature>EditFm = ref<FormInstance>();
 const <feature>EditList = ref<FormItem[]>([]);
 const <feature>DtlTableList = ref<TableInstance>();
 const <feature>DtlTableHeadList = ref<TableHeadItem[]>([]);
 const search<Feature>DtlData = ref<Recordable<any>>({});
 const masterId = ref<number>(0);
-// formKey, isShow（同 Variant A）
+const formKey = computed(() => (!props.visible ? 'closed' : (props.rowData?.id ?? `add-${props.operateType}`)));
+const isShow = computed({ get: () => props.visible, set: (v) => emit('update:visible', v) });
 
-// @methods
-// <feature>Save（同 Variant A，但 save 成功后设置 masterId）
-
-/**
- * @todo: 查询<Feature>明细
- * @author: <git user.name>
- * @Date: <current YYYY-MM-DD HH:mm:ss>
- */
-const find<Feature>Dtl = async () => {
-  if (!<feature>DtlTableList.value) return;
+const <feature>Save = async () => {
+  const fm = <feature>EditFm.value;
+  if (!fm) return;
   try {
-    search<Feature>DtlData.value = await crud.searchNoFm(<feature>DtlTableList.value, find<Feature>DtlApi, { <feature>Id: masterId.value });
-  } catch (e) {
-    message(e, 'error');
-  }
+    if (props.rowData?.id) { const d = await crud.update(fm, props.rowData.id, update<Feature>Api); if (d) emit('saved', { type: 'update', data: d, rownums: props.rowData?.rownums }); }
+    else { const d = await crud.save(fm, save<Feature>Api, true); if (d) { masterId.value = d.id; emit('saved', { type: 'insert', data: d }); } }
+  } catch (e) { message(e, 'error'); }
 };
 
-/**
- * @todo: 新增<Feature>明细行
- * @author: <git user.name>
- * @Date: <current YYYY-MM-DD HH:mm:ss>
- */
-const add<Feature>Dtl = () => {
-  if (!<feature>DtlTableList.value) return;
-  search<Feature>DtlData.value.records.unshift({ id: null, <feature>Id: masterId.value });
-};
+const find<Feature>Dtl = async () => { if (!<feature>DtlTableList.value) return; try { search<Feature>DtlData.value = await crud.searchNoFm(<feature>DtlTableList.value, find<Feature>DtlApi, { <feature>Id: masterId.value }); } catch (e) { message(e, 'error'); } };
+const add<Feature>Dtl = () => { if (<feature>DtlTableList.value) search<Feature>DtlData.value.records.unshift({ id: null, <feature>Id: masterId.value }); };
+const save<Feature>Dtl = async (row) => { try { const d = await crud.submit(save<Feature>DtlApi, row); if (d) row.id = d.id; } catch (e) { message(e, 'error'); } };
+const delete<Feature>Dtl = async (row, idx) => { try { if (row.id) await crud.submit(delete<Feature>DtlApi, { id: row.id }); crud.removeResult(search<Feature>DtlData.value, idx); } catch (e) { message(e, 'error'); } };
 
-/**
- * @todo: 保存<Feature>明细行
- * @author: <git user.name>
- * @Date: <current YYYY-MM-DD HH:mm:ss>
- * @param row 当前行数据
- * @param _index 行索引
- */
-const save<Feature>Dtl = async (row: Recordable<any>, _index: number) => {
-  try {
-    const data = await crud.submit(save<Feature>DtlApi, row);
-    if (data) row.id = data.id;
-  } catch (e) {
-    message(e, 'error');
-  }
-};
+const dictCB = (_, __, ___) => {};
+const dictClearCB = (_, __, ___) => {};
+const init = () => { const row = props.rowData; if (row?.id) { crud.setEditValue(<feature>EditList.value, row); masterId.value = row.id; nextTick(() => find<Feature>Dtl()); } else { masterId.value = 0; search<Feature>DtlData.value = {}; crud.resetEditValue(<feature>EditList.value); } };
 
-/**
- * @todo: 删除<Feature>明细行
- * @author: <git user.name>
- * @Date: <current YYYY-MM-DD HH:mm:ss>
- * @param row 当前行数据
- * @param index 行索引
- */
-const delete<Feature>Dtl = async (row: Recordable<any>, index: number) => {
-  try {
-    if (row.id) await crud.submit(delete<Feature>DtlApi, { id: row.id });
-    crud.removeResult(search<Feature>DtlData.value, index);
-  } catch (e) {
-    message(e, 'error');
-  }
-};
-
-const dictCB: DictSelectedFn = (_res, _field, _dicType) => {};
-const dictClearCB: DictSelectedFn = (_res, _field, _dicType) => {};
-
-const init = () => {
-  const rowData = props.rowData;
-  if (rowData?.id) {
-    crud.setEditValue(<feature>EditList.value, rowData);
-    masterId.value = rowData.id;
-    nextTick(() => find<Feature>Dtl());
-  } else {
-    masterId.value = 0;
-    search<Feature>DtlData.value = {};
-    crud.resetEditValue(<feature>EditList.value);
-  }
-};
-
-// @bizData
 <feature>EditList.value = create<Feature>EditList({ dictCB, dictClearCB }, props.operateType).value;
 <feature>DtlTableHeadList.value = create<Feature>EditTableHeadList({ save<Feature>Dtl, delete<Feature>Dtl }).value;
-
-// @watch（同 Variant A）
+watch(() => ({ visible: props.visible, rowId: props.rowData?.id, operateType: props.operateType }), ({ visible }) => { if (visible) init(); });
 </script>
 
 <template>
@@ -262,9 +137,7 @@ const init = () => {
           <GvButton @click="add<Feature>Dtl()">新增</GvButton>
         </GvTable>
       </div>
-      <template #footer>
-        <GvButton type="primary" confirm="false" @click="<feature>Save()">保存</GvButton>
-      </template>
+      <template #footer><GvButton type="primary" confirm="false" @click="<feature>Save()">保存</GvButton></template>
     </GvDrawer>
   </div>
 </template>
@@ -272,22 +145,9 @@ const init = () => {
 
 ---
 
-## 4. 关键规则（两种变体通用）
+## 4. 规则
 
-| 规则 | 说明 |
-| ---- | ---- |
-| 容器 | `GvDrawer` / `GvDialog` |
-| Props 类型 | `useUtil().propTypes` |
-| `@hook` | `useI18n()` + `useNotify()`（`i18n: false` 时省略 `useI18n`） |
-| `@bizData` | helper `.value` 赋值 |
-| `@watch` | `({ visible }) => { if (visible) init(); }` |
-| 表单 | 使用 `formKey` computed 触发响应式重渲染 |
-| `i18n: false` | template 内 `t('xxx')` 替换为硬编码中文 |
-
-## 5. Variant B 专属
-
-| 规则 | 说明 |
-| ---- | ---- |
-| 子表查询 | `crud.searchNoFm()` |
-| 子表显隐 | `v-show="masterId !== 0"` |
-| Drawer 尺寸 | `size="80%"`（比纯表单的 `50%` 更宽） |
+- 容器：`GvDrawer` / `GvDialog`；Props 用 `useUtil().propTypes`
+- `@hook`：`useI18n` + `useNotify`（`i18n: false` 时省略）
+- `@watch`：`({ visible }) => { if (visible) init(); }`
+- Variant B：`v-show="masterId !== 0"`，`size="80%"`
