@@ -1,0 +1,12 @@
+#!/usr/bin/env node
+/**
+ * GvTheme MCP (plugin-bundled)
+ * - Usage: usage.json (vendored from guava-ui packages/GvTheme)
+ * - Props: ${CLAUDE_PROJECT_DIR}/node_modules/guava-ui types
+ */
+import { startComponentServer, componentDirFrom } from '../../_shared/component-factory.mjs';
+
+startComponentServer({
+  gvName: 'GvTheme',
+  componentDir: componentDirFrom(import.meta.url),
+});

@@ -1,0 +1,12 @@
+{
+  "gvName": "GvExportDialog",
+  "docSlug": "export-dialog",
+  "tip": "GvExportDialog 组件。",
+  "markdown": "# GvExportDialog 组件\n\n::: tip\nGvExportDialog 组件。\n:::\n\n## 导入\n\n```typescript\nimport { GvExportDialog } from 'guava-ui';\n```\n\n## API\n\n### GvExportDialog Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvExportDialog Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
+  "api": "## API\n\n### GvExportDialog Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvExportDialog Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
+  "examples": [],
+  "usageMarkdown": "> GvExportDialog 组件。\n\n# GvExportDialog 组件\n\n::: tip\nGvExportDialog 组件。\n:::\n\n## 导入\n\n```typescript\nimport { GvExportDialog } from 'guava-ui';\n```\n\n## API\n\n### GvExportDialog Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvExportDialog Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
+  "generatedAt": "2026-07-24T15:02:48.357Z",
+  "source": "guava-ui packages/GvExportDialog (synced 2026-07-24)",
+  "inNpm": false
+}

@@ -209,17 +209,46 @@ const delete<Feature> = (row: Recordable<any>, index: number) => {
   };
 
   // ↓ only if expand enabled
-  // const expandMap = reactive<Recordable<Recordable<any>>>({});
-  // const loadExpandRow = async (row: Recordable<any>) => { ... };
-  // const expandChange = async (row: Recordable<any>, expandedRows: Recordable<any>[]) => { ... };
+  const expandMap = reactive<Recordable<Recordable<any>>>({});
+
+  /**
+   * @todo: 展开行时按需拉取子表数据
+   * @author: <git user.name>
+   * @Date: <current YYYY-MM-DD HH:mm:ss>
+   * @param row 当前行数据
+   */
+  const loadExpandRow = async (row: Recordable<any>) => {
+    const rowId = row.id;
+    if (expandMap[rowId] || row._expandLoading) return;
+    row._expandLoading = true;
+    try {
+      expandMap[rowId] = await fetchExpandTableData(row);
+    } catch (e) {
+      message(e, 'error');
+    } finally {
+      row._expandLoading = false;
+    }
+  };
+
+  /**
+   * @todo: 展开行事件
+   * @author: <git user.name>
+   * @Date: <current YYYY-MM-DD HH:mm:ss>
+   * @param row 当前行数据
+   * @param expandedRows 已展开行列表
+   */
+  const expandChange = async (row: Recordable<any>, expandedRows: Recordable<any>[]) => {
+    const expanded = expandedRows.includes(row);
+    if (!expanded) return;
+    await loadExpandRow(row);
+  };
 
   // @bizData
   <feature>SearchList.value = create<Feature>SearchList().value;
   <feature>TableHeadList.value = create<Feature>TableHeadList({
     edit<Feature>,
     delete<Feature>,
-    // ↓ only if expand enabled
-    // expandMap,
+    expandMap,  // ← only if expand enabled
   }).value;
 
   // @mounted

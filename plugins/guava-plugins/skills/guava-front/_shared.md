@@ -32,6 +32,20 @@
 
 ---
 
+## MCP fallback
+
+MCP 工具不可用时，从工程 `node_modules/guava-ui` 依赖获取组件信息：
+
+| 信息 | 路径 |
+|------|------|
+| 类型定义（props / emits） | `node_modules/guava-ui/lib/types/index.d.ts` |
+| 组件源码 | `node_modules/guava-ui/lib/components/Gv*/src/Gv*.vue` |
+| 导出列表 | `node_modules/guava-ui/lib/index.d.ts` |
+
+> 只要 `pnpm install` 执行过（含 guava-ui 依赖），fallback 始终可用。
+
+---
+
 ## 生成后
 
 `hooks/lint-fix.sh`（插件）：`PostToolBatch` 前端 `eslint --fix`；`Stop` 校验。见 [../../context/front.md](../../context/front.md)。

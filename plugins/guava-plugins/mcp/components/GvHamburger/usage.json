@@ -1,0 +1,12 @@
+{
+  "gvName": "GvHamburger",
+  "docSlug": "hamburger",
+  "tip": "GvHamburger 组件。",
+  "markdown": "# GvHamburger 组件\n\n::: tip\nGvHamburger 组件。\n:::\n\n## 导入\n\n```typescript\nimport { GvHamburger } from 'guava-ui';\n```\n\n## API\n\n### GvHamburger Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvHamburger Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
+  "api": "## API\n\n### GvHamburger Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvHamburger Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
+  "examples": [],
+  "usageMarkdown": "> GvHamburger 组件。\n\n# GvHamburger 组件\n\n::: tip\nGvHamburger 组件。\n:::\n\n## 导入\n\n```typescript\nimport { GvHamburger } from 'guava-ui';\n```\n\n## API\n\n### GvHamburger Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvHamburger Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
+  "generatedAt": "2026-07-24T15:02:48.357Z",
+  "source": "guava-ui packages/GvHamburger (synced 2026-07-24)",
+  "inNpm": false
+}

@@ -1,0 +1,12 @@
+{
+  "gvName": "GvTimeline",
+  "docSlug": "timeline",
+  "tip": "GvTimeline 组件。",
+  "markdown": "# GvTimeline 组件\n\n::: tip\nGvTimeline 组件。\n:::\n\n## 导入\n\n```typescript\nimport { GvTimeline } from 'guava-ui';\n```\n\n## API\n\n### GvTimeline Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvTimeline Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
+  "api": "## API\n\n### GvTimeline Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvTimeline Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
+  "examples": [],
+  "usageMarkdown": "> GvTimeline 组件。\n\n# GvTimeline 组件\n\n::: tip\nGvTimeline 组件。\n:::\n\n## 导入\n\n```typescript\nimport { GvTimeline } from 'guava-ui';\n```\n\n## API\n\n### GvTimeline Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvTimeline Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
+  "generatedAt": "2026-07-24T15:02:48.363Z",
+  "source": "guava-ui packages/GvTimeline (synced 2026-07-24)",
+  "inNpm": false
+}

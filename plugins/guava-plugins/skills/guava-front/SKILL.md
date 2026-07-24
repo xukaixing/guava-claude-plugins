@@ -28,6 +28,26 @@ disable-model-invocation: true
 
 **规则**：优先 `Gv*`；仅当 MCP / 类型无对应封装时才用 `el-*`。详见 [conventions.md](conventions.md#ui-组件)。
 
+### MCP 不可用时的 fallback
+
+如果 MCP 工具（`guava-ui` / `gv-form` / `gv-table` 等）**不可用**，从工程的 `node_modules/guava-ui` 依赖获取组件信息：
+
+1. **读取类型定义**：`${CLAUDE_PROJECT_DIR}/node_modules/guava-ui/lib/types/index.d.ts`
+   - 包含所有 Gv* 组件的 props / emits 类型声明
+2. **读取组件源码**：`${CLAUDE_PROJECT_DIR}/node_modules/guava-ui/lib/components/Gv*/src/Gv*.vue`
+   - 包含组件实现和用法示例
+3. **读取导出列表**：`${CLAUDE_PROJECT_DIR}/node_modules/guava-ui/lib/index.d.ts`
+   - 包含所有导出组件名称
+
+```
+fallback 查找顺序：
+1. MCP 工具（guava-ui / gv-*）     ← 优先
+2. node_modules/guava-ui/lib/types  ← MCP 不可用时
+3. node_modules/guava-ui/lib/components ← 需要查看源码时
+```
+
+> **注意**：只要工程执行过 `pnpm install`（含 guava-ui 依赖），fallback 始终可用。
+
 ---
 
 ## 2. 生成流程

@@ -1,0 +1,12 @@
+{
+  "gvName": "GvSidebar",
+  "docSlug": "sidebar",
+  "tip": "GvSidebar 组件。",
+  "markdown": "# GvSidebar 组件\n\n::: tip\nGvSidebar 组件。\n:::\n\n## 导入\n\n```typescript\nimport { GvSidebar } from 'guava-ui';\n```\n\n## API\n\n### GvSidebar Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvSidebar Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
+  "api": "## API\n\n### GvSidebar Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvSidebar Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
+  "examples": [],
+  "usageMarkdown": "> GvSidebar 组件。\n\n# GvSidebar 组件\n\n::: tip\nGvSidebar 组件。\n:::\n\n## 导入\n\n```typescript\nimport { GvSidebar } from 'guava-ui';\n```\n\n## API\n\n### GvSidebar Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvSidebar Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
+  "generatedAt": "2026-07-24T15:02:48.360Z",
+  "source": "guava-ui packages/GvSidebar (synced 2026-07-24)",
+  "inNpm": false
+}

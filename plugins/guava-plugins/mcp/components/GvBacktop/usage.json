@@ -1,0 +1,12 @@
+{
+  "gvName": "GvBacktop",
+  "docSlug": "backtop",
+  "tip": "GvBacktop 组件。",
+  "markdown": "# GvBacktop 组件\n\n::: tip\nGvBacktop 组件。\n:::\n\n## 导入\n\n```typescript\nimport { GvBacktop } from 'guava-ui';\n```\n\n## API\n\n### GvBacktop Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvBacktop Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
+  "api": "## API\n\n### GvBacktop Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvBacktop Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
+  "examples": [],
+  "usageMarkdown": "> GvBacktop 组件。\n\n# GvBacktop 组件\n\n::: tip\nGvBacktop 组件。\n:::\n\n## 导入\n\n```typescript\nimport { GvBacktop } from 'guava-ui';\n```\n\n## API\n\n### GvBacktop Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvBacktop Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
+  "generatedAt": "2026-07-24T15:02:48.354Z",
+  "source": "guava-ui packages/GvBacktop (synced 2026-07-24)",
+  "inNpm": false
+}

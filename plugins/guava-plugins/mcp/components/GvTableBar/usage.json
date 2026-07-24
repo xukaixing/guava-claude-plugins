@@ -1,0 +1,12 @@
+{
+  "gvName": "GvTableBar",
+  "docSlug": "table-bar",
+  "tip": "GvTableBar 组件。",
+  "markdown": "# GvTableBar 组件\n\n::: tip\nGvTableBar 组件。\n:::\n\n## 导入\n\n```typescript\nimport { GvTableBar } from 'guava-ui';\n```\n\n## API\n\n### GvTableBar Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvTableBar Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
+  "api": "## API\n\n### GvTableBar Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvTableBar Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
+  "examples": [],
+  "usageMarkdown": "> GvTableBar 组件。\n\n# GvTableBar 组件\n\n::: tip\nGvTableBar 组件。\n:::\n\n## 导入\n\n```typescript\nimport { GvTableBar } from 'guava-ui';\n```\n\n## API\n\n### GvTableBar Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvTableBar Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
+  "generatedAt": "2026-07-24T15:02:48.361Z",
+  "source": "guava-ui packages/GvTableBar (synced 2026-07-24)",
+  "inNpm": false
+}

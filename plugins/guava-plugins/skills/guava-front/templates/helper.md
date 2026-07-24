@@ -69,12 +69,216 @@
 
 扩展列（`type: 'expand'`）为表格级属性，在 `## 扩展列` 单独声明。
 
+### 配置格式
+
+#### 简写（默认子表表格）
+
+```markdown
+## 扩展列
+expand
+```
+
+#### 完整配置（自定义 render 内容）
+
+```markdown
+## 扩展列
+expand:
+  type: table          # table | custom | both（默认 table）
+  columns:             # type=table 或 both 时必填
+    - label: 用户账号
+      prop: account
+    - label: 用户姓名
+      prop: userName
+  template:            # type=custom 或 both 时可选，自定义模板内容
+    <div class="expand-custom">
+      <p>自定义内容：{scope.row.fieldName}</p>
+    </div>
+  api:                 # 有后端时指定 API 端点（可选）
+    find: /xxx/findDtl
+```
+
+### 配置项说明
+
+| 字段 | 类型 | 必填 | 说明 |
+| ---- | ---- | ---- | ---- |
+| `type` | `string` | | `table`（子表表格）\| `custom`（自定义 div）\| `both`（两者组合），默认 `table` |
+| `columns` | `array` | table/both 时 | 子表列定义，每项含 `label` / `prop` / `width` / `type` |
+| `template` | `string` | | 自定义模板内容（JSX 片段），支持 `{scope.row.xxx}` 插值 |
+| `api` | `object` | | 后端 API 配置（有后端时） |
+
+### 生成结果
+
 | 配置写法 | 生成结果 |
 | ------- | -------- |
-| `expand` | 生成 expand 列 + `create<Feature>ExpandTableHeadList` + `expandMap` + `expandChange` |
+| `expand`（简写） | 子表表格（自动推断列）+ `expandMap` + `expandChange` + `fetchExpandTableData` |
+| `type: table` | 子表表格（使用配置的 columns）+ 数据拉取 |
+| `type: custom` | 自定义 div 内容（使用配置的 template） |
+| `type: both` | 自定义 template + 子表表格组合 |
 | 空 / 不声明 | 不生成 |
 
 展开行数据通过 `expandMap`（`reactive<Recordable<Recordable<any>>>`）缓存，行唯一标识为 `row.id`。
+
+### expand render 模板
+
+参考 `demo/demoTable/module/helper.tsx` 的 expand 列模式。
+
+#### type=table 时
+
+只展示子表表格，**不带 ElForm**：
+
+```typescript
+// 子表列定义
+const expand<Feature>HeadList: TableHeadItem[] = [
+  { label: '用户账号', prop: 'account' },
+  { label: '用户姓名', prop: 'userName' },
+];
+
+// expand 列（含 render）
+{
+  type: 'expand',
+  label: '展开',
+  prop: 'expand',
+  render: (scope) => {
+    const rowId = scope.row.id;
+    const expandData = actions.expandMap[rowId];
+    return (
+      <div v-loading={!!scope.row._expandLoading}>
+        <GvTable
+          refTable={`<feature>ExpandTable-${scope.$index}`}
+          tableHead={expand<Feature>HeadList}
+          tableType="expand"
+          tableData={expandData}
+          isShowPage={false}
+          preserveExpanded={true}
+          style={{ maxWidth: '60%', width: 'auto' }}
+        />
+      </div>
+    );
+  },
+},
+```
+
+#### type=custom 时
+
+只展示自定义 div 内容：
+
+```typescript
+{
+  type: 'expand',
+  label: '展开',
+  prop: 'expand',
+  render: (scope) => {
+    return (
+      <div class="expand-custom">
+        <p>自定义内容：{scope.row.userName}</p>
+        <p>账号：{scope.row.account}</p>
+      </div>
+    );
+  },
+},
+```
+
+#### type=both 时
+
+自定义 div + 子表表格组合：
+
+```typescript
+{
+  type: 'expand',
+  label: '展开',
+  prop: 'expand',
+  render: (scope) => {
+    const rowId = scope.row.id;
+    const expandData = actions.expandMap[rowId];
+    return (
+      <div v-loading={!!scope.row._expandLoading}>
+        <!-- 自定义内容 -->
+        <div class="expand-custom">
+          <p>自定义内容：{scope.row.userName}</p>
+        </div>
+        <!-- 子表表格 -->
+        <GvTable
+          refTable={`<feature>ExpandTable-${scope.$index}`}
+          tableHead={expand<Feature>HeadList}
+          tableType="expand"
+          tableData={expandData}
+          isShowPage={false}
+          preserveExpanded={true}
+          style={{ maxWidth: '60%', width: 'auto' }}
+        />
+      </div>
+    );
+  },
+},
+```
+
+### 数据拉取函数（Index 页声明，type=table 或 both 时）
+
+```typescript
+/**
+ * 展开行时按需拉取子表数据；已加载过则直接复用 expandMap 缓存
+ */
+const loadExpandRow = async (row: Recordable<any>) => {
+  const rowId = row.id;
+  if (expandMap[rowId] || row._expandLoading) return;
+  row._expandLoading = true;
+  try {
+    expandMap[rowId] = await fetchExpandTableData(row);
+  } catch (e) {
+    message(e, 'error');
+  } finally {
+    row._expandLoading = false;
+  }
+};
+
+const expandChange = async (row: Recordable<any>, expandedRows: Recordable<any>[]) => {
+  const expanded = expandedRows.includes(row);
+  if (!expanded) return;
+  await loadExpandRow(row);
+};
+```
+
+### 子表数据获取函数（helper.tsx 或 api.ts，type=table 或 both 时）
+
+```typescript
+// frontendOnly 时：mock 数据
+export const fetchExpandTableData = (row: Recordable<any>): Promise<Recordable<any>> =>
+  new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        records: [
+          { account: `${row.account}-sub1`, userName: `${row.userName}-子账号1` },
+          { account: `${row.account}-sub2`, userName: `${row.userName}-子账号2` },
+        ],
+        total: 2, size: 10, current: 1, pages: 1,
+      });
+    }, 400);
+  });
+
+// 有后端时：调用 API
+export const find<Feature>DtlApi = (datas: Recordable<any>) => {
+  const { fetch } = useFetch();
+  return fetch.post(`${server.<gateway>}/<apiEndpoint>`, datas);
+};
+```
+
+### Index 页 GvTable 绑定
+
+```vue
+<GvTable
+  ...
+  @expand-change="expandChange">
+```
+
+### types.d.ts 追加
+
+```typescript
+export interface <Feature>TableActions {
+  edit<Feature>: TableRowFn;
+  delete<Feature>: TableRowFn;
+  expandMap: Recordable<Recordable<any>>;  // ← expand enabled
+}
+```
 
 ---
 
@@ -188,8 +392,8 @@ import type { <Feature>TableActions, <Feature>EditActions } from './types';
 // ↓ only if dicRemote in config:
 // import { findDictFromTableApi } from '@/api/<apiModule>';
 // ↓ only if expand enabled:
-// import { ElForm, ElFormItem } from 'element-plus';
-// import { GvTable, amountFormat } from 'guava-ui';
+import { ElForm, ElFormItem } from 'element-plus';
+import { GvTable } from 'guava-ui';
 
 export const create<Feature>SearchList = () => {
   // ↓ i18n: true 时才解构 t
@@ -201,18 +405,59 @@ export const create<Feature>SearchList = () => {
   ]);
 };
 
-// ↓ only if expand enabled
-// export const create<Feature>ExpandTableHeadList = () => {
-//   return ref<TableHeadItem[]>([
-//     { label: '用户账号', prop: 'account' },
-//     { label: '用户姓名', prop: 'userName' },
-//   ]);
-// };
+// ↓ only if expand enabled — 子表列（type=table 或 both 时）
+const expand<Feature>HeadList: TableHeadItem[] = [
+  { label: '用户账号', prop: 'account' },
+  { label: '用户姓名', prop: 'userName' },
+  { label: '工号', prop: 'userSn' },
+  { label: '联系方式', prop: 'mobile' },
+];
+
+// ↓ only if expand enabled — 子表数据获取（type=table 或 both 时，frontendOnly 用 mock）
+export const fetchExpandTableData = (row: Recordable<any>): Promise<Recordable<any>> =>
+  new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        records: [
+          { account: `${row.account}-sub1`, userName: `${row.userName}-子账号1` },
+          { account: `${row.account}-sub2`, userName: `${row.userName}-子账号2` },
+        ],
+        total: 2, size: 10, current: 1, pages: 1,
+      });
+    }, 400);
+  });
 
 export const create<Feature>TableHeadList = (actions: <Feature>TableActions) => {
   return ref<TableHeadItem[]>([
-    // ↓ only if expand enabled
-    // { type: 'expand', label: '展开', prop: 'expand', render: (scope) => { ... } },
+    // ↓ only if expand enabled — 展开列（含 render）
+    // type=table: 只展示子表表格（无 ElForm）
+    // type=custom: 只展示自定义 div
+    // type=both: 自定义 div + 子表表格
+    {
+      type: 'expand',
+      label: '展开',
+      prop: 'expand',
+      render: (scope) => {
+        const rowId = scope.row.id;
+        const expandData = actions.expandMap[rowId];
+        return (
+          <div v-loading={!!scope.row._expandLoading}>
+            <!-- type=custom 或 both 时：自定义内容 -->
+            <!-- <div class="expand-custom"><p>{scope.row.userName}</p></div> -->
+            <!-- type=table 或 both 时：子表表格 -->
+            <GvTable
+              refTable={`<feature>ExpandTable-${scope.$index}`}
+              tableHead={expand<Feature>HeadList}
+              tableType="expand"
+              tableData={expandData}
+              isShowPage={false}
+              preserveExpanded={true}
+              style={{ maxWidth: '60%', width: 'auto' }}
+            />
+          </div>
+        );
+      },
+    },
     // 操作列（必须）— 无 icon
     { type: 'action', prop: '', label: '操作', content: ['编辑', '删除'], action: [actions.edit<Feature>, actions.delete<Feature>] },
     { label: '用户账号', prop: 'account', query: true, width: '120px' },

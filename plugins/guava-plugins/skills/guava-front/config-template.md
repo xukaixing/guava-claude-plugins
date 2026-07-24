@@ -251,6 +251,36 @@ expand
 
 **不生成 `icon` 属性**。
 
+### 扩展列配置（可选）
+
+简写（默认子表表格）：
+```markdown
+## 扩展列
+expand
+```
+
+完整配置（自定义 render 内容）：
+```markdown
+## 扩展列
+expand:
+  type: table          # table | custom | both（默认 table）
+  columns:
+    - label: 用户账号
+      prop: account
+    - label: 用户姓名
+      prop: userName
+  template:            # type=custom 或 both 时
+    <div class="expand-custom">
+      <p>自定义内容：{scope.row.userName}</p>
+    </div>
+```
+
+| 字段 | 说明 |
+| ---- | ---- |
+| `type` | `table`（子表）\| `custom`（自定义 div）\| `both`（组合） |
+| `columns` | 子表列定义（type=table 或 both 时） |
+| `template` | 自定义 JSX 模板（type=custom 或 both 时） |
+
 ---
 
 ## 表格工具栏（可选）

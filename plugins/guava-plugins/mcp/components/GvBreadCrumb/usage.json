@@ -1,0 +1,12 @@
+{
+  "gvName": "GvBreadCrumb",
+  "docSlug": "bread-crumb",
+  "tip": "GvBreadCrumb 组件。",
+  "markdown": "# GvBreadCrumb 组件\n\n::: tip\nGvBreadCrumb 组件。\n:::\n\n## 导入\n\n```typescript\nimport { GvBreadCrumb } from 'guava-ui';\n```\n\n## API\n\n### GvBreadCrumb Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvBreadCrumb Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
+  "api": "## API\n\n### GvBreadCrumb Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvBreadCrumb Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
+  "examples": [],
+  "usageMarkdown": "> GvBreadCrumb 组件。\n\n# GvBreadCrumb 组件\n\n::: tip\nGvBreadCrumb 组件。\n:::\n\n## 导入\n\n```typescript\nimport { GvBreadCrumb } from 'guava-ui';\n```\n\n## API\n\n### GvBreadCrumb Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvBreadCrumb Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
+  "generatedAt": "2026-07-24T15:02:48.356Z",
+  "source": "guava-ui packages/GvBreadCrumb (synced 2026-07-24)",
+  "inNpm": false
+}

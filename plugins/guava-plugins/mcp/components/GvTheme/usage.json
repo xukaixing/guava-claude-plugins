@@ -1,0 +1,12 @@
+{
+  "gvName": "GvTheme",
+  "docSlug": "theme",
+  "tip": "GvTheme 组件。",
+  "markdown": "# GvTheme 组件\n\n::: tip\nGvTheme 组件。\n:::\n\n## 导入\n\n```typescript\nimport { GvTheme } from 'guava-ui';\n```\n\n## API\n\n### GvTheme Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvTheme Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
+  "api": "## API\n\n### GvTheme Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvTheme Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
+  "examples": [],
+  "usageMarkdown": "> GvTheme 组件。\n\n# GvTheme 组件\n\n::: tip\nGvTheme 组件。\n:::\n\n## 导入\n\n```typescript\nimport { GvTheme } from 'guava-ui';\n```\n\n## API\n\n### GvTheme Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvTheme Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
+  "generatedAt": "2026-07-24T15:02:48.362Z",
+  "source": "guava-ui packages/GvTheme (synced 2026-07-24)",
+  "inNpm": false
+}

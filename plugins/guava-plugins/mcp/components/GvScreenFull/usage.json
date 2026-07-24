@@ -1,0 +1,12 @@
+{
+  "gvName": "GvScreenFull",
+  "docSlug": "screen-full",
+  "tip": "GvScreenFull 组件。",
+  "markdown": "# GvScreenFull 组件\n\n::: tip\nGvScreenFull 组件。\n:::\n\n## 导入\n\n```typescript\nimport { GvScreenFull } from 'guava-ui';\n```\n\n## API\n\n### GvScreenFull Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvScreenFull Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
+  "api": "## API\n\n### GvScreenFull Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvScreenFull Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
+  "examples": [],
+  "usageMarkdown": "> GvScreenFull 组件。\n\n# GvScreenFull 组件\n\n::: tip\nGvScreenFull 组件。\n:::\n\n## 导入\n\n```typescript\nimport { GvScreenFull } from 'guava-ui';\n```\n\n## API\n\n### GvScreenFull Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvScreenFull Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
+  "generatedAt": "2026-07-24T15:02:48.359Z",
+  "source": "guava-ui packages/GvScreenFull (synced 2026-07-24)",
+  "inNpm": false
+}

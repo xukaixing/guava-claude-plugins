@@ -110,8 +110,35 @@ api:                      # frontendOnly 时省略
 | 小节 | 必须 | 说明 |
 | ---- | ---- | ---- |
 | `## 操作列` | ✅ | 逗号分隔按钮名 → `content` + `action`（无 icon） |
-| `## 扩展列` | | 含 `expand` → 展开列 |
+| `## 扩展列` | | 含 `expand` → 展开列（支持 table / custom / both） |
 | `## 表格工具栏` | | 第 1 行：按钮名；第 2 行：`import,export` |
+
+#### 扩展列解析
+
+```
+## 扩展列
+expand:
+  type: table          # table | custom | both（默认 table）
+  columns:             # type=table 或 both 时必填
+    - label: 用户账号
+      prop: account
+  template:            # type=custom 或 both 时
+    <div>自定义内容：{scope.row.userName}</div>
+```
+
+| 字段 | 类型 | 必填 | 说明 |
+| ---- | ---- | ---- | ---- |
+| `type` | `string` | | `table`（子表）\| `custom`（自定义 div）\| `both`（组合），默认 `table` |
+| `columns` | `array` | table/both 时 | 子表列定义 |
+| `template` | `string` | | 自定义 JSX 模板（支持 `{scope.row.xxx}` 插值） |
+| `api` | `object` | | 后端 API 端点（有后端时） |
+
+**简写**：仅写 `expand` 等价于 `type: table`，子表列从主表列自动推断。
+
+**生成逻辑**：
+- `type: table` → 生成子表 `GvTable` + `fetchExpandTableData` + `loadExpandRow` / `expandChange`
+- `type: custom` → 生成自定义 div 内容（使用 `template` 配置）
+- `type: both` → 自定义 `template` 与子表 `GvTable` 组合
 
 ### 1.6 多表格
 
@@ -135,11 +162,21 @@ api:                      # frontendOnly 时省略
 
 ### 2.1 componentBaseName
 
+**必须从 `feature` 字段推导，禁止从 `view` 路径推导。**
+
 | feature | 推导结果 |
 | ------- | -------- |
 | `userMng` | `User`（去 Mng 后缀 → PascalCase） |
 | `salesSkills` | `SalesSkills` |
+| `systemConfig` | `SystemConfig` |
 | 含 `component:` | 使用配置值 |
+
+| YAML | 正确 | 错误 |
+| ---- | ---- | ---- |
+| `feature: userMng` + `view: sysMng/userMng2` | 组件名 `User`，文件 `UserIndex.vue` / `UserEdit.vue` | ❌ `UserMng2Index.vue` |
+| `feature: salesSkills` + `view: svcProduct/svcLead/salesSkills` | 组件名 `SalesSkills` | ❌ 用 view 末段 |
+
+> **关键**：`view` 仅决定**输出目录**，`feature` 决定**组件命名**。
 
 ### 2.2 操作名 / 方法名 / API 名
 

@@ -1,0 +1,12 @@
+{
+  "gvName": "GvDatePicker",
+  "docSlug": "date-picker",
+  "tip": "GvDatePicker 组件。",
+  "markdown": "# GvDatePicker 组件\n\n::: tip\nGvDatePicker 组件。\n:::\n\n## 导入\n\n```typescript\nimport { GvDatePicker } from 'guava-ui';\n```\n\n## API\n\n### GvDatePicker Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvDatePicker Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
+  "api": "## API\n\n### GvDatePicker Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvDatePicker Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
+  "examples": [],
+  "usageMarkdown": "> GvDatePicker 组件。\n\n# GvDatePicker 组件\n\n::: tip\nGvDatePicker 组件。\n:::\n\n## 导入\n\n```typescript\nimport { GvDatePicker } from 'guava-ui';\n```\n\n## API\n\n### GvDatePicker Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvDatePicker Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
+  "generatedAt": "2026-07-24T15:02:48.356Z",
+  "source": "guava-ui packages/GvDatePicker (synced 2026-07-24)",
+  "inNpm": false
+}

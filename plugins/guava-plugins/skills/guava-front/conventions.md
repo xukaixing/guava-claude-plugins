@@ -84,6 +84,7 @@ API 函数使用单行注释：`// xxx api`
 | `el-drawer` | `GvDrawer` |
 | `el-select` | `GvSelect` 或 form-list `type: dic` |
 | `el-input` | `GvInput` 或 form-list `type: text / textarea` |
+| `el-switch` | `GvSwitch`（常用于 GvTable 列 render） |
 | `el-tabs` / `el-tab-pane` | `GvTabs` / `GvTabPane` |
 | `el-row` / `el-col` | `GvRow` / `GvCol` |
 | `el-card` | `GvCard` |
@@ -156,13 +157,19 @@ src/views/<view>/
 
 ## 6. 命名规范
 
+**componentBaseName 必须从 `feature` 推导，禁止从 `view` 路径推导。**
+
 | 项目 | 规范 | 示例 |
 | ---- | ---- | ---- |
-| viewPath | = YAML `view` 原文 | `sysMng/userMng2` |
-| componentBaseName | PascalCase，去 Mng 后缀 | `User`, `SalesSkills` |
+| viewPath | = YAML `view` 原文（仅决定目录） | `sysMng/userMng2` |
+| componentBaseName | 从 `feature` 推导，去 Mng 后缀 → PascalCase | `User`, `SalesSkills` |
 | 列表页 | `<Base>Index.vue` | `UserIndex.vue` |
 | 编辑页 | `<Base>Edit.vue` | `UserEdit.vue` |
 | 纯表单页 | `<Base>.vue` | `SystemConfig.vue` |
+
+| YAML | 正确 | 错误 |
+| ---- | ---- | ---- |
+| `feature: userMng` + `view: sysMng/userMng2` | `UserIndex.vue` / `UserEdit.vue` | ❌ `UserMng2Index.vue` |
 | API 文件 | `src/api/<apiModule>.ts` | `admin/user.ts` |
 | GvForm ref | `<feature>SearchFm` | `userSearchFm` |
 | GvForm form-list | `<feature>SearchList` | `userSearchList` |

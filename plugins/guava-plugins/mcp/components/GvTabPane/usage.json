@@ -1,0 +1,12 @@
+{
+  "gvName": "GvTabPane",
+  "docSlug": "tab-pane",
+  "tip": "GvTabPane 组件。",
+  "markdown": "# GvTabPane 组件\n\n::: tip\nGvTabPane 组件。\n:::\n\n## 导入\n\n```typescript\nimport { GvTabPane } from 'guava-ui';\n```\n\n## API\n\n### GvTabPane Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvTabPane Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
+  "api": "## API\n\n### GvTabPane Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvTabPane Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
+  "examples": [],
+  "usageMarkdown": "> GvTabPane 组件。\n\n# GvTabPane 组件\n\n::: tip\nGvTabPane 组件。\n:::\n\n## 导入\n\n```typescript\nimport { GvTabPane } from 'guava-ui';\n```\n\n## API\n\n### GvTabPane Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvTabPane Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
+  "generatedAt": "2026-07-24T15:02:48.361Z",
+  "source": "guava-ui packages/GvTabPane (synced 2026-07-24)",
+  "inNpm": false
+}
