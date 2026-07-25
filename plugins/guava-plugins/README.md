@@ -4,9 +4,9 @@
 
 | 命令 | 说明 |
 |------|------|
-| `/guava-plugins:guava-front` | 当前项目前端 Vue/API/i18n |
-| `/guava-plugins:guava-backend` | `GUAVA_BACKEND_ROOT` 下 Java |
-| `/guava-plugins:guava-all` | 先 front 后 back |
+| `/guava-plugins:code-frontend` | 当前项目前端 Vue/API/i18n |
+| `/guava-plugins:code-backend` | `GUAVA_BACKEND_ROOT` 下 Java |
+| `/guava-plugins:code-all` | 先 front 后 back |
 
 配置放在消费项目的 `src/pages/**/*.md`。
 
@@ -16,7 +16,7 @@
 
 | 能力 | 来源 |
 |------|------|
-| 生成流程 / 模板 | `skills/guava-front` 等 |
+| 生成流程 / 模板 | `skills/code-frontend` 等 |
 | Gv* 用法与 props | `.mcp.json` → `mcp/`（`guava-ui` + `gv-*`） |
 
 写 template 前用 MCP：`get_page_recipe` / `get_usage` / `get_props`。详见 [mcp/README.md](mcp/README.md)。

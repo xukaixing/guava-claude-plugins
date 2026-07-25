@@ -1,13 +1,13 @@
 ---
-name: guava-front
+name: code-frontend
 description: >
   Frontend: Vue 3 + Guava UI. Config from custom path or src/pages/*.md.
   Prefer Gv* via plugin MCP (guava-ui / gv-form / gv-table…); use el-* only if no Gv* wrapper.
-  Invoke /guava-plugins:guava-front <path>. Read context/front.md + this SKILL. No routes/git.
+  Invoke /guava-plugins:code-frontend <path>. Read context/front.md + this SKILL. No routes/git.
 disable-model-invocation: true
 ---
 
-# guava-front
+# code-frontend
 
 > [\_shared.md](_shared.md) · [conventions.md](conventions.md) · [../../context/front.md](../../context/front.md) · [MCP](../../mcp/guava-ui/README.md)
 
@@ -65,15 +65,39 @@ Read 同 pageType 参考页（[page-types.md](page-types.md)）+ 目标 `api` / 
 
 ### 配置文件路径
 
+**核心规则**：用户指定路径时，**必须用 Read 工具实际读取**，禁止凭判断说"不存在"。
+
+**路径解析规则**（按顺序尝试，每一步都用 Read 工具验证）：
+
+```
+第 1 步：用户输入的是绝对路径（以 / 开头）？
+  → 是 → 直接用 Read 工具读取该路径
+  → 读取成功 → 进入 Config File Mode
+  → 读取失败 → 进入第 2 步
+
+第 2 步：尝试相对于项目根目录
+  → Read 工具读取：${CLAUDE_PROJECT_DIR}/<用户输入路径>
+  → 例如用户输入 template/frontend/crudPage.md
+  → 读取：/Users/andyhsu/Workspace/ses-web/template/frontend/crudPage.md
+  → 读取成功 → 进入 Config File Mode
+  → 读取失败 → 进入第 3 步
+
+第 3 步：尝试 src/pages/ 下
+  → Read 工具读取：${CLAUDE_PROJECT_DIR}/src/pages/<用户输入路径>
+  → 读取成功 → 进入 Config File Mode
+  → 读取失败 → 告知用户路径不存在，询问是否搜索 src/pages/**/*.md
+```
+
 **优先级**：
-1. **用户指定路径**：`/guava-front template/frontend/crudPage.md` → 直接使用
+1. **用户指定路径**：`/code-frontend template/frontend/crudPage.md` → 按上述步骤逐步尝试
 2. **默认搜索**：`src/pages/**/*.md`（递归查找）
 
 | 用法 | 示例 |
 |------|------|
-| 指定路径 | `/guava-front template/frontend/crudPage.md` |
-| 指定路径 | `/guava-front src/pages/sysMng/userMng.md` |
-| 默认搜索 | `/guava-front` → 自动搜索 `src/pages/**/*.md` |
+| 指定相对路径 | `/code-frontend template/frontend/crudPage.md` |
+| 指定绝对路径 | `/code-frontend /Users/andyhsu/Workspace/ses-web/template/frontend/crudPage.md` |
+| 指定 src/pages 路径 | `/code-frontend src/pages/sysMng/userMng.md` |
+| 默认搜索 | `/code-frontend` → 自动搜索 `src/pages/**/*.md` |
 
 ### Config File Mode
 

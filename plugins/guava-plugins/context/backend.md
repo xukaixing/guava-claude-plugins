@@ -1,6 +1,6 @@
 # 后端上下文（按需）
 
-> 流程 `skills/guava-backend/SKILL.md` · 规范 `skills/guava-backend/conventions.md`
+> 流程 `skills/code-backend/SKILL.md` · 规范 `skills/code-backend/conventions.md`
 
 ## 工程根路径
 
@@ -25,7 +25,7 @@
 | `paths.find/save/...` | Controller 端点同名 |
 | 查询表 `field` | `MyUtil.getConditionsWhere` 字段一致（见 `search-conditions.md`） |
 
-可选 YAML（`guava-all` / 全栈配置）：
+可选 YAML（`code-all` / 全栈配置）：
 
 ```yaml
 backend:

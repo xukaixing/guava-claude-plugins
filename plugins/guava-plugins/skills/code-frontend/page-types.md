@@ -1,6 +1,6 @@
 # 页面类型（pageType）
 
-guava-front 按 `pageType` 选择生成模板与输出文件。**省略时默认为 `crud-module`**。
+code-frontend 按 `pageType` 选择生成模板与输出文件。**省略时默认为 `crud-module`**。
 
 ---
 

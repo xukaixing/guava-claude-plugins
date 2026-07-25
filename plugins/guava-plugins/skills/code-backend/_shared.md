@@ -1,4 +1,4 @@
-# guava-backend 共享规则
+# code-backend 共享规则
 
 > 规范 [conventions.md](conventions.md) · 项目 [../../README.md](../../README.md) · 路径 [../../context/backend.md](../../context/backend.md)
 

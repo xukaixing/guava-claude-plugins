@@ -1,12 +1,12 @@
 ---
-name: guava-backend
+name: code-backend
 description: >
   Backend: Spring Boot Controller/Service/ServiceImpl under GUAVA_BACKEND_ROOT.
-  Invoke /guava-plugins:guava-backend. Read context/backend.md + this SKILL.
+  Invoke /guava-plugins:code-backend. Read context/backend.md + this SKILL.
 disable-model-invocation: true
 ---
 
-# guava-backend
+# code-backend
 
 > [_shared.md](_shared.md) · [conventions.md](conventions.md) · [code-review.md](code-review.md) · [../../context/backend.md](../../context/backend.md)
 

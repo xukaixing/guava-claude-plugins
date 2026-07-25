@@ -1,6 +1,0 @@
-[shell_environment_policy]
-inherit = "core"
-
-[shell_environment_policy.set]
-GUAVA_BACKEND_ROOT = "${CLAUDE_PROJECT_DIR}/../guava-admin"
-GUAVA_JAVA_FORMAT = "auto"

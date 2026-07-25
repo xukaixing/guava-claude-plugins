@@ -1,6 +1,6 @@
 # 全栈配置桥接（front .md → backend）
 
-同一 `src/pages/**/*.md` 驱动前后端。前端字段见 [../guava-front/config-parser.md](../guava-front/config-parser.md)。
+同一 `src/pages/**/*.md` 驱动前后端。前端字段见 [../code-frontend/config-parser.md](../code-frontend/config-parser.md)。
 
 若 YAML **`frontendOnly: true`**：**不执行本桥接、不生成后端**（仅 front + `data.ts`）。
 
@@ -37,11 +37,11 @@ backend:
 
 ## 查询 field
 
-前端 ## 查询 表 → 后端 [search-conditions.md](../guava-backend/search-conditions.md) 确认表，`field` **字符级一致**。
+前端 ## 查询 表 → 后端 [search-conditions.md](../code-backend/search-conditions.md) 确认表，`field` **字符级一致**。
 
 ## 输出清单示例（crud-module）
 
-**Phase A（本仓库）**：见 guava-front config-parser 文件清单。
+**Phase A（本仓库）**：见 code-frontend config-parser 文件清单。
 
 **Phase B（GUAVA_BACKEND_ROOT）**：
 
@@ -51,4 +51,4 @@ backend:
 {module}/src/main/java/{package}/service/{feature}/impl/{Entity}ServiceImpl.java
 ```
 
-Mapper/SqlProvider 提醒用户按需补充（guava-backend Step 5）。
+Mapper/SqlProvider 提醒用户按需补充（code-backend Step 5）。

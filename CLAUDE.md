@@ -27,9 +27,9 @@ plugins/guava-plugins/
     guava-ui/                        # catalog MCP: list/resolve/search Gv*, page recipes
     components/Gv{Anchor,Form,…}/    # one dir per component: usage.json + server.mjs
   skills/
-    guava-front/   (+ templates/)    # Vue 3 + Guava UI page gen from src/pages/*.md
-    guava-backend/ (+ templates/)    # Spring Boot Controller/Service/ServiceImpl
-    guava-all/                       # front → back pipeline + config-bridge
+    code-frontend/ (+ templates/)    # Vue 3 + Guava UI page gen from src/pages/*.md
+    code-backend/  (+ templates/)    # Spring Boot Controller/Service/ServiceImpl
+    code-all/                        # front → back pipeline + config-bridge
 ```
 
 ## Commands
@@ -68,7 +68,7 @@ Env consumed: `GUAVA_BACKEND_ROOT` (defaults to `${CLAUDE_PROJECT_DIR}/../guava-
 
 **Three layers that must be understood together:**
 
-1. **Skills** (`skills/*/SKILL.md` + `templates/`) define the code-generation workflow. `guava-front` reads a consumer's `src/pages/<feature>.md` config (YAML + tables) and writes Vue/API/helper/types/i18n into `src/views/<view>/`. `guava-backend` writes Java under `GUAVA_BACKEND_ROOT`. `guava-all` runs front then back, bridged by `config-bridge.md`. Each skill owns an **overlay policy** (`_shared.md`): e.g. `types/helper/data/vue` are whole-file overwritten; `src/api/*` is append-only for missing functions; `zh-CN.ts`/`en.ts` replace per-key groups.
+1. **Skills** (`skills/*/SKILL.md` + `templates/`) define the code-generation workflow. `code-frontend` reads a consumer's `src/pages/<feature>.md` config (YAML + tables) and writes Vue/API/helper/types/i18n into `src/views/<view>/`. `code-backend` writes Java under `GUAVA_BACKEND_ROOT`. `code-all` runs front then back, bridged by `config-bridge.md`. Each skill owns an **overlay policy** (`_shared.md`): e.g. `types/helper/data/vue` are whole-file overwritten; `src/api/*` is append-only for missing functions; `zh-CN.ts`/`en.ts` replace per-key groups.
 
 2. **MCP servers** (`mcp/`) supply component knowledge. `guava-ui` is the **catalog** (list/resolve/search Gv*, page recipes like `crud-list` / `form-edit` / `tabs`). Each `gv-*` server exposes `get_usage` / `get_api` / `get_examples` (vendored from press at generate time) and `get_props` (live from the consumer's `node_modules/guava-ui/lib/types/index.d.ts`). The skill mandates: **never write `<template>` without first calling the relevant MCP**; prefer `Gv*`, fall back to `el-*` only when no wrapper exists.
 

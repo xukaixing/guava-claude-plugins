@@ -6,7 +6,7 @@
 
 | 层 | 作用 |
 | --- | --- |
-| `/guava-plugins:guava-front` | 页面生成流程 |
+| `/guava-plugins:code-frontend` | 页面生成流程 |
 | MCP `guava-ui` | 目录 / el→Gv / page recipe |
 | MCP `gv-form` / `gv-table` / … | 单组件用法（`usage.json`）+ props（消费项目 `guava-ui`） |
 

@@ -1,4 +1,4 @@
-# guava-front 共享规则
+# code-frontend 共享规则
 
 > 代码风格 · Gv* 组件 · 命名 · 文件头 → [conventions.md](conventions.md)
 > Git · 安全 · 命令 → [../../README.md](../../README.md)
