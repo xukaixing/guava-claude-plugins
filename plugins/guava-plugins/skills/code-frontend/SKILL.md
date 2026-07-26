@@ -28,6 +28,26 @@ disable-model-invocation: true
 
 **规则**：优先 `Gv*`；仅当 MCP / 类型无对应封装时才用 `el-*`。详见 [conventions.md](conventions.md#ui-组件)。
 
+## 1.1 Icon 图标规则
+
+**优先使用 `src/views/iconsMng/` 中已定义的图标**：
+
+| 图标类型 | iconType | 来源文件 | 命名 |
+| -------- | -------- | -------- |------|
+| 字体图标 | `iconfont` | `font-icons.ts` | `gv-icon-xxx` |
+| Element 图标 | `el` | `el-icons.ts` | PascalCase |
+| SVG 图标 | `svg` | `svg-icons.ts` | kebab-case |
+
+```vue
+<GvIcon iconType="iconfont" iconName="gv-icon-shouye" />
+<GvIcon iconType="el" iconName="AddLocation" />
+<GvIcon iconType="svg" iconName="some-svg" />
+```
+
+- 生成代码时，从 `iconsMng/` 中查找合适的图标
+- 不在列表中的图标不使用
+- `iconType` 可省略（自动推断）：`el-icon-xxx` → el，`gv-icon-xxx` → iconfont
+
 ### MCP 不可用时的 fallback
 
 如果 MCP 工具（`guava-ui` / `gv-form` / `gv-table` 等）**不可用**，从工程的 `node_modules/guava-ui` 依赖获取组件信息：

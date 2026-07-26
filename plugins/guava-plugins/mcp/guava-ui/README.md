@@ -16,6 +16,7 @@
 | `GvCrud` | **新增**，对齐 `gv.crud.ts` 源码，覆盖全部 13 个 CRUD 工具方法（search/save/update/setEditValue 等） |
 | `GvSwitch` | **新增**，对齐 `GvSwitch.vue` 源码，开关组件（常用于 GvTable 列 render） |
 | `GvBacktop` ~ `GvTimelineItem` | **批量新增** 24 个组件 MCP（补齐 packages/ 中所有 Gv* 组件） |
+| `GvIcon` | **更新**，对齐源码 + 图标来源（`src/views/iconsMng/`），支持 iconfont / el / svg 三种类型 |
 
 共 **53 个** MCP（52 个 Gv* 组件 + 1 个 gv-crud 工具），覆盖 `packages/` 中全部 Gv* 组件。
 

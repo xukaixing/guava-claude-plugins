@@ -220,7 +220,24 @@ src/views/<view>/
 
 ---
 
-## 9. API 复用规则
+## 9. Icon 图标规则
+
+**优先使用 `src/views/iconsMng/` 中已定义的图标**：
+
+| 图标类型 | iconType | 图标列表文件 | 命名规则 | 示例 |
+| -------- | -------- | ------------ | -------- |------|
+| 字体图标 | `iconfont` | `font-icons.ts` | `gv-icon-xxx` | `<GvIcon iconType="iconfont" iconName="gv-icon-shouye" />` |
+| Element 图标 | `el` | `el-icons.ts` | PascalCase | `<GvIcon iconType="el" iconName="AddLocation" />` |
+| SVG 图标 | `svg` | `svg-icons.ts` | kebab-case | `<GvIcon iconType="svg" iconName="svg-name" />` |
+
+**规则**：
+- 生成代码时，从 `font-icons.ts` / `el-icons.ts` / `svg-icons.ts` 中查找合适的图标
+- 不在 `iconsMng` 中定义的图标，不要使用
+- `iconType` 可省略（自动推断）：`el-icon-xxx` → el，`gv-icon-xxx` → iconfont，其他 → svg
+
+---
+
+## 10. API 复用规则
 
 - 先 Glob 检查 `src/api/<apiModule>.ts` 是否已存在对应接口函数
 - 已有则直接 import；仅缺少时才追加

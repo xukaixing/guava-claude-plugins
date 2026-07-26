@@ -36,12 +36,25 @@
       "Bash(mkdir -p /Users/andyhsu/Workspace/ses-web/.claude/skills/code-optimize)",
       "Edit(/.claude/skills/code-optimize/**)",
       "Bash(rm /Users/andyhsu/Workspace/ses-web/.claude/skills/code-optimize/SKILL.md)",
-      "Bash(mv code-all *)",
-      "Bash(mv code-backend *)",
-      "Bash(mv code-frontend *)",
+      "Bash(mv guava-all *)",
+      "Bash(mv guava-backend *)",
+      "Bash(mv guava-front *)",
       "Edit(/.claude/skills/code-all/**)",
       "Edit(/.claude/skills/code-frontend/**)",
-      "Edit(/.claude/skills/code-backend/**)"
+      "Edit(/.claude/skills/code-backend/**)",
+      "Bash(mv /Users/andyhsu/Workspace/ses-web/.claude/skills/code-front /Users/andyhsu/Workspace/ses-web/.claude/skills/code-frontend && ls /Users/andyhsu/Workspace/ses-web/.claude/skills/)",
+      "Edit(/.claude/skills/code-frontend/**)",
+      "mcp__plugin_guava-plugins_gv-card__get_all",
+      "mcp__plugin_guava-plugins_guava-ui__resolve_gv_component",
+      "mcp__plugin_guava-plugins_gv-card__get_usage",
+      "mcp__plugin_guava-plugins_gv-button__get_usage",
+      "mcp__plugin_guava-plugins_gv-col__get_usage",
+      "mcp__plugin_guava-plugins_gv-row__get_usage",
+      "Bash(claude *)",
+      "Bash(npm *)",
+      "Bash(xargs -I{} stat -f \"%m %N\" {})",
+      "Bash(awk '{print $2}')",
+      "Read(//tmp/**)"
     ],
     "additionalDirectories": [
       "~/.claude/plugins/cache/guava-tools",
@@ -49,7 +62,8 @@
       "/Users/andyhsu/Workspace/ses-web/.claude/skills/code-frontend/templates",
       "/Users/andyhsu/Workspace/ses-web/.claude/mcp/components",
       "/Users/andyhsu/Workspace/ses-web/.claude/skills",
-      "/Users/andyhsu/Workspace/ses-web/.claude/skills/code-optimize"
+      "/Users/andyhsu/Workspace/ses-web/.claude/skills/code-optimize",
+      "/Users/andyhsu/Workspace/ses-web/.claude/skills/code-frontend"
     ]
   },
   "enabledMcpjsonServers": [

@@ -159,21 +159,34 @@ tabs:
 | 组件 | 用途 | 关键 props |
 
 ## 数据
-<内联数据或数据获取逻辑>
+### 统计数据（表格格式）
+### 列表数据（表格格式）
+
+## xxx列（可选）
+| 名称 | 字段 | 宽度 | 类型 |
 ```
 
 ### 生成规则
 
 1. 解析 `## 页面描述` 理解布局意图
 2. 解析 `## 组件清单` 确定 Gv* 组件
-3. 解析 `## 数据` 提取内联数据
-4. 每个组件查询 MCP 确认 props
-5. 生成单文件 Vue 组件（遵循 vue.md 格式）
+3. 解析 `## 数据` 提取 mock 数据 → 生成 `data.ts`
+4. 解析 `## xxx列` 提取列配置 → 生成 `helper.tsx`
+5. 每个组件查询 MCP 确认 props
+6. 生成 `<Base>Index.vue`（遵循 vue.md 格式）
 
 ### 输出
 
 ```
-src/views/<view>/<Feature>.vue    ← 唯一主页面
-```
+layout=module:
+src/views/<view>/<Base>Index.vue
+src/views/<view>/module/helper.tsx    ← 有列表/表单时
+src/views/<view>/module/types.d.ts    ← 有自定义类型时
+src/views/<view>/module/data.ts       ← frontendOnly 时
 
-**不生成**：helper.tsx、types.d.ts、API 文件。
+layout=flat:
+src/views/<view>/<Base>Index.vue
+src/views/<view>/helper.tsx
+src/views/<view>/types.d.ts
+src/views/<view>/data.ts
+```

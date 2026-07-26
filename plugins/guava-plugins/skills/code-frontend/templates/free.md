@@ -2,7 +2,7 @@
 
 > [\_shared.md](../_shared.md) · [vue.md](vue.md) · [conventions.md](../conventions.md)
 
-生成**自定义布局页面**，无固定查询 / 列表 / 编辑结构。适用于看板、仪表盘、复合布局等。
+生成**自定义布局页面**，无固定查询/列表/编辑结构。适用于看板、仪表盘、复合布局等。
 
 ---
 
@@ -15,7 +15,34 @@
 
 ---
 
-## 2. 配置格式
+## 2. 文件结构
+
+**与 crud.md 一致**：`<Base>Index.vue` + `helper.tsx` + `types.d.ts` + `data.ts`。
+
+| 文件 | 用途 | 条件 |
+| ---- | ---- | ---- |
+| `<Base>Index.vue` | 主页 | 始终 |
+| `module/helper.tsx` | 列配置 / 表单配置 | 有表格/表单时 |
+| `module/types.d.ts` | 自定义类型 | 有自定义类型时 |
+| `module/data.ts` | mock 数据 | frontendOnly 时 |
+
+```
+layout=module:
+src/views/<view>/<Base>Index.vue
+src/views/<view>/module/helper.tsx
+src/views/<view>/module/types.d.ts
+src/views/<view>/module/data.ts
+
+layout=flat:
+src/views/<view>/<Base>Index.vue
+src/views/<view>/helper.tsx
+src/views/<view>/types.d.ts
+src/views/<view>/data.ts
+```
+
+---
+
+## 3. 配置格式
 
 ```markdown
 ---
@@ -29,98 +56,145 @@ frontendOnly: true
 ---
 
 ## 页面描述
-数据看板页，顶部显示 4 个统计卡片，下方左侧为订单趋势图表，右侧为最近订单列表。
+数据看板页，顶部显示 4 个统计卡片，下方为最近订单列表。
 
 ## 组件清单
 | 组件 | 用途 | 关键 props |
 |------|------|-----------|
 | GvCard | 统计卡片 | title, value |
-| GvTable | 最近订单列表 | table-head, table-data |
+| GvTable | 订单列表 | table-head, table-data |
 | GvButton | 刷新按钮 | type: primary |
 
 ## 数据
-// 统计数据
+
+### 统计数据
+```typescript
 const statCards = [
-  { title: '今日订单', value: 128 },
-  { title: '今日金额', value: 56800 },
+  { title: '今日订单', value: 128, icon: 'el-icon-s-order', color: '#409EFF' },
+  { title: '今日金额', value: 56800, icon: 'el-icon-money', color: '#67C23A' },
 ];
+```
+
+### 列表数据
+```typescript
+const orderList = [
+  { orderNo: 'OD202601001', customer: '张三', amount: 1280, status: { c: '1001', v: '已支付' } },
+];
+```
+
+## 订单列表列
+| 名称 | 字段 | 宽度 | 类型 |
+| 订单编号 | orderNo | 180 | |
+| 客户 | customer | 120 | |
+| 金额 | amount | 120 | amount |
+| 状态 | status | 100 | dic:ddzt |
 ```
 
 ---
 
-## 3. 生成规则
+## 4. 生成规则
 
 | 步骤 | 说明 |
 | ---- | ---- |
 | 1 | 解析 `## 页面描述` 理解布局意图 |
 | 2 | 解析 `## 组件清单` 确定 Gv* 组件 |
-| 3 | 解析 `## 数据` 提取内联数据 |
-| 4 | 每个组件查询 MCP 确认 props / slots |
-| 5 | 生成单文件 Vue 组件（遵循 vue.md 格式） |
-
-### MCP 依赖
-
-每个组件**必须**通过 MCP 确认：
-
-| 组件 | MCP 查询 |
-| ---- | -------- |
-| GvCard / GvTable / GvButton / GvForm / GvDrawer / GvTabs | `gv-*` → `get_usage` / `get_api` / `get_props` |
-| 其他 Gv* | `guava-ui` → `get_gv_component` / `resolve_gv_component` |
+| 3 | 解析 `## 数据` 提取 mock 数据 → 生成 `data.ts` |
+| 4 | 解析 `## xxx列` 提取列配置 → 生成 `helper.tsx` |
+| 5 | 每个组件查询 MCP 确认 props / slots |
+| 6 | 生成 `<Base>Index.vue`（遵循 vue.md 格式） |
 
 ---
 
-## 4. 输出
+## 5. data.ts 模板
 
-```
-src/views/<view>/<Feature>.vue    ← 唯一主页面
-```
+```typescript
+/**
+ * @title: <title> 前端静态数据（frontendOnly）
+ * @description: mock 数据
+ */
 
-**不生成**：helper.tsx、API 文件（数据内联或从 store 获取）
+/** 列表转换 */
+export const listTransHash: Recordable<string> | null = {
+  status: 'dic|ddzt',
+};
+
+/** 统计数据 */
+export const mockStatCards = [
+  { title: '今日订单', value: 128, icon: 'el-icon-s-order', color: '#409EFF' },
+  { title: '今日金额', value: 56800, icon: 'el-icon-money', color: '#67C23A' },
+];
+
+/** 业务行 */
+export const mockOrderList: Recordable<any>[] = [
+  { orderNo: 'OD202601001', customer: '张三', amount: 1280, status: { c: '1001', v: '已支付' } },
+];
+
+/** 构造分页结果 */
+export const getListResult = (records = mockOrderList, query = {}): Recordable<any> => {
+  const size = query.size || 10;
+  const current = query.current || 1;
+  const total = records.length;
+  const pages = Math.max(1, Math.ceil(total / size));
+  return {
+    records: listTransHash ? [{ transHash: { ...listTransHash } }, ...records] : records,
+    total, size, current, pages,
+  };
+};
+```
 
 ---
 
-## 5. 模板
+## 6. helper.tsx 模板
 
-```vue
-<!--
- * @title: <title>
- * @author: <git user.email>
- * @date: <current YYYY-MM-DD HH:mm:ss>
- * @LastEditors: <git user.name>
- * @LastEditTime: <current YYYY-MM-DD HH:mm:ss>
- * @version: 1.0.0
--->
-<script setup lang="tsx">
-  import { ref, reactive, computed, onMounted } from 'vue';
-  import { GvCard, GvTable, GvButton, amountFormat } from 'guava-ui';
-  import { useNotify } from '@/hook/web/useNotify';
+```typescript
+import { ref } from 'vue';
+import { GvTable, amountFormat } from 'guava-ui';
 
-  // @define name
-  defineOptions({ name: '<Feature>' });
-
-  // @hook
-  const { message } = useNotify();
-
-  // @data
-  const statCards = ref([
-    { title: '今日订单', value: 128 },
-    { title: '今日金额', value: 56800 },
-  ]);
-
-  const orderList = ref([
-    { orderNo: 'OD20260101', amount: 1280, status: '已支付' },
-  ]);
-
-  const orderTableHead = ref<TableHeadItem[]>([
+/** 订单列表列 */
+export const createOrderTableHeadList = () =>
+  ref<TableHeadItem[]>([
     { label: '订单编号', prop: 'orderNo', width: 180 },
+    { label: '客户', prop: 'customer', width: 120 },
     { label: '金额', prop: 'amount', width: 120, align: 'right', render: (scope) => <span>{amountFormat(scope.row.amount)}</span> },
     { label: '状态', prop: 'status', width: 100, align: 'center' },
   ]);
+```
 
-  // @methods
-  const refresh = () => {
-    message('刷新成功', 'success');
-  };
+---
+
+## 7. types.d.ts 模板
+
+```typescript
+/** 自由页面自定义类型（仅在有特殊类型时生成） */
+export interface StatCard {
+  title: string;
+  value: number;
+  icon?: string;
+  color?: string;
+}
+```
+
+---
+
+## 8. Index.vue 模板
+
+```vue
+<script setup lang="tsx">
+  import { ref, onMounted } from 'vue';
+  import { GvCard, GvTable, GvButton } from 'guava-ui';
+  import { useNotify } from '@/hook/web/useNotify';
+  import { createOrderTableHeadList } from './module/helper';
+  import { mockStatCards, mockOrderList } from './module/data';
+
+  defineOptions({ name: '<Base>Index' });
+  const { message } = useNotify();
+
+  const statCards = ref(mockStatCards);
+  const orderList = ref(mockOrderList);
+  const orderTableHead = createOrderTableHeadList();
+  const orderTableList = ref();
+
+  const refresh = () => { message('刷新成功', 'success'); };
 </script>
 
 <template>
@@ -129,7 +203,7 @@ src/views/<view>/<Feature>.vue    ← 唯一主页面
       <GvCard v-for="(card, i) in statCards" :key="i" :title="card.title" :value="card.value" />
     </div>
     <div class="content-layout">
-      <GvTable ref="orderTableList" ref-table="orderTableList" :table-head="orderTableHead" :table-data="{ records: orderList }">
+      <GvTable ref="orderTableList" ref-table="orderTableList" :table-head="orderTableHead.value" :table-data="{ records: orderList }">
         <GvButton @click="refresh()">刷新</GvButton>
       </GvTable>
     </div>
@@ -139,17 +213,18 @@ src/views/<view>/<Feature>.vue    ← 唯一主页面
 
 ---
 
-## 6. 关键规则
+## 9. 关键规则
 
 | 规则 | 说明 |
 | ---- | ---- |
-| 单文件输出 | 整个页面一个 `<Feature>.vue`，不拆 helper / types |
-| 数据内联 | mock 数据直接写在 `<script setup>` |
+| 文件命名 | `<Base>Index.vue`（与 crud.md 一致） |
+| 数据分离 | mock 数据放 `data.ts`，不放 Vue 内 |
+| 列配置 | 列表/表单列配置放 `helper.tsx` |
+| 类型定义 | 自定义类型放 `types.d.ts` |
 | 组件自由组合 | 可使用任意 Gv* 组件，无固定结构限制 |
 | MCP 必查 | 每个组件使用前必须查询 MCP |
-| vue.md 格式 | section 注释（@define / @hook / @data / @methods / @mounted） |
 | i18n: false 默认 | 不生成多语言，文案直接写中文 |
 
-## 7. 改进（可选）
+## 10. 改进（可选）
 
-同 crud.md / table.md，可在末尾追加 `## 改进` 小节对生成的代码做二次调整。
+同 crud.md，可在末尾追加 `## 改进` 小节对生成的代码做二次调整。

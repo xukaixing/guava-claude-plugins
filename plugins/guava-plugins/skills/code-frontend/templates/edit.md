@@ -25,7 +25,57 @@ const <feature>Save = async () => {
 
 ---
 
-## 2. Variant A：纯表单
+## 2. Footer 按钮配置
+
+配置中的 `## 按钮` 小节定义 Drawer/Dialog footer 的操作按钮。
+
+### 配置格式
+
+```markdown
+## 按钮
+保存,取消
+
+# 或自定义按钮：
+## 按钮
+保存,取消,发布
+```
+
+### 按钮生成规则
+
+| 配置按钮 | 生成内容 |
+| -------- | -------- |
+| `保存` | `<GvButton type="primary" confirm="false" @click="<feature>Save">保存</GvButton>` |
+| `取消` | `<GvButton @click="isShow = false">取消</GvButton>` |
+| 自定义（如 `发布`） | `<GvButton type="primary" confirm="false" @click="<feature>Publish">发布</GvButton>` |
+
+### 生成逻辑
+
+- `## 按钮` 省略时，默认生成 `保存`
+- 多个按钮用逗号分隔，按声明顺序从左到右排列
+- `取消` 按钮：仅生成 `isShow = false` 逻辑，**不**生成对应方法
+- 自定义按钮：需在 `@methods` 区生成对应 `<feature><ButtonName>` 方法（PascalCase 方法名）
+- 所有按钮放在 `<template #footer>` 内
+
+### 示例
+
+配置：
+```markdown
+## 按钮
+保存,取消,发布
+```
+
+生成 template：
+```vue
+<template #footer>
+  <GvButton type="primary" confirm="false" @click="<feature>Save">保存</GvButton>
+  <GvButton @click="isShow = false">取消</GvButton>
+  <GvButton type="primary" confirm="false" @click="<feature>Publish">发布</GvButton>
+</template>
+```
+
+---
+
+## 3. Variant A：纯表单
 
 ```vue
 <script lang="tsx" setup>
@@ -69,7 +119,9 @@ watch(() => ({ visible: props.visible, rowId: props.rowData?.id, operateType: pr
   <div>
     <GvDrawer :title="props.title || (props.rowData?.id ? '编辑' : '新增')" v-model:visible="isShow" size="50%">
       <GvForm :key="formKey" ref="<feature>EditFm" ref-form="<feature>EditFm" :divider="'编辑信息'" :form-list="<feature>EditList" />
-      <template #footer><GvButton type="primary" confirm="false" @click="<feature>Save">保存</GvButton></template>
+      <template #footer>
+        <GvButton type="primary" confirm="false" @click="<feature>Save">保存</GvButton>
+      </template>
     </GvDrawer>
   </div>
 </template>
@@ -77,7 +129,7 @@ watch(() => ({ visible: props.visible, rowId: props.rowData?.id, operateType: pr
 
 ---
 
-## 3. Variant B：主子表
+## 4. Variant B：主子表
 
 ```vue
 <script lang="tsx" setup>
@@ -137,7 +189,9 @@ watch(() => ({ visible: props.visible, rowId: props.rowData?.id, operateType: pr
           <GvButton @click="add<Feature>Dtl()">新增</GvButton>
         </GvTable>
       </div>
-      <template #footer><GvButton type="primary" confirm="false" @click="<feature>Save()">保存</GvButton></template>
+      <template #footer>
+        <GvButton type="primary" confirm="false" @click="<feature>Save()">保存</GvButton>
+      </template>
     </GvDrawer>
   </div>
 </template>
@@ -145,9 +199,10 @@ watch(() => ({ visible: props.visible, rowId: props.rowData?.id, operateType: pr
 
 ---
 
-## 4. 规则
+## 5. 规则
 
 - 容器：`GvDrawer` / `GvDialog`；Props 用 `useUtil().propTypes`
 - `@hook`：`useI18n` + `useNotify`（`i18n: false` 时省略）
 - `@watch`：`({ visible }) => { if (visible) init(); }`
 - Variant B：`v-show="masterId !== 0"`，`size="80%"`
+- Footer 按钮：按 `## 按钮` 配置生成，省略时默认 `保存`

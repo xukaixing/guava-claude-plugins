@@ -1,12 +1,23 @@
 {
   "gvName": "GvIcon",
   "docSlug": "icon",
-  "tip": "GvIcon 组件。",
-  "markdown": "# GvIcon 组件\n\n::: tip\nGvIcon 组件。\n:::\n\n## 导入\n\n```typescript\nimport { GvIcon } from 'guava-ui';\n```\n\n## API\n\n### GvIcon Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvIcon Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
-  "api": "## API\n\n### GvIcon Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvIcon Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
-  "examples": [],
-  "usageMarkdown": "> GvIcon 组件。\n\n# GvIcon 组件\n\n::: tip\nGvIcon 组件。\n:::\n\n## 导入\n\n```typescript\nimport { GvIcon } from 'guava-ui';\n```\n\n## API\n\n### GvIcon Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvIcon Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
-  "generatedAt": "2026-07-24T15:02:48.358Z",
-  "source": "guava-ui packages/GvIcon (synced 2026-07-24)",
+  "tip": "GvIcon 图标组件，支持 iconfont / element-plus / svg 三种类型。图标定义在 src/views/iconsMng/。",
+  "markdown": "# Icon 图标组件\n\n::: tip\n图标定义在 `src/views/iconsMng/` 目录下：font-icons.ts / el-icons.ts / svg-icons.ts。\n:::\n\n## 导入\n\n```typescript\nimport { GvIcon } from 'guava-ui';\n```\n\n## API\n\n### GvIcon Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| `iconType` | 图标类型：`iconfont` / `el` / `svg` | `string` | 自动推断 |\n| `iconName` | 图标名称 | `string` | — |\n| `className` | CSS 类名 | `string` | `''` |\n| `size` | 字体大小（px） | `string` | — |\n\n### iconType 自动推断\n\n| iconName 前缀 | 实际 iconType |\n| ------------- | ------------- |\n| `el-icon-xxx` | `el` |\n| `gv-icon-xxx` | `iconfont` |\n| 其他 | `svg` |\n\n### 图标来源\n\n| iconType | 文件 | 示例 |\n| -------- | ---- | ---- |\n| `iconfont` | `src/views/iconsMng/font-icons.ts` | `<GvIcon iconType=\"iconfont\" iconName=\"gv-icon-shouye\" />` |\n| `el` | `src/views/iconsMng/el-icons.ts` | `<GvIcon iconType=\"el\" iconName=\"AddLocation\" />` |\n| `svg` | `src/views/iconsMng/svg-icons.ts` | `<GvIcon iconType=\"svg\" iconName=\"svg-name\" />` |\n\n## 示例\n\n```vue\n<!-- Font Icon -->\n<GvIcon iconType=\"iconfont\" iconName=\"gv-icon-shouye\" />\n\n<!-- Element Plus Icon -->\n<GvIcon iconType=\"el\" iconName=\"AddLocation\" />\n\n<!-- SVG Icon -->\n<GvIcon iconType=\"svg\" iconName=\"some-svg\" />\n```\n\n## 关键规则\n\n- **优先使用 `src/views/iconsMng/` 中已定义的图标**\n- font-icons: `gv-icon-xxx` 前缀\n- el-icons: PascalCase（如 `AddLocation`）\n- svg-icons: kebab-case",
+  "api": "## API\n\n### GvIcon Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| `iconType` | 图标类型 | `string` | 自动推断 |\n| `iconName` | 图标名称 | `string` | — |\n| `className` | CSS 类名 | `string` | `''` |\n| `size` | 字体大小（px） | `string` | — |\n\n### iconType 自动推断\n\n| iconName 前缀 | 实际 iconType |\n| ------------- | ------------- |\n| `el-icon-xxx` | `el` |\n| `gv-icon-xxx` | `iconfont` |\n| 其他 | `svg` |",
+  "examples": [
+    {
+      "id": "IconFont",
+      "file": "./examples/icon/font.vue",
+      "source": "<template>\n  <GvIcon iconType=\"iconfont\" iconName=\"gv-icon-shouye\" />\n  <GvIcon iconType=\"iconfont\" iconName=\"gv-icon-daiban\" />\n</template>\n\n<script setup lang=\"ts\">\nimport { GvIcon } from 'guava-ui';\n</script>\n"
+    },
+    {
+      "id": "IconEl",
+      "file": "./examples/icon/el.vue",
+      "source": "<template>\n  <GvIcon iconType=\"el\" iconName=\"AddLocation\" />\n  <GvIcon iconType=\"el\" iconName=\"Refresh\" />\n</template>\n\n<script setup lang=\"ts\">\nimport { GvIcon } from 'guava-ui';\n</script>\n"
+    }
+  ],
+  "usageMarkdown": "> GvIcon 图标组件，支持 iconfont / element-plus / svg 三种类型。\n\n# Icon 图标组件\n\n::: tip\n图标定义在 `src/views/iconsMng/` 目录下。\n:::\n\n## 导入\n\n```typescript\nimport { GvIcon } from 'guava-ui';\n```\n\n## API\n\n### GvIcon Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| `iconType` | 图标类型 | `string` | 自动推断 |\n| `iconName` | 图标名称 | `string` | — |\n| `className` | CSS 类名 | `string` | `''` |\n| `size` | 字体大小（px） | `string` | — |\n\n### iconType 自动推断\n\n| iconName 前缀 | 实际 iconType |\n| ------------- | ------------- |\n| `el-icon-xxx` | `el` |\n| `gv-icon-xxx` | `iconfont` |\n| 其他 | `svg` |\n\n## 示例源码（已内嵌，无需 press）\n\n### IconFont\n\n```vue\n<template>\n  <GvIcon iconType=\"iconfont\" iconName=\"gv-icon-shouye\" />\n</template>\n\n<script setup lang=\"ts\">\nimport { GvIcon } from 'guava-ui';\n</script>\n```\n\n### IconEl\n\n```vue\n<template>\n  <GvIcon iconType=\"el\" iconName=\"AddLocation\" />\n</template>\n\n<script setup lang=\"ts\">\nimport { GvIcon } from 'guava-ui';\n</script>\n```\n\n## 关键规则\n\n- **优先使用 `src/views/iconsMng/` 中已定义的图标**\n- font-icons: `gv-icon-xxx` 前缀\n- el-icons: PascalCase\n- svg-icons: kebab-case",
+  "generatedAt": "2026-07-24T16:00:00.000Z",
+  "source": "guava-ui packages/GvIcon/src/GvIcon.vue (synced 2026-07-24)",
   "inNpm": false
 }

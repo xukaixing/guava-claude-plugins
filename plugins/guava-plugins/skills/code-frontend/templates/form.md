@@ -30,7 +30,13 @@
 
 ---
 
-## 3. 模板
+## 3. Footer 按钮配置
+
+同 [edit.md 按钮配置](edit.md#2-footer-按钮配置)。`## 按钮` 省略时默认 `保存`。
+
+---
+
+## 4. 模板
 
 ```vue
 <!--
@@ -109,7 +115,7 @@ onMounted(() => {
   <div>
     <GvForm ref="<feature>FormFm" ref-form="<feature>FormFm" :divider="'配置信息'" :form-list="<feature>FormList" />
     <div class="form-actions">
-      <GvButton type="primary" @click="save<Feature>()">保存</GvButton>
+      <GvButton type="primary" confirm="false" @click="save<Feature>()">保存</GvButton>
     </div>
   </div>
 </template>
