@@ -1,5 +1,12 @@
 {
   "mcpServers": {
+    "yo-guava-ui": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/mcp/yo-guava-ui/index.mjs"
+      ]
+    },
     "guava-ui": {
       "type": "stdio",
       "command": "node",
