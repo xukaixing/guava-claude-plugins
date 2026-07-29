@@ -107,7 +107,63 @@ expand:
 | `custom` | 自定义 div |
 | `both` | 自定义 div + 子表 |
 
-### 1.7 改进
+### 1.7 多分区编辑
+
+`## 编辑` 下用 `###` 子标题拆分多个表单区域：
+
+```markdown
+## 编辑
+### 基本信息
+| 名称 | 字段 | 类型 | 必填 | 校验 | 长度 | 只读 | 占用列 | 扩展 |
+| 用户账号 | account | text | Y | isNumberLetter | 30 | N | 1 | disabledOnEdit |
+
+### 开票信息
+| 名称 | 字段 | 类型 | 必填 | 校验 | 长度 | 只读 | 占用列 | 扩展 |
+| 发票抬头 | invoiceTitle | text | Y | isAny | 100 | N | 1 | |
+```
+
+**解析规则**：
+- 每个 `###` 子标题 → 一个 `GvForm`，`:divider` = 子标题文本
+- helper 工厂函数名 = `create<Feature><SectionName>List`（SectionName 为子标题去空格 PascalCase）
+- 多个表单 ref 放入 `formRefs` 数组，保存时 `crud.checkForms(formRefs)` 统一校验
+- `getFormModel` 依次合并所有表单模型数据
+
+### 1.8 多 Tab 页
+
+`## 编辑`（含多分区）基础上增加 `## 标签页` 小节：
+
+```markdown
+## 标签页
+- name: orderDtl
+  label: 订单明细
+  type: table
+  columns:
+    - label: 商品名称
+      prop: productName
+  buttons: 新增,删除
+  api:
+    list: /order/findOrderDtl
+    save: /order/saveOrderDtl
+    delete: /order/deleteOrderDtl
+
+- name: remark
+  label: 备注信息
+  type: form
+  fields:
+    - { label: '备注', field: 'remark', type: 'textarea', format: [0, 'isAny', 200] }
+  buttons: 保存
+  api:
+    save: /order/saveRemark
+```
+
+**解析规则**：
+- `type: table` → `GvTable` + 工具栏按钮，数据用 `crud.searchNoFm` 按 masterId 拉取
+- `type: form` → `GvForm` + 保存按钮，数据用 `crud.setEditValue` / `crud.resetEditValue`
+- `table` 类型用 `v-show="masterId !== 0"` 控制显隐（新增时隐藏）
+- `form` 类型始终显示
+- Tab 列表 / 表单的 helper 工厂函数命名为 `create<Feature><TabName>TableHeadList` / `create<Feature><TabName>List`
+
+### 1.9 改进
 
 `## 改进` 小节支持布局/样式/交互微调。生成后逐条应用。
 

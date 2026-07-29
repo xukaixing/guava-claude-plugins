@@ -155,10 +155,95 @@ const delete<Feature> = (row, index) => {
 
 ---
 
-## 4. 关键规则
+## 4. 编辑页多分区与多 Tab 配置
+
+### 4.1 多分区编辑（Variant C）
+
+`## 编辑` 下用 `###` 子标题拆分多个表单区域，每个子标题生成一个 `GvDivider` + `GvForm`：
+
+```markdown
+## 编辑
+### 基本信息
+| 名称 | 字段 | 类型 | 必填 | 校验 | 长度 | 只读 | 占用列 | 扩展 |
+| 用户账号 | account | text | Y | isNumberLetter | 30 | N | 1 | disabledOnEdit |
+
+### 开票信息
+| 名称 | 字段 | 类型 | 必填 | 校验 | 长度 | 只读 | 占用列 | 扩展 |
+| 发票抬头 | invoiceTitle | text | Y | isAny | 100 | N | 1 | |
+```
+
+**生成规则**：
+- 每个 `###` 子标题生成一个 `GvForm`，`:divider` 设为子标题文本（如 `'基本信息'`、`'开票信息'`）
+- helper 工厂函数命名为 `create<Feature><SectionName>List`（如 `create<Feature>BasicInfoList`、`create<Feature>InvoiceInfoList`）
+- 保存时用 `crud.checkForms(fmNodes)` 校验所有表单，`getFormModel` 依次合并数据
+- 编辑回填 / 新增重置：对每个表单 list 分别调用 `crud.setEditValue` / `crud.resetEditValue`
+
+### 4.2 多分区 + 多 Tab 页（Variant D）
+
+在 4.1 基础上增加 `## 标签页` 小节，编辑框下方渲染 `GvTabs`：
+
+```markdown
+## 标签页
+- name: orderDtl
+  label: 订单明细
+  type: table
+  columns:
+    - label: 商品名称
+      prop: productName
+    - label: 数量
+      prop: quantity
+  buttons: 新增,删除
+  api:
+    list: /order/findOrderDtl
+    save: /order/saveOrderDtl
+    delete: /order/deleteOrderDtl
+
+- name: remark
+  label: 备注信息
+  type: form
+  fields:
+    - { label: '备注', field: 'remark', type: 'textarea', format: [0, 'isAny', 200] }
+  buttons: 保存
+  api:
+    save: /order/saveRemark
+```
+
+**Tab type 生成规则**：
+
+| type | 生成内容 | 数据拉取 |
+| ---- | -------- | -------- |
+| `table` | `GvTable`（含操作列）+ 工具栏按钮 | `crud.searchNoFm` 按 masterId 拉取 |
+| `form` | `GvForm` + 保存按钮 | `crud.setEditValue` 回填 / `crud.resetEditValue` 重置 |
+
+**配置字段说明**：
+
+| 字段 | 必填 | 说明 |
+| ---- | ---- | ---- |
+| `name` | ✅ | Tab 标识 / `GvTabPane` 的 `name` |
+| `label` | ✅ | Tab 显示文本 / `GvTabPane` 的 `label` |
+| `type` | ✅ | `table`（列表）或 `form`（表单） |
+| `columns` | type=table 时 | 表格列配置 |
+| `fields` | type=form 时 | 表单字段配置（复用 FormItem 结构） |
+| `buttons` | | 工具栏按钮，逗号分隔 |
+| `api` | | 相关 API 端点 |
+
+### 4.3 配置推导
+
+| 配置特征 | 使用的 Edit 变体 |
+| -------- | ---------------- |
+| `## 编辑` 仅一个表（无 `###`） | Variant A 纯表单 |
+| `## 编辑` 多个 `###` 子标题 | Variant C 多分区表单 |
+| `## 编辑` 多个 `###` + `## 标签页` | Variant D 多分区 + 多 Tab |
+| `subTable: true`（旧版） | Variant B 主子表 |
+
+---
+
+## 5. 关键规则
 
 - 删除：`crud.submit(api, { id: row.id })`
 - `@hook`：`useI18n` + `useNotify`（`i18n: false` 时省略）
 - 无 add/edit：省略 dialog state 和 Edit 组件
 - `i18n: false`：template 内 `t('xxx')` 替换为中文；不 `import useI18n`
 - TableInstance：有 `checkAllEdit()` / `createEditRow()` 时用 `TableInstanceExp`
+- 多分区编辑：`crud.checkForms(fmNodes)` 校验 + `getFormModel` 合并
+- 多 Tab：`table` 类型用 `v-show="masterId !== 0"` 控制显隐，`form` 类型始终显示

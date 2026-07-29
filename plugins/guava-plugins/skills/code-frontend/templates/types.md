@@ -76,3 +76,33 @@ export interface <Feature>InlineEditActions {
   dictClearCB: DictSelectedFn;
 }
 ```
+
+---
+
+## 多 Tab 页（Variant D）
+
+含 `## 标签页` 时，根据 Tab type 追加对应类型：
+
+### Tab table 类型
+
+```typescript
+// <feature>-编辑页 Tab 表格回调方法赋类型（only if type=table Tab）
+export interface <Feature><TabName>TableActions {
+  save<Feature><TabName>: TableRowFn;
+  delete<Feature><TabName>: TableRowFn;
+}
+```
+
+> TabName 为 `name` 字段转 PascalCase（如 `orderDtl` → `OrderDtl`）
+
+### Tab form 类型
+
+```typescript
+// <feature>-编辑页 Tab 表单回调方法赋类型（only if type=form Tab）
+export interface <Feature>TabEditActions {
+  dictCB: DictSelectedFn;
+  dictClearCB: DictSelectedFn;
+}
+```
+
+> 仅当 type=form 的 Tab 含字典字段时生成

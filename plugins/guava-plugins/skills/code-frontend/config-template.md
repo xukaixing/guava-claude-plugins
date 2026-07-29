@@ -156,6 +156,87 @@ const statCards = [{ title: '今日订单', value: 128 }];
 
 ---
 
+## 多分区编辑 + 多 Tab 页
+
+```markdown
+---
+feature: orderMng
+title: 订单管理
+view: sysMng/orderMng
+pageType: crud-module
+layout: module
+editPage: true
+i18n: false
+api:
+  module: admin/order
+  base: /order
+  operations:
+    list: /order/findOrders
+    create: /order/saveOrder
+    update: /order/updateOrder/{id}
+    delete: /order/deleteOrder
+---
+
+## 查询
+| 名称 | 字段 | 类型 | 校验 | 长度 | 扩展 |
+| 订单号 | u@orderNo | text | isNumberLetter | 30 | |
+| 状态 | u@status | dic | isDic | 6 | dic=ddzt |
+
+## 表格
+| 名称 | 字段 | 宽度 | 筛选 | 类型 |
+| 订单号 | orderNo | 180 | Y | |
+| 客户名称 | customerName | 150 | Y | |
+| 金额 | amount | 120 | | amount |
+| 状态 | status | 100 | | dic:ddzt |
+
+## 操作列
+编辑,删除
+
+## 编辑
+### 基本信息
+| 名称 | 字段 | 类型 | 必填 | 校验 | 长度 | 只读 | 占用列 | 扩展 |
+| 订单号 | orderNo | text | Y | isNumberLetter | 30 | N | 1 | disabledOnEdit |
+| 客户名称 | customerName | text | Y | isAny | 60 | N | 1 | |
+| 金额 | amount | number | Y | isDouble | 12 | N | 1 | |
+
+### 开票信息
+| 名称 | 字段 | 类型 | 必填 | 校验 | 长度 | 只读 | 占用列 | 扩展 |
+| 发票抬头 | invoiceTitle | text | Y | isAny | 100 | N | 1 | |
+| 税号 | taxNo | text | | isAny | 20 | N | 1 | |
+| 开户银行 | bankName | text | | isAny | 60 | N | 1 | |
+
+## 按钮
+保存,取消
+
+## 标签页
+- name: orderDtl
+  label: 订单明细
+  type: table
+  columns:
+    - label: 商品名称
+      prop: productName
+    - label: 数量
+      prop: quantity
+    - label: 单价
+      prop: price
+  buttons: 新增,删除
+  api:
+    list: /order/findOrderDtl
+    save: /order/saveOrderDtl
+    delete: /order/deleteOrderDtl
+
+- name: remark
+  label: 备注信息
+  type: form
+  fields:
+    - { label: '备注', field: 'remark', type: 'textarea', format: [0, 'isAny', 200] }
+  buttons: 保存
+  api:
+    save: /order/saveRemark
+```
+
+---
+
 ## 配置项速查
 
 ### 字段扩展

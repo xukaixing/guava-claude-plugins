@@ -182,7 +182,72 @@ export const create<Feature>EditList = (actions: <Feature>EditActions, operateTy
 
 ---
 
-## 10. form-only / tabs
+## 10. 多分区编辑（Variant C / D）
+
+`## 编辑` 下含多个 `###` 子标题时，每个子标题生成独立的 helper 工厂函数：
+
+| 子标题 | 工厂函数命名 | 示例 |
+| ------ | ------------ | ------ |
+| `### 基本信息` | `create<Feature>BasicInfoList` | `createUserBasicInfoList` |
+| `### 开票信息` | `create<Feature>InvoiceInfoList` | `createUserInvoiceInfoList` |
+
+**规则**：
+- 函数名 = `create<Feature><SectionName>List`，SectionName 为子标题去空格转 PascalCase
+- 每个工厂函数接收 `(actions: <Feature>EditActions, operateType = '')` 参数
+- 每个工厂函数独立管理自己的 `FormItem[]`
+
+```typescript
+// 基本信息
+export const create<Feature>BasicInfoList = (actions: <Feature>EditActions, operateType = '') =>
+  ref<FormItem[]>([
+    { type: 'text', format: [1, 'isNumberLetter', 30], label: '用户账号', field: 'account', disabled: operateType === 'update' },
+    { type: 'dic', format: [1, 'idDic', 6], dicType: 'yxzt', label: '状态', field: 'status', cb: actions.dictCB, clear: actions.dictClearCB },
+  ]);
+
+// 开票信息
+export const create<Feature>InvoiceInfoList = (actions: <Feature>EditActions, operateType = '') =>
+  ref<FormItem[]>([
+    { type: 'text', format: [1, 'isAny', 100], label: '发票抬头', field: 'invoiceTitle' },
+    { type: 'text', format: [0, 'isAny', 20], label: '税号', field: 'taxNo' },
+  ]);
+```
+
+---
+
+## 11. 多 Tab 页（Variant D）
+
+`## 标签页` 中每个 Tab 根据 `type` 生成对应的 helper 工厂函数：
+
+| Tab type | 工厂函数命名 | 返回类型 |
+| -------- | ------------ | -------- |
+| `table` | `create<Feature><TabName>TableHeadList` | `ref<TableHeadItem[]>` |
+| `form` | `create<Feature><TabName>List` | `ref<FormItem[]>` |
+
+**规则**：
+- TabName 为 `name` 字段转 PascalCase（如 `orderDtl` → `OrderDtl`）
+- `table` 类型工厂接收 actions 参数（含 `save`、`delete` 等回调）
+- `form` 类型工厂接收 `(actions: <Feature>TabEditActions)` 参数
+
+```typescript
+// Tab 表格列
+export const create<Feature>OrderDtlTableHeadList = (actions: <Feature>OrderDtlTableActions) =>
+  ref<TableHeadItem[]>([
+    { type: 'action', prop: '', label: '操作', content: ['编辑', '删除'], action: [actions.save<Feature>OrderDtl, actions.delete<Feature>OrderDtl] },
+    { label: '商品名称', prop: 'productName', width: '150px' },
+    { label: '数量', prop: 'quantity', width: '100px' },
+    { label: '单价', prop: 'price', width: '120px' },
+  ]);
+
+// Tab 表单
+export const create<Feature>RemarkInfoList = (actions: <Feature>TabEditActions) =>
+  ref<FormItem[]>([
+    { type: 'textarea', format: [0, 'isAny', 200], label: '备注', field: 'remark', colspan: 3 },
+  ]);
+```
+
+---
+
+## 12. form-only / tabs
 
 - form-only：仅 `create<Feature>FormList`
 - tabs：追加 `create<Feature>InlineEditList`（含 `inline-form` Tab 时）

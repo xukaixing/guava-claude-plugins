@@ -54,7 +54,10 @@
       "Bash(npm *)",
       "Bash(xargs -I{} stat -f \"%m %N\" {})",
       "Bash(awk '{print $2}')",
-      "Read(//tmp/**)"
+      "Read(//tmp/**)",
+      "Bash(node --max-old-space-size=4096 ./node_modules/.bin/eslint --fix src/main.ts src/layout/Layout.vue src/views/login/Login.vue index.html)",
+      "Bash(node --max-old-space-size=4096 ./node_modules/.bin/eslint src/main.ts src/layout/Layout.vue src/views/login/Login.vue)",
+      "Bash(./node_modules/.bin/eslint src/main.ts src/layout/Layout.vue src/views/login/Login.vue)"
     ],
     "additionalDirectories": [
       "~/.claude/plugins/cache/guava-tools",
