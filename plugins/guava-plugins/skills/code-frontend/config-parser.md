@@ -175,11 +175,17 @@ expand:
 
 **必须从 `feature` 推导，禁止从 `view` 推导。**
 
-| feature | 结果 |
-| ------- | ---- |
-| `userMng` | `User` |
-| `salesSkills` | `SalesSkills` |
-| `component: Xxx` | 使用配置值 |
+**规则**：仅当 `feature` 以 `Mng` 结尾时去除 `Mng` 后缀，其余情况保持原样转 PascalCase。
+
+| feature | 结果 | 说明 |
+| ------- | ---- | ---- |
+| `userMng` | `User` | 去除 `Mng` |
+| `salesSkills` | `SalesSkills` | 无 `Mng`，保持原样 |
+| `svcStmtApply` | `SvcStmtApply` | 无 `Mng`，保持原样 |
+| `systemConfig` | `SystemConfig` | 无 `Mng`，保持原样 |
+| `component: Xxx` | 使用配置值 | 显式指定 |
+
+> **禁止**：从 `view` 路径推导、去除 `Mng` 以外的后缀（如 `Apply`、`Config` 等）
 
 ### 2.2 方法名 / API 名
 

@@ -161,6 +161,7 @@ Read 同 pageType 参考页（[page-types.md](page-types.md)）+ 目标 `api` / 
 | 约束 | 说明 |
 |------|------|
 | **view = 目录** | `src/views/<YAML.view>/`，禁止用 `.md` 路径或 `feature` 当目录 |
+| **componentBaseName** | 仅当 `feature` 以 `Mng` 结尾时去后缀，其余保持原样转 PascalCase |
 | **frontendOnly** | 不生成 api；列表 / 表单数据在 `data.ts` |
 | **i18n** | 默认 `false` = 仅中文，不走 `t()`；`true` = 双语言 + `t()` |
 | **校验必填** | 查询 / 编辑 / 表单 每条 FormItem 必须有 `format[1]` |

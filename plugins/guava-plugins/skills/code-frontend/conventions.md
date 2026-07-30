@@ -159,10 +159,12 @@ src/views/<view>/
 
 **componentBaseName 必须从 `feature` 推导，禁止从 `view` 路径推导。**
 
+**规则**：仅当 `feature` 以 `Mng` 结尾时去除 `Mng` 后缀，其余情况保持原样转 PascalCase。
+
 | 项目 | 规范 | 示例 |
 | ---- | ---- | ---- |
 | viewPath | = YAML `view` 原文（仅决定目录） | `sysMng/userMng2` |
-| componentBaseName | 从 `feature` 推导，去 Mng 后缀 → PascalCase | `User`, `SalesSkills` |
+| componentBaseName | 从 `feature` 推导，仅去 `Mng` 后缀 → PascalCase | `User`, `SalesSkills`, `SvcStmtApply` |
 | 列表页 | `<Base>Index.vue` | `UserIndex.vue` |
 | 编辑页 | `<Base>Edit.vue` | `UserEdit.vue` |
 | 纯表单页 | `<Base>.vue` | `SystemConfig.vue` |
@@ -170,6 +172,7 @@ src/views/<view>/
 | YAML | 正确 | 错误 |
 | ---- | ---- | ---- |
 | `feature: userMng` + `view: sysMng/userMng2` | `UserIndex.vue` / `UserEdit.vue` | ❌ `UserMng2Index.vue` |
+| `feature: svcStmtApply` | `SvcStmtApplyIndex.vue` | ❌ `SvcStmtIndex.vue` |
 | API 文件 | `src/api/<apiModule>.ts` | `admin/user.ts` |
 | GvForm ref | `<feature>SearchFm` | `userSearchFm` |
 | GvForm form-list | `<feature>SearchList` | `userSearchList` |
