@@ -5,10 +5,7 @@
  */
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import {
-  ListToolsRequestSchema,
-  CallToolRequestSchema,
-} from '@modelcontextprotocol/sdk/types.js';
+import { ListToolsRequestSchema, CallToolRequestSchema } from '@modelcontextprotocol/sdk/types.js';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { YoDocsDB } from '@voyo/docs-db';
@@ -19,10 +16,7 @@ const DOCS_DIR = join(__dirname, '.yo_ddb', 'docs');
 
 const db = new YoDocsDB({ dbPath: DB_PATH, docsDir: DOCS_DIR });
 
-const server = new Server(
-  { name: 'yo-guava-ui', version: '1.0.0' },
-  { capabilities: { tools: {} } },
-);
+const server = new Server({ name: 'yo-guava-ui', version: '1.0.0' }, { capabilities: { tools: {} } });
 
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
   tools: [

@@ -74,10 +74,7 @@ export function startComponentServer({ gvName, componentDir }) {
         let list = usage.examples || [];
         if (args.id) {
           const q = String(args.id).toLowerCase();
-          list = list.filter(
-            (e) =>
-              String(e.id).toLowerCase().includes(q) || String(e.file).toLowerCase().includes(q),
-          );
+          list = list.filter((e) => String(e.id).toLowerCase().includes(q) || String(e.file).toLowerCase().includes(q));
         }
         return { component: gvName, count: list.length, examples: list, error: usage.error };
       }

@@ -247,7 +247,126 @@ export const create<Feature>RemarkInfoList = (actions: <Feature>TabEditActions) 
 
 ---
 
-## 12. form-only / tabs
+## 12. 明细展开（Detail Table）
+
+操作列自定义按钮 + 展开明细表格模式（参考 [detail.md](detail.md)）。适用于「用户登录明细」等关联数据异步拉取场景。
+
+### 配置触发
+
+```markdown
+## 明细
+- name: loginLog
+  label: 用户登录明细
+  api: /sysuser/findUserLoginInfo
+  columns:
+    - label: 登录IP
+      prop: loginIp
+    - label: 登录时间
+      prop: loginTime
+```
+
+### helper 工厂函数
+
+```typescript
+export const buildLoginLogHeadList = (): TableHeadItem[] => [
+  { label: '登录IP', prop: loginIp, width: '150px' },
+  { label: '所属地区', prop: 'loginDivision' },
+  { label: '浏览器', prop: 'browser' },
+  { label: '登录时间', prop: 'loginTime', width: '180px' },
+];
+```
+
+### 命名规则
+
+| 配置 name | helper 函数名 | Index 方法名 |
+| --------- | ------------- | ----------- |
+| `loginLog` | `buildLoginLogHeadList` | `showLoginLog` |
+| `orderDtl` | `buildOrderDtlHeadList` | `showOrderDtl` |
+
+### 操作列追加按钮
+
+```typescript
+{
+  type: 'action',
+  prop: '',
+  label: '操作',
+  content: ['编辑', '删除', '用户登录明细'],
+  icon: ['el-icon-edit', 'gv-icon-tingyong', 'gv-icon-daiban'],
+  action: [actions.editRow, actions.delRow, actions.showLoginLog],
+},
+```
+
+### 与 Expand 的区别
+
+| 项 | Expand | Detail |
+| -- | ------ | ------ |
+| 触发 | 行首图标 | 操作列按钮 |
+| 配置 | `## 扩展列` | `## 明细` |
+| 数据拉取 | `fetchExpandTableData` | `crud.fetchTable` |
+
+---
+
+## 13. 详情页（Info / GvDescriptions）
+
+只读详情展示模式，使用 `GvDescriptions` 组件在 Drawer 中展示字段（参考 [info.md](info.md)）。
+
+### 配置触发
+
+```markdown
+## 详情
+| 名称 | 字段 | 占用列 | 类型 | 扩展 |
+| 用户账号 | account | 1 | | |
+| 性别 | sex | 1 | dic | dic=xb |
+| 备注 | remark | 2 | | |
+```
+
+### helper 工厂函数
+
+```typescript
+export const buildUserInfoHeadList = (): DescItemHead[] => [
+  { prop: 'account', label: '用户账号' },
+  { prop: 'userName', label: '用户姓名' },
+  { prop: 'sex', label: '性别', dicType: 'xb' },
+  { prop: 'birthDate', label: '出生日期' },
+  { prop: 'mobile', label: '联系方式' },
+  { prop: 'email', label: '邮箱' },
+  { prop: 'status', label: '状态', dicType: 'yxzt' },
+  { prop: 'remark', label: '备注', span: 2 },
+];
+```
+
+### 命名规则
+
+| 场景 | helper 函数名 | 返回类型 |
+| ---- | ------------- | -------- |
+| crud-module infoPage | `build<Feature>InfoHeadList` | `DescItemHead[]` |
+| 独立 infoPage 模板 | `build<Feature>InfoHeadList` | `DescItemHead[]` |
+
+### DescItemHead 属性映射
+
+| 属性 | 配置列 | 说明 |
+| ---- | ------ | ---- |
+| `prop` | 字段 | 对应 `itemData` 中的字段 key |
+| `label` | 名称 | 描述项标签文本 |
+| `span` | 占用列 | 列占用栅格数，默认 1 |
+| `dicType` | 类型=dic 时，扩展 `dic=编码` | 字典编码，自动转换 `{c,v}` → 文案 |
+| `formatter` | — | 自定义格式化函数 `(value, itemData) => string` |
+| `render` | — | 自定义渲染 `(value, itemData) => VNode \| string` |
+| `labelWidth` | — | 自定义标签宽度 |
+| `align` | — | 内容对齐方式 |
+
+### 与 Edit / Detail 的区别
+
+| 项 | Edit | Info | Detail |
+| -- | ---- | ---- | ------ |
+| 用途 | 新增/编辑 | 只读展示 | 关联数据展开 |
+| 核心组件 | GvForm | GvDescriptions | GvTable |
+| helper 返回 | `FormItem[]` | `DescItemHead[]` | `TableHeadItem[]` |
+| 数据流向 | 表单 → 保存 | itemData → 展示 | API → 子表 |
+
+---
+
+## 14. form-only / tabs
 
 - form-only：仅 `create<Feature>FormList`
 - tabs：追加 `create<Feature>InlineEditList`（含 `inline-form` Tab 时）

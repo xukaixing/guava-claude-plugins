@@ -42,6 +42,7 @@ code-frontend 按 `pageType` 选择生成模板与输出文件。**省略时默�
 | `layout` | | `module`（默认）或 `flat` |
 | `editPage` | | add / edit 启用时是否生成 Edit.vue |
 | `subTable` | | 是否主子表（Edit Variant B） |
+| `detailPage` | | 明细展开配置（如 `loginLog`），或 `## 明细` 小节存在时自动生成 |
 
 ### 配置表
 

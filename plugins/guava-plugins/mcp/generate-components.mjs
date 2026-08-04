@@ -14,14 +14,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import {
-  COMPONENTS_DIR,
-  MCP_ROOT,
-  resolvePluginRoot,
-  resolvePressDocsDir,
-  toMcpKey,
-  DOC_SLUG_TO_GV,
-} from './_shared/paths.mjs';
+import { COMPONENTS_DIR, MCP_ROOT, resolvePluginRoot, resolvePressDocsDir, toMcpKey, DOC_SLUG_TO_GV } from './_shared/paths.mjs';
 import { extractFromPress, listPressComponents } from './_shared/press-extract.mjs';
 import { listGvFromTypes } from './_shared/npm-types.mjs';
 
@@ -30,10 +23,7 @@ const pluginRoot = resolvePluginRoot();
 const pressDir = resolvePressDocsDir();
 
 if (!pressDir) {
-  console.error(
-    '[generate] ERROR: guava-press docs not found.\n' +
-      'Set GUAVA_PRESS_COMPONENTS_DOCS or place checkout at ../guava/guava-press/.../components',
-  );
+  console.error('[generate] ERROR: guava-press docs not found.\n' + 'Set GUAVA_PRESS_COMPONENTS_DOCS or place checkout at ../guava/guava-press/.../components');
   process.exit(1);
 }
 
@@ -142,10 +132,7 @@ fs.writeFileSync(mcpJsonPath, `${JSON.stringify({ mcpServers }, null, 2)}\n`);
 
 const rows = components
   .filter((c) => fs.existsSync(path.join(COMPONENTS_DIR, c.gvName, 'usage.json')))
-  .map(
-    (c) =>
-      `| \`${toMcpKey(c.gvName)}\` | \`${c.docSlug}.md\` → usage.json | ${c.inNpm ? '✓' : '✗'} |`,
-  )
+  .map((c) => `| \`${toMcpKey(c.gvName)}\` | \`${c.docSlug}.md\` → usage.json | ${c.inNpm ? '✓' : '✗'} |`)
   .join('\n');
 
 fs.writeFileSync(

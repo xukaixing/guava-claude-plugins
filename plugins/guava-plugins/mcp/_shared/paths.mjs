@@ -108,9 +108,7 @@ export const DOC_SLUG_TO_GV = {
   validate: 'GvValidate',
 };
 
-export const GV_TO_DOC_SLUG = Object.fromEntries(
-  Object.entries(DOC_SLUG_TO_GV).map(([slug, gv]) => [gv, slug]),
-);
+export const GV_TO_DOC_SLUG = Object.fromEntries(Object.entries(DOC_SLUG_TO_GV).map(([slug, gv]) => [gv, slug]));
 
 /** GvForm → gv-form */
 export function toMcpKey(gvName) {

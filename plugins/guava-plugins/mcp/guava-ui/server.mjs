@@ -3,14 +3,7 @@
  * Guava UI MCP server (stdio JSON-RPC).
  * Exposes Gv* component catalog so Claude Code can generate pages with Guava UI.
  */
-import {
-  EL_TO_GV,
-  getCatalog,
-  getComponentDetail,
-  getPageRecipe,
-  resolveComponent,
-  searchComponents,
-} from './lib/catalog.mjs';
+import { EL_TO_GV, getCatalog, getComponentDetail, getPageRecipe, resolveComponent, searchComponents } from './lib/catalog.mjs';
 
 const SERVER_INFO = {
   name: 'guava-ui',
@@ -20,8 +13,7 @@ const SERVER_INFO = {
 const TOOLS = [
   {
     name: 'list_gv_components',
-    description:
-      'List all Guava UI Gv* components with category and summary. Call before generating Vue pages to prefer Gv* over el-*.',
+    description: 'List all Guava UI Gv* components with category and summary. Call before generating Vue pages to prefer Gv* over el-*.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -38,8 +30,7 @@ const TOOLS = [
   },
   {
     name: 'get_gv_component',
-    description:
-      'Get one Gv* component: props, emits, usage notes, and README. Use when writing template bindings for a specific component.',
+    description: 'Get one Gv* component: props, emits, usage notes, and README. Use when writing template bindings for a specific component.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -64,8 +55,7 @@ const TOOLS = [
   },
   {
     name: 'resolve_gv_component',
-    description:
-      'Map Element Plus tag (el-form) or Chinese/English intent (表单/dialog) to the preferred Gv* component, with props.',
+    description: 'Map Element Plus tag (el-form) or Chinese/English intent (表单/dialog) to the preferred Gv* component, with props.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -79,8 +69,7 @@ const TOOLS = [
   },
   {
     name: 'get_page_recipe',
-    description:
-      'Get recommended Gv* composition for a page type: crud-list | form-edit | form-only | tabs. Call when scaffolding a page.',
+    description: 'Get recommended Gv* composition for a page type: crud-list | form-edit | form-only | tabs. Call when scaffolding a page.',
     inputSchema: {
       type: 'object',
       properties: {

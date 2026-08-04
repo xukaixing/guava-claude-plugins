@@ -57,7 +57,12 @@
       "Read(//tmp/**)",
       "Bash(node --max-old-space-size=4096 ./node_modules/.bin/eslint --fix src/main.ts src/layout/Layout.vue src/views/login/Login.vue index.html)",
       "Bash(node --max-old-space-size=4096 ./node_modules/.bin/eslint src/main.ts src/layout/Layout.vue src/views/login/Login.vue)",
-      "Bash(./node_modules/.bin/eslint src/main.ts src/layout/Layout.vue src/views/login/Login.vue)"
+      "Bash(./node_modules/.bin/eslint src/main.ts src/layout/Layout.vue src/views/login/Login.vue)",
+      "Bash(mkdir -p /Users/andyhsu/.claude/plugins/marketplaces/guava-tools/plugins/guava-plugins/mcp/components/GvDescriptions)",
+      "Bash(cp /Users/andyhsu/.claude/plugins/marketplaces/guava-tools/plugins/guava-plugins/.mcp.json /Users/andyhsu/.claude/plugins/cache/guava-tools/guava-plugins/1.0.17/.mcp.json 2>/dev/null; echo \"done\")",
+      "Bash(cp /Users/andyhsu/.claude/plugins/marketplaces/guava-tools/plugins/guava-plugins/mcp/components/README.md /Users/andyhsu/.claude/plugins/cache/guava-tools/guava-plugins/1.0.17/mcp/components/README.md 2>/dev/null; echo \"done\")",
+      "Bash(mkdir -p /Users/andyhsu/Workspace/ses-web/.claude/mcp/components/GvDescriptions && echo \"created\")",
+      "Bash(cp /Users/andyhsu/.claude/plugins/cache/guava-tools/guava-plugins/1.0.17/mcp/components/GvDescriptions/* /Users/andyhsu/Workspace/ses-web/.claude/mcp/components/GvDescriptions/ && echo \"copied\")"
     ],
     "additionalDirectories": [
       "~/.claude/plugins/cache/guava-tools",
@@ -66,7 +71,10 @@
       "/Users/andyhsu/Workspace/ses-web/.claude/mcp/components",
       "/Users/andyhsu/Workspace/ses-web/.claude/skills",
       "/Users/andyhsu/Workspace/ses-web/.claude/skills/code-optimize",
-      "/Users/andyhsu/Workspace/ses-web/.claude/skills/code-frontend"
+      "/Users/andyhsu/Workspace/ses-web/.claude/skills/code-frontend",
+      "/Users/andyhsu/.claude/plugins/marketplaces/guava-tools/plugins/guava-plugins/mcp/components",
+      "/Users/andyhsu/.claude/plugins/marketplaces/guava-tools/plugins/guava-plugins",
+      "/Users/andyhsu/.claude/plugins/cache/guava-tools/guava-plugins/1.0.17/mcp/components/GvDescriptions"
     ]
   },
   "enabledMcpjsonServers": [

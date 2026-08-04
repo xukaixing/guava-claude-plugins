@@ -21,4 +21,3 @@ if (!existsSync(nodeModules)) {
 }
 
 await import('./main.mjs');
-

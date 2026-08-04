@@ -238,7 +238,69 @@ const delete<Feature> = (row, index) => {
 
 ---
 
-## 5. 关键规则
+## 5. 明细展开（Detail Table）
+
+操作列自定义按钮 + 展开明细表格模式。点击按钮后在当前行下方展开子表，展示关联数据。
+
+### 5.1 配置
+
+```markdown
+## 明细
+- name: loginLog
+  label: 用户登录明细
+  api: /sysuser/findUserLoginInfo
+  columns:
+    - label: 登录IP
+      prop: loginIp
+      width: 150
+    - label: 所属地区
+      prop: loginDivision
+    - label: 浏览器
+      prop: browser
+    - label: 登录时间
+      prop: loginTime
+      width: 180
+```
+
+### 5.2 生成方法
+
+```typescript
+/**
+ * @todo: 展开用户登录明细
+ */
+const showLoginLog = async (row: Recordable<any>, index: number) => {
+  const filter = { userId: row.id };
+  const detailData = await crud.fetchTable(findUserLoginInfoApi, filter);
+  return () => (
+    <GvTable
+      ref-table={`userLoginLogList-${index}`}
+      table-head={buildLoginLogHeadList()}
+      table-data={detailData}
+      table-type="detail"
+      table-fetch={findUserLoginInfoApi}
+      table-filter={filter}
+    />
+  );
+};
+```
+
+### 5.3 关键规则
+
+| 规则 | 说明 |
+| ---- | ---- |
+| 触发条件 | `## 明细` 小节存在 |
+| helper 命名 | `build<Feature><DetailName>HeadList` |
+| 方法命名 | `show<DetailName>` |
+| 数据拉取 | `crud.fetchTable(fetch, { <parent>Id: row.id })` |
+| 渲染方式 | 返回 render 函数，`table-type="detail"` |
+| 按钮位置 | 操作列末尾追加，icon 用 `gv-icon-daiban` |
+| API import | 自动追加 `find<DetailName>Api` |
+
+> 详见 [detail.md](detail.md)。
+
+---
+
+## 6. 关键规则
 
 - 删除：`crud.submit(api, { id: row.id })`
 - `@hook`：`useI18n` + `useNotify`（`i18n: false` 时省略）
@@ -247,3 +309,4 @@ const delete<Feature> = (row, index) => {
 - TableInstance：有 `checkAllEdit()` / `createEditRow()` 时用 `TableInstanceExp`
 - 多分区编辑：`crud.checkForms(fmNodes)` 校验 + `getFormModel` 合并
 - 多 Tab：`table` 类型用 `v-show="masterId !== 0"` 控制显隐，`form` 类型始终显示
+- 明细展开：`crud.fetchTable` 按需拉取，返回 `table-type="detail"` 的 render 函数

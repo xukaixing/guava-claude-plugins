@@ -38,7 +38,23 @@ api:
 | 用户账号 | account | 150 | Y | |
 
 ## 操作列
-编辑,删除
+编辑,删除,用户登录明细
+
+## 明细
+- name: loginLog
+  label: 用户登录明细
+  api: /sysuser/findUserLoginInfo
+  columns:
+    - label: 登录IP
+      prop: loginIp
+      width: 150
+    - label: 所属地区
+      prop: loginDivision
+    - label: 浏览器
+      prop: browser
+    - label: 登录时间
+      prop: loginTime
+      width: 180
 
 ## 扩展列
 expand

@@ -88,7 +88,10 @@ export function buildUsageMarkdown(data) {
       parts.push(`\n### ${ex.id}\n\n\`\`\`vue\n${ex.source || '// (missing)'}\n\`\`\`\n`);
     }
   }
-  return parts.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+  return parts
+    .join('\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
 }
 
 /**

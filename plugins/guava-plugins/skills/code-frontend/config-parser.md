@@ -128,7 +128,32 @@ expand:
 - 多个表单 ref 放入 `formRefs` 数组，保存时 `crud.checkForms(formRefs)` 统一校验
 - `getFormModel` 依次合并所有表单模型数据
 
-### 1.8 多 Tab 页
+### 1.8 明细展开（Detail Table）
+
+操作列自定义按钮 + 展开明细表格模式，用于关联数据异步拉取（如用户登录明细）。
+
+```markdown
+## 明细
+- name: loginLog
+  label: 用户登录明细
+  api: /sysuser/findUserLoginInfo
+  columns:
+    - label: 登录IP
+      prop: loginIp
+    - label: 登录时间
+      prop: loginTime
+```
+
+**解析规则**：
+- `name` → helper 函数名 `build<DetailName>HeadList`，Index 方法名 `show<DetailName>`
+- `label` → 操作列按钮文案
+- `api` → 自动推导 API 函数名 `find<DetailName>Api`，需追加到 `src/api/<module>.ts`
+- `columns` → 明细表格列配置（`TableHeadItem[]`）
+- 数据拉取：`crud.fetchTable(fetch, { <parent>Id: row.id })`
+- 渲染方式：返回 render 函数，`table-type="detail"`
+- 按钮追加到操作列末尾，icon 用 `gv-icon-daiban`
+
+### 1.9 多 Tab 页
 
 `## 编辑`（含多分区）基础上增加 `## 标签页` 小节：
 
@@ -163,7 +188,7 @@ expand:
 - `form` 类型始终显示
 - Tab 列表 / 表单的 helper 工厂函数命名为 `create<Feature><TabName>TableHeadList` / `create<Feature><TabName>List`
 
-### 1.9 改进
+### 1.10 改进
 
 `## 改进` 小节支持布局/样式/交互微调。生成后逐条应用。
 

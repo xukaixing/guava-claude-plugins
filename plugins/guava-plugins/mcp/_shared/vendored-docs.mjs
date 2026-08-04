@@ -15,8 +15,7 @@ export function loadVendoredUsage(gvName, componentDir) {
   if (!fs.existsSync(jsonPath)) {
     return {
       gvName,
-      error:
-        'usage.json missing. On a machine with guava-press, run: node .claude/mcp/generate-components.mjs',
+      error: 'usage.json missing. On a machine with guava-press, run: node .claude/mcp/generate-components.mjs',
     };
   }
   try {

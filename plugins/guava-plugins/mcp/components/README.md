@@ -2,7 +2,7 @@
 
 安装 `guava-plugins@guava-tools` 后自动连接。用法来自 `usage.json`；props 来自消费项目的 `guava-ui`。
 
-共 **53** 个（含 1 个工具 MCP `gv-crud`）。
+共 **54** 个（含 1 个工具 MCP `gv-crud`）。
 
 ## 表单类
 
@@ -32,6 +32,7 @@
 | --- | --- | --- |
 | `gv-table` | 配置驱动表格（TableHeadItem[]） | ✓ |
 | `gv-table-bar` | 表格工具栏 | ✓ |
+| `gv-descriptions` | 描述列表（DescItemHead[]） | ✓ |
 | `gv-tree` | 树 | ✓ |
 | `gv-tag` | 标签 | ✓ |
 | `gv-badge` | 徽标 | ✓ |
