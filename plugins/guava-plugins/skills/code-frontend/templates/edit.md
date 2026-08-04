@@ -385,7 +385,61 @@ watch(() => ({ visible: props.visible, rowId: props.rowData?.id, operateType: pr
 
 ---
 
-## 7. 规则
+## 7. Tab 页类型（Variant D）
+
+`## 标签页` 小节定义编辑框下方的 Tab 页，支持两种类型：
+
+| type | 说明 | 生成内容 |
+| ---- | ---- | -------- |
+| `table` | 列表子表 | `GvTable` + 工具栏按钮，数据用 `crud.searchNoFm` 按 masterId 拉取 |
+| `form` | 表单 Tab | `GvForm` + 保存按钮，数据用 `crud.setEditValue` / `crud.resetEditValue` |
+
+### 配置格式
+
+```markdown
+## 标签页
+- name: orderDtl
+  label: 订单明细
+  type: table
+  columns:
+    - label: 商品名称
+      prop: productName
+  buttons: 新增,删除
+  api:
+    list: /order/findOrderDtl
+    save: /order/saveOrderDtl
+    delete: /order/deleteOrderDtl
+
+- name: remark
+  label: 备注信息
+  type: form
+  fields:
+    - { label: '备注', field: 'remark', type: 'textarea', format: [0, 'isAny', 200] }
+  buttons: 保存
+  api:
+    save: /order/saveRemark
+```
+
+### 生成规则
+
+- **table 类型**：
+  - 工具栏按钮：从 `buttons` 生成（如 新增、删除）
+  - 数据拉取：`crud.searchNoFm` 按 masterId 拉取
+  - 新增/删除：`crud.submit` 调用对应 API
+  - 显隐控制：`v-show="masterId !== 0"`（新增时隐藏）
+  - helper 工厂：`create<Feature><TabName>TableHeadList`
+
+- **form 类型**：
+  - 表单字段：从 `fields` 生成（复用 Edit 表结构）
+  - 保存按钮：从 `buttons` 生成
+  - 数据回填：编辑时 `crud.setEditValue`，新增时 `crud.resetEditValue`
+  - 保存方法：`crud.submit` 调用 `api.save`
+  - helper 工厂：`create<Feature><TabName>List`
+  - 始终显示（不参与 masterId 显隐控制）
+
+---
+
+## 8. 规则
 
 - 容器：`GvDrawer` / `GvDialog`；Props 用 `useUtil().propTypes`
 - `@hook`：`useI18n` + `useNotify`（`i18n: false` 时省略）
@@ -393,4 +447,5 @@ watch(() => ({ visible: props.visible, rowId: props.rowData?.id, operateType: pr
 - Variant B/D：`v-show="masterId !== 0"`，`size="80%"`
 - Footer 按钮：按 `## 按钮` 配置生成，省略时默认 `保存`
 - Variant C/D：多表单用 `crud.checkForms(fmNodes)` 校验，`getFormModel` 合并
-- Variant D：Tab `table` 类型用 `crud.searchNoFm` 拉数据；Tab `form` 类型独立保存
+- Variant D Tab `table`：`crud.searchNoFm` 按 masterId 拉数据，工具栏按钮从 `buttons` 生成
+- Variant D Tab `form`：`crud.setEditValue` / `crud.resetEditValue` 回填，`crud.submit` 保存
