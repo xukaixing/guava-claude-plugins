@@ -99,9 +99,18 @@ export interface <Feature>TableActions {
 
 ---
 
-## 6. 查询默认值
+## 6. 默认值
 
-不用 `default`，用 `value`。字典用 `showLabel` + `value: { value: 'code', label: '文案' }`。
+不用 `default`，用 `value`。
+
+| 字段类型 | 写法 | 示例 |
+| -------- | ---- | ---- |
+| 文本 / 数字等 | `value: 'xxx'` | `value: 'zhangsan'` |
+| 字典 | `value: '<dictCode>'` + `showLabel: '<displayText>'` | `value: '100601', showLabel: '集团公司'` |
+
+- `value` 适用于所有字段类型（`text`、`number`、`dic`、`textarea` 等）
+- 字典需额外提供 `showLabel`，值与 `value` 一一对应
+- 查询 / 编辑表单均可使用
 
 ---
 
@@ -133,8 +142,8 @@ import type { <Feature>TableActions, <Feature>EditActions } from './types';
 
 export const create<Feature>SearchList = () =>
   ref<FormItem[]>([
-    { type: 'text', format: [0, 'isNumberLetter', 30], label: '用户账号', field: 'u@account' },
-    { type: 'dic', format: [0, 'isDic', 6], dicType: 'yxzt', label: '状态', field: 'u@status' },
+    { type: 'text', format: [0, 'isNumberLetter', 30], label: '用户账号', field: 'u@account', value: 'admin' },
+    { type: 'dic', format: [0, 'isDic', 6], dicType: 'yxzt', label: '状态', field: 'u@status', value: '1', showLabel: '启用' },
     { type: 'date', format: [0, 'isDate', 10], dateType: 'daterange', label: '创建时间', field: 'createTime' },
   ]);
 
@@ -173,7 +182,8 @@ export const create<Feature>TableHeadList = (actions: <Feature>TableActions) =>
 // add/edit 时
 export const create<Feature>EditList = (actions: <Feature>EditActions, operateType = '') =>
   ref<FormItem[]>([
-    { type: 'text', format: [1, 'isNumberLetter', 30], label: '用户账号', field: 'account', disabled: operateType === 'update' },
+    { type: 'text', format: [1, 'isNumberLetter', 30], label: '用户账号', field: 'account', disabled: operateType === 'update', value: 'admin' },
+    { type: 'dic', format: [1, 'idDic', 6], dicType: 'zzjb', label: '组织级别', field: 'orgLevel', value: '100601', showLabel: '集团公司', cb: actions.dictCB, clear: actions.dictClearCB },
     { type: 'dic', format: [1, 'idDic', 6], dicType: 'yxzt', label: '状态', field: 'status', cb: actions.dictCB, clear: actions.dictClearCB },
     { type: 'textarea', format: [0, 'isAny', 200], label: '备注', field: 'remark', colspan: 4 },
     { type: 'text', format: [0, 'isNumber', 20], label: '创建人', field: 'createBy', readonly: true },
@@ -201,6 +211,7 @@ export const create<Feature>EditList = (actions: <Feature>EditActions, operateTy
 export const create<Feature>BasicInfoList = (actions: <Feature>EditActions, operateType = '') =>
   ref<FormItem[]>([
     { type: 'text', format: [1, 'isNumberLetter', 30], label: '用户账号', field: 'account', disabled: operateType === 'update' },
+    { type: 'dic', format: [1, 'idDic', 6], dicType: 'zzjb', label: '组织级别', field: 'orgLevel', value: '100601', showLabel: '集团公司', cb: actions.dictCB, clear: actions.dictClearCB },
     { type: 'dic', format: [1, 'idDic', 6], dicType: 'yxzt', label: '状态', field: 'status', cb: actions.dictCB, clear: actions.dictClearCB },
   ]);
 

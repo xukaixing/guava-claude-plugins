@@ -61,8 +61,9 @@ expand
 
 ## 编辑
 | 名称 | 字段 | 类型 | 必填 | 校验 | 长度 | 只读 | 占用列 | 扩展 |
-| 用户账号 | account | text | Y | isNumberLetter | 30 | N | 1 | disabledOnEdit |
+| 用户账号 | account | text | Y | isNumberLetter | 30 | N | 1 | disabledOnEdit,value=admin |
 | 状态 | status | dic | Y | idDic | 6 | N | 1 | dic=yxzt |
+| 组织级别 | orgLevel | dic | Y | idDic | 10 | N | 1 | dic=zzjb,value=100601,showLabel=集团公司 |
 | 备注 | remark | textarea | | isAny | 200 | N | 3 | |
 ```
 
@@ -264,6 +265,8 @@ api:
 | `remote=findDictFromTableApi` | 远程字典 |
 | `disabledOnEdit` | 编辑时禁用 |
 | `multiple` | 字典多选 |
+| `value=100601` | 默认值（文本/字典通用，字典需配合 `showLabel`） |
+| `showLabel=集团公司` | 字典默认值显示文案（与 `value` 配对） |
 
 ### 表格「类型」列
 

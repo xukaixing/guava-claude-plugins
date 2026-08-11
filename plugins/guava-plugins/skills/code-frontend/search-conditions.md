@@ -111,12 +111,17 @@
 | `dicRemote` | 远程字典 API |
 | `multiple` | 多选 |
 | `isreload` | 每次重新加载 |
+| `value` | 默认选中项的字典 code（如 `'100601'`） |
+| `showLabel` | 默认选中项的显示文案（如 `'集团公司'`，与 `value` 配对使用） |
+| `filtercode` | 过滤字典选项，正则匹配 code（如 `'100601\|100605'`） |
 
 ```typescript
 // 本地字典
 { type: 'dic', format: [0, 'isDic', 6], dicType: 'yxzt', label: '状态', field: 'status' }
 // 远程字典
 { type: 'dic', format: [0, 'isDic', 20], dicType: 't#FUNC-DEPT-DEPTID', dicRemote: findDictFromTableApi, label: '部门', field: 'deptCode' }
+// 带默认值
+{ type: 'dic', format: [0, 'isDic', 6], dicType: 'zzjb', label: '组织级别', field: 'orgLevel', value: '100601', showLabel: '集团公司' }
 ```
 
 ---
@@ -166,5 +171,5 @@
 { type: 'dic', format: [1, 'idDic', 6], dicType: 'yxzt', label: '状态', field: 'status' }
 { type: 'text', format: [0, 'isDouble', 10, 4], label: '金额', field: 'amount' }
 // 默认值
-{ type: 'dic', field: 'status', showLabel: '启用', value: { value: '10601', label: '启用' } }
+{ type: 'dic', format: [0, 'isDic', 6], dicType: 'zzjb', label: '组织级别', field: 'orgLevel', value: '100601', showLabel: '集团公司' }
 ```
