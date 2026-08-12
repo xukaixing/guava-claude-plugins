@@ -10,7 +10,7 @@
       "name": "guava-plugins",
       "source": "./plugins/guava-plugins",
       "description": "Guava 全栈生成 + Gv* MCP：/guava-plugins:code-frontend|code-backend|code-all",
-      "version": "1.0.10",
+      "version": "1.0.19",
       "keywords": [
         "guava",
         "vue",
