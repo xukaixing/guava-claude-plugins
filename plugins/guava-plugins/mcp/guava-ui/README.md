@@ -4,7 +4,7 @@
 
 运行时：
 - props：`${CLAUDE_PROJECT_DIR}/node_modules/guava-ui`（类型定义）
-- 用法：各 `components/Gv*/usage.json` + `usage.md`
+- 用法：各 `components/Gv*/usage.json`
 
 ## 已更新组件（2026-07-24）
 

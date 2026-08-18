@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Generate per-component MCPs inside this plugin:
- * - Read guava-press → vendor usage.json / usage.md
+ * - Read guava-press → vendor usage.json
  * - Write plugin .mcp.json with ${CLAUDE_PLUGIN_ROOT} paths
  *
  * Usage (from anywhere):
@@ -69,7 +69,6 @@ for (const { gvName, docSlug, inNpm } of components) {
   };
 
   fs.writeFileSync(path.join(dir, 'usage.json'), `${JSON.stringify(usagePayload, null, 2)}\n`);
-  fs.writeFileSync(path.join(dir, 'usage.md'), `${extracted.usageMarkdown}\n`);
 
   const serverPath = path.join(dir, 'server.mjs');
   fs.writeFileSync(
@@ -110,11 +109,17 @@ startComponentServer({
 }
 
 /** Plugin .mcp.json — paths use CLAUDE_PLUGIN_ROOT so install works anywhere */
+// Static (non-generated) servers must be listed here or regeneration would drop them.
 const mcpServers = {
   'guava-ui': {
     type: 'stdio',
     command: 'node',
     args: ['${CLAUDE_PLUGIN_ROOT}/mcp/guava-ui/server.mjs'],
+  },
+  'mysql-schema': {
+    type: 'stdio',
+    command: 'node',
+    args: ['${CLAUDE_PLUGIN_ROOT}/mcp/mysql-schema/index.mjs'],
   },
 };
 
