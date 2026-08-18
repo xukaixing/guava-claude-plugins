@@ -40,4 +40,7 @@ Thumbs.db
 node_modules/
 settings.*.json
 
+# MySQL schema MCP local connection config (credentials)
+plugins/guava-plugins/mcp/mysql-schema/db.yml
+
 /.mcp.json

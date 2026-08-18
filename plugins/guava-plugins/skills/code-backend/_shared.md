@@ -16,6 +16,7 @@
 | 文件 | 已存在时 |
 |------|----------|
 | Controller / Service / ServiceImpl | **Write 覆盖**；保留类头与方法上的 `@since` / `@since:` |
+| PO | **Write 覆盖**；保留原 `@created`，仅补充缺失字段 |
 | Mapper / SqlProvider | 本 skill 默认不生成；用户要求时 **追加** 缺失方法 |
 
 禁止因已存在而跳过。仅补充缺失端点时 StrReplace 追加。

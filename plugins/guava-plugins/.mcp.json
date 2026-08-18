@@ -14,6 +14,13 @@
         "${CLAUDE_PLUGIN_ROOT}/mcp/guava-ui/server.mjs"
       ]
     },
+    "mysql-schema": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/mcp/mysql-schema/index.mjs"
+      ]
+    },
     "gv-anchor": {
       "type": "stdio",
       "command": "node",

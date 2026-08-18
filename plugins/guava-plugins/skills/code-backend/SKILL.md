@@ -30,6 +30,12 @@ Step 2–4：Write Controller → Service → ServiceImpl（覆盖策略 [_share
 | Service | [service.md](templates/service.md) |
 | ServiceImpl | [service-impl.md](templates/service-impl.md) |
 
+Step 4.5：PO 实体（ServiceImpl 引用 `{Entity}PO`，缺失则编译失败，**必做**）——按 [po.md](templates/po.md)：
+
+1. 检查 `GUAVA_BACKEND_ROOT` 是否已有 `{Entity}PO`（`grep -r "class {Entity}PO"`）→ 有则直接引用，跳过生成。
+2. 没有 → **连库读表生成**：mysql-schema `list_tables` 确认表存在（表名 = `{Entity}` PascalCase → snake_case，如 `SysNotice` → `sys_notice`，或按 `backend.feature`），`get_table_columns` 拿精确 `DATA_TYPE` 生成 `{Entity}PO.java`。
+3. MCP 不可用 / 表不存在 → 按 `.md` 的 Guava 类型映射兜底生成，`number`/`date` 歧义在待确认清单标注。
+
 Step 5：Mapper/SqlProvider、`getTransHash()`、`@MarkLog`、与前端 `paths` 对齐。
 
 Step 6 — 本次生成代码检查（必做）：按 [code-review.md](code-review.md) 对本轮 Java 做三检（**规范** / **安全** / **性能**）。Critical 须修复并再检；通过后输出三行简报。

@@ -12,6 +12,15 @@
 
 Skill 要求：写 Vue template 前先调 MCP。
 
+## MySQL 表结构（mysql-schema）
+
+`/guava-plugins:code-from-db` 用它读 `information_schema` 表结构。连接配置在 `db.yml`，查找优先级：
+
+1. 业务工程根 `${CLAUDE_PROJECT_DIR}/db.yml`（如 `ses-web/db.yml`，每个工程连自己的库）
+2. 插件自身 `mcp/mysql-schema/db.yml`（全局兜底）
+
+模板见 `mcp/mysql-schema/db.example.yml`；`db.yml` 已 gitignore，不提交凭据。支持 MySQL 8.0 SSL（`ssl: true`，可选 `ssl_ca`/`ssl_cert`/`ssl_key`、`ssl_reject_unauthorized`）。
+
 ## 运行时依赖
 
 - **用法**：本目录 `components/Gv*/usage.json`（已 vendored）

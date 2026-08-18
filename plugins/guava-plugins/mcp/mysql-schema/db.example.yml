@@ -1,0 +1,22 @@
+# MySQL 连接配置模板。复制为 db.yml 并填写真实连接信息（db.yml 已 gitignore，不提交）。
+#
+# db.yml 查找优先级（高 → 低）：
+#   1. 业务工程根 ${CLAUDE_PROJECT_DIR}/db.yml —— 如 ses-web/db.yml，每个工程可连自己的库
+#   2. 插件自身 mcp/mysql-schema/db.yml —— 全局兜底
+#
+host: 211.149.179.63
+port: 3306
+database: sentury_mps
+user: root
+password: 1q2w3e4r!
+
+# ---- MySQL 8.0 SSL ----
+# ssl: true  开启 TLS；服务端 require_secure_transport=ON（报 "insecure transport" 错）时必须 true
+ssl: false
+# ssl_reject_unauthorized: true   # 默认 false（内网/自签证书放宽校验）；生产环境设 true 走系统 CA
+# ssl_ca: /path/to/ca.pem               # 可选：自定义 CA 证书（PEM 路径）
+# ssl_cert: /path/to/client-cert.pem    # 可选：双向认证客户端证书
+# ssl_key: /path/to/client-key.pem      # 可选：双向认证客户端私钥
+#
+# MySQL 8.0 默认认证为 caching_sha2_password：未开 SSL 时 mysql2 会自动索取
+# 服务端 RSA 公钥完成认证（无需额外配置）；开 SSL 时密码直接走 TLS 通道。
