@@ -129,6 +129,26 @@ run_eslint() {
   debug "eslint not found in PATH or node_modules/.bin"
   return 127
 }
+
+run_prettier() {
+  local -a args=("$@")
+  setup_path
+  cd "$PROJECT_DIR"
+  if [[ -x "$PROJECT_DIR/node_modules/.bin/prettier" ]]; then
+    "$PROJECT_DIR/node_modules/.bin/prettier" "${args[@]}"
+    return $?
+  fi
+  if command -v pnpm >/dev/null 2>&1; then
+    pnpm exec prettier "${args[@]}"
+    return $?
+  fi
+  if command -v npx >/dev/null 2>&1; then
+    npx prettier "${args[@]}"
+    return $?
+  fi
+  debug "prettier not found in PATH or node_modules/.bin; skipping format"
+  return 0
+}
 run_eslint_fix() {
   local list="$1"
   local -a files=()
@@ -139,6 +159,18 @@ run_eslint_fix() {
   ((${#files[@]})) || return 0
   debug "eslint --fix ${files[*]}"
   run_eslint --cache --fix "${files[@]}" 2>&1 || true
+}
+
+run_prettier_fix() {
+  local list="$1"
+  local -a files=()
+  [[ -s "$list" ]] || return 0
+  while IFS= read -r f; do
+    [[ -n "$f" ]] && files+=("$f")
+  done < "$list"
+  ((${#files[@]})) || return 0
+  debug "prettier --write ${files[*]}"
+  run_prettier --write "${files[@]}" 2>&1 || true
 }
 
 run_eslint_check() {
@@ -258,6 +290,7 @@ emit_stop_block() {
 lint_front_and_java() {
   local front_list="$1" java_list="$2"
   run_eslint_fix "$front_list"
+  run_prettier_fix "$front_list"
   run_java_fix "$java_list"
 }
 

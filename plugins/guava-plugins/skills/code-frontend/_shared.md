@@ -48,4 +48,4 @@ MCP 工具不可用时，从工程 `node_modules/guava-ui` 依赖获取组件信
 
 ## 生成后
 
-`hooks/lint-fix.sh`（插件）：`PostToolBatch` 前端 `eslint --fix`；`Stop` 校验。见 [../../context/front.md](../../context/front.md)。
+`hooks/lint-fix.sh`（插件）：`PostToolBatch` 前端 `eslint --fix` + `prettier --write`；`Stop` 校验。见 [../../context/front.md](../../context/front.md)。

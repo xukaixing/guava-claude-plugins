@@ -21,4 +21,4 @@ pnpm lint:lint-staged
 - 配置 → `/guava-plugins:code-frontend src/pages/...md`
 - 示例：`src/pages/sysMng/userMng.md`
 - 覆盖策略：`skills/code-frontend/_shared.md`
-- 生成后 hook：`hooks/lint-fix.sh`（插件自动加载）
+- 生成后 hook：`hooks/lint-fix.sh`（插件自动加载，eslint --fix + prettier --write）
