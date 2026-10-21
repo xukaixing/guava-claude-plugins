@@ -2,7 +2,7 @@
 
 读取 `.md` 配置 → 解析 → **自动推导** 路径/方法名/API 名 → 生成代码。
 
-支持：**精简格式（推荐）** + **旧版格式（兼容）**。
+支持：**视觉稿格式（推荐）** + 精简格式 + 旧版格式（兼容）。
 
 ---
 
@@ -23,9 +23,113 @@
 
 ---
 
-## 1. 精简格式
+## 1. 视觉稿格式（推荐）
+
+最接近产品原型稿的写法：小节带 `- 描述` 后缀、每节可有 `### 布局` 意图文本、表格 7 列、操作列行内声明、编辑子区带组件注解。**YAML 可省略 `pageType` / `api`**。
 
 ### 1.1 YAML 头
+
+```yaml
+---
+feature: userMng1          # 命名/i18n/方法前缀（非目录）
+title: 用户管理
+view: sysMng/userMng       # 唯一决定 src/views/<view>/
+layout: module             # module（默认）| flat
+i18n: false
+editPage: true             # 生成 <Base>Edit.vue
+infoPage: true             # 生成 <Base>Info.vue（## 详情 小节，见 info.md）
+frontendOnly: true         # 可省略：无 api 块时默认 true（1.9）
+# pageType 可省略 → 按小节推导（1.8）
+---
+```
+
+### 1.2 小节识别
+
+| 小节 | 说明 |
+| ---- | ---- |
+| `## 查询 - <描述>` | 搜索表单（后缀可省） |
+| `## 表格 - <描述>` | 列表 |
+| `## 编辑表单 - <描述>` | 新增/编辑（`## 编辑` 兼容别名） |
+| `## 标签页` / `## 明细` / `## 详情` / `## 改进` | 同精简格式规则 |
+
+- 按 `-` 前前缀匹配；`- 描述` 作为区块标题文案（Edit Drawer 标题、搜索区分隔等）
+- `---` 分隔线忽略
+- `### 布局` 见 1.3；表格下 `### 表格工具栏` / `### 操作列` / `### 操作列规则` 见 1.5 / 1.6
+
+### 1.3 `### 布局`（可选，布局意图）
+
+| 内容 | 处理 |
+| ---- | ---- |
+| 含容器指令（如「使用 GvDrawer 展示」） | 生效：GvDrawer（默认）；出现「GvDialog」→ 对话框变体（edit.md / info.md Variant B） |
+| 纯描述（如「用户信息检索布局描述」） | 不生成代码，仅作生成语义上下文 |
+
+### 1.4 表格 7 列
+
+`名称|字段|宽度|筛选|类型|固定|扩展`（后两列可缺省 → 兼容精简格式 5 列）
+
+| 列 | 取值 | 生成 |
+| ---- | ---- | ---- |
+| `固定` | `Y` | `fixed`（方向生成前查 MCP `get_props` GvTable head 属性；操作列默认右固定、数据列左固定） |
+
+`扩展` 逗号分隔多值，取值与 `TableHeadItem` 属性映射见 [helper.md §7](templates/helper.md#7-数值列格式化--表格视觉稿扩展)（`amount` / `align:` / `type=tag` / `dic=`）；属性名生成前查 MCP `get_props` GvTable。
+
+### 1.5 操作列（行内声明优先）
+
+表格内 `类型` 为 `action:按钮1,按钮2` 的行 = 操作列定义（字段列留空）：
+
+```markdown
+| 操作 | | 80 | | action:编辑,编辑 | Y |
+```
+
+- 按钮名按顿号 / 逗号分隔，**原样写入 `content`，不去重**（「编辑、编辑」= 两个按钮）
+- `action` 回调映射：`编辑 → actions.edit<Feature>`、`删除 → actions.delete<Feature>`、`详情 / 查看 → actions.info<Feature>`；其余按钮生成同名占位方法
+- 表格无 `action:` 行 → 回落 `### 操作列` 小节（精简格式逻辑）；两处同时存在**以行内为准**，不校验一致性
+- `### 操作列规则` bullets（如 `**编辑**：点击后打开「用户信息表单」（Drawer）`）→ 非标准动作占位方法的方法体 / JSDoc 注释依据；标准动作用于校验既有行为，不重复生成
+
+### 1.6 `### 表格工具栏`
+
+顿号分隔按钮名 → Index 页表格工具栏，按钮名原样写入、不去重。按钮→方法映射（新增 / 导入 / 导出 / 批量删除 / 占位）见 [crud.md §3.3](templates/crud.md#33-工具栏按钮映射表格工具栏)。
+
+### 1.7 编辑表单子区（组件注解）
+
+`## 编辑表单` 下 `###` 子标题的组件注解决定生成：
+
+| 子标题 | 生成 |
+| ---- | ---- |
+| `### 基本信息（GvForm）` | `create<Feature><Section>List`（多分区规则同 helper §10；**注解省略时默认 GvForm**，兼容旧格式） |
+| `### 登录信息（GvDescriptions）` | `build<Feature><Section>InfoHeadList`（`DescItemHead[]`，表结构 `名称|字段|占用列|类型|扩展`，规则同 info.md）；Edit.vue 内渲染**只读** `<GvDescriptions>` 块，数据来自 rowData（props 查 MCP）。`infoPage: true` 且无 `## 详情` 时，Info 页字段回落到该子区（再缺省回落 `## 表格` 列，见 info.md） |
+
+`### 按钮`：顿号分隔 → Drawer footer：
+
+| 按钮 | 行为 |
+| ---- | ---- |
+| 保存 | `crud.checkForms` 校验 + `crud.save / crud.update` 提交 |
+| 取消 | 关闭 Drawer |
+| 其他 | 同名占位方法 |
+
+### 1.8 pageType 推导（YAML 显式时优先）
+
+| 小节特征 | 推导 |
+| ---- | ---- |
+| 有 `## 表格` | `crud-module` |
+| 仅 `## 编辑表单`（无查询 / 表格） | `form-only` |
+| 有 `## 标签页` | `tabs` |
+| `## 页面描述` + `## 组件清单` | `free` |
+
+### 1.9 api 推导
+
+无 `api` 块且未标 `frontendOnly` → **视同 `frontendOnly: true`**：`src/api/**` 不生成，`data.ts` 必生成（`getListResult` / `filterListRecords`）。
+
+### 1.10 占位字段与 `u@`
+
+- 字段列**原样使用**（`text_1`、`select_2` 等），禁止自动改名
+- 查询表 `u@` 前缀**可选**：省略则直接用字段名（语义不变，见 search-conditions §5）
+
+---
+
+## 2. 精简格式（兼容）
+
+### 2.1 YAML 头
 
 ```yaml
 ---
@@ -55,7 +159,7 @@ api:
 | `i18n` | `false`（默认）= 仅中文 |
 | `api.operations` | 操作端点 |
 
-### 1.2 frontendOnly
+### 2.2 frontendOnly
 
 | 项 | 行为 |
 | ---- | ---- |
@@ -64,7 +168,7 @@ api:
 | `data.ts` | 必生成 |
 | 列表查询 | `getListResult` / `filterListRecords` |
 
-### 1.3 view = 目录
+### 2.3 view = 目录
 
 **`src/views/` 目录 = YAML `view` 原文**。
 
@@ -72,13 +176,13 @@ api:
 | ---- | ---- | ---- |
 | `view: sysMng/userMng2` | `src/views/sysMng/userMng2/` | `sysMng/userMng/` |
 
-### 1.4 配置表
+### 2.4 配置表
 
 **查询** 6 列：`名称|字段|类型|校验|长度|扩展`（校验必填，字段带 `u@`）
 **表格** 5 列：`名称|字段|宽度|筛选|类型`（字段无 `u@`）
 **编辑** 9 列：`名称|字段|类型|必填|校验|长度|只读|占用列|扩展`
 
-### 1.5 表格级声明
+### 2.5 表格级声明
 
 | 小节 | 必须 | 说明 |
 | ---- | ---- | ---- |
@@ -86,7 +190,7 @@ api:
 | `## 扩展列` | | `expand` 或完整配置 |
 | `## 表格工具栏` | | 按钮名 + `import,export` |
 
-### 1.6 扩展列配置
+### 2.6 扩展列配置
 
 ```markdown
 ## 扩展列
@@ -107,7 +211,7 @@ expand:
 | `custom` | 自定义 div |
 | `both` | 自定义 div + 子表 |
 
-### 1.7 多分区编辑
+### 2.7 多分区编辑
 
 `## 编辑` 下用 `###` 子标题拆分多个表单区域：
 
@@ -122,13 +226,9 @@ expand:
 | 发票抬头 | invoiceTitle | text | Y | isAny | 100 | N | 1 | |
 ```
 
-**解析规则**：
-- 每个 `###` 子标题 → 一个 `GvForm`，`:divider` = 子标题文本
-- helper 工厂函数名 = `create<Feature><SectionName>List`（SectionName 为子标题去空格 PascalCase）
-- 多个表单 ref 放入 `formRefs` 数组，保存时 `crud.checkForms(formRefs)` 统一校验
-- `getFormModel` 依次合并所有表单模型数据
+**解析规则**：每个 `###` 子标题 → 一个 `GvForm`（`:divider` = 子标题），工厂命名 / `formRefs` 校验 / `getFormModel` 合并见 [helper.md §10](templates/helper.md#10-多分区编辑variant-c--d)。
 
-### 1.8 明细展开（Detail Table）
+### 2.8 明细展开（Detail Table）
 
 操作列自定义按钮 + 展开明细表格模式，用于关联数据异步拉取（如用户登录明细）。
 
@@ -153,32 +253,19 @@ expand:
 - 渲染方式：返回 render 函数，`table-type="detail"`
 - 按钮追加到操作列末尾，icon 用 `gv-icon-daiban`
 
-### 1.9 多 Tab 页
+### 2.9 多 Tab 页
 
-`## 编辑`（含多分区）基础上增加 `## 标签页` 小节：
+`## 编辑`（含多分区）基础上增加 `## 标签页` 小节。完整 YAML 示例见 [config-template.md](config-template.md#多分区编辑--多-tab-页)；字段速览：
 
 ```markdown
 ## 标签页
-- name: orderDtl
+- name: orderDtl          # type: table → GvTable + 工具栏按钮，crud.searchNoFm 按 masterId 拉取，v-show="masterId !== 0"
   label: 订单明细
-  type: table
-  columns:
-    - label: 商品名称
-      prop: productName
+  type: table             # table | form；form → GvForm + 保存按钮，始终显示
+  columns: [...]          # table: TableHeadItem[]
+  fields: [...]           # form: FormItem[]
   buttons: 新增,删除
-  api:
-    list: /order/findOrderDtl
-    save: /order/saveOrderDtl
-    delete: /order/deleteOrderDtl
-
-- name: remark
-  label: 备注信息
-  type: form
-  fields:
-    - { label: '备注', field: 'remark', type: 'textarea', format: [0, 'isAny', 200] }
-  buttons: 保存
-  api:
-    save: /order/saveRemark
+  api: { list, save, delete }
 ```
 
 **解析规则**：
@@ -188,15 +275,15 @@ expand:
 - `form` 类型始终显示
 - Tab 列表 / 表单的 helper 工厂函数命名为 `create<Feature><TabName>TableHeadList` / `create<Feature><TabName>List`
 
-### 1.10 改进
+### 2.10 改进
 
 `## 改进` 小节支持布局/样式/交互微调。生成后逐条应用。
 
 ---
 
-## 2. 自动推导
+## 3. 自动推导
 
-### 2.1 componentBaseName
+### 3.1 componentBaseName
 
 **必须从 `feature` 推导，禁止从 `view` 推导。**
 
@@ -212,7 +299,7 @@ expand:
 
 > **禁止**：从 `view` 路径推导、去除 `Mng` 以外的后缀（如 `Apply`、`Config` 等）
 
-### 2.2 方法名 / API 名
+### 3.2 方法名 / API 名
 
 | key | 方法名 | API 名 | HTTP |
 | --- | ------ | ------ | ---- |
@@ -221,14 +308,14 @@ expand:
 | `update` | `edit{Entity}` | `{末段}Api` | PUT |
 | `delete` | `delete{Entity}` | `{末段}Api` | POST |
 
-### 2.3 form-only 方法名
+### 3.3 form-only 方法名
 
 | key | 方法名 | API 名 |
 | --- | ------ | ------ |
 | `get`/`find` | `load{Component}` | `get{Component}Api` |
 | `save` | `save{Component}` | `save{Component}Api` |
 
-### 2.4 文件清单
+### 3.4 文件清单
 
 ```
 src/api/<api>.ts                         ← frontendOnly 时省略
@@ -247,7 +334,7 @@ src/locales/zh-CN.ts + en.ts
 
 ---
 
-## 3. 旧版格式（兼容）
+## 4. 旧版格式（兼容）
 
 | 旧字段 | 新字段 |
 | ------ | ------ |
@@ -258,15 +345,15 @@ src/locales/zh-CN.ts + en.ts
 
 ---
 
-## 4. 校验清单
+## 5. 校验清单
 
-- crud-module：`api.operations.list` 已填；查询/编辑校验齐全
+- crud-module：`api.operations.list` 已填（视觉稿格式缺 `api` 不报错，默认 frontendOnly）；查询/编辑校验齐全
 - tabs：`tabs` 数组 ≥1 项
 - form-only：编辑表校验齐全；无查询/表格
 
 ---
 
-## 5. 生成顺序
+## 6. 生成顺序
 
 | 顺序 | 文件 | 策略 |
 | ---- | ---- | ---- |

@@ -156,24 +156,10 @@ const showLoginLog = async (row: Recordable<any>, index: number) => {
 
 ### 配置
 
+在标准 crud-module 配置（见 [config-template.md](../config-template.md#精简格式兼容)）基础上追加：
+
 ```markdown
----
-feature: userMng
-title: 用户管理
-view: sysMng/userMng
-pageType: crud-module
-layout: module
-editPage: true
-detailPage: loginLog
-api:
-  module: admin/user
-  base: /sysuser
-  operations:
-    list: /sysuser/findUsers
-    create: /sysuser/saveUser
-    update: /sysuser/updateUser/{id}
-    delete: /sysuser/deleteUser
----
+detailPage: loginLog        # YAML 头；或省略，仅靠 ## 明细 小节
 
 ## 操作列
 编辑,删除,用户登录明细
@@ -199,29 +185,8 @@ api:
 
 | 文件 | 生成内容 |
 | ---- | -------- |
-| `helper.tsx` | 追加 `buildLoginLogHeadList(): TableHeadItem[]` |
+| `helper.tsx` | 追加 `buildLoginLogHeadList(): TableHeadItem[]` + 操作列按钮（追加写法见 [helper.md](helper.md) §12） |
 | `Index.vue` | 追加 `showLoginLog` 方法 + 操作列按钮 |
-
-### helper.tsx
-
-```typescript
-export const buildLoginLogHeadList = (): TableHeadItem[] => [
-  { label: '登录IP', prop: 'loginIp', width: '150px' },
-  { label: '所属地区', prop: 'loginDivision' },
-  { label: '浏览器', prop: 'browser' },
-  { label: '登录时间', prop: 'loginTime', width: '180px' },
-];
-
-// 在 createUserTableHeadList 中：
-{
-  type: 'action',
-  prop: '',
-  label: '操作',
-  content: ['编辑', '删除', '用户登录明细'],
-  icon: ['el-icon-edit', 'gv-icon-tingyong', 'gv-icon-daiban'],
-  action: [actions.editRow, actions.delRow, actions.showLoginLog],
-},
-```
 
 ### Index.vue
 
@@ -249,32 +214,22 @@ const showLoginLog = async (row: Recordable<any>, index: number) => {
 
 ## 8. 多明细配置
 
-支持配置多个明细按钮：
+支持配置多个明细按钮（`## 明细` 下多个条目）：
 
 ```markdown
 ## 操作列
 编辑,删除,用户登录明细,订单明细
 
 ## 明细
-- name: loginLog
+- name: loginLog            # 条目结构与单明细相同（label / api / columns）
   label: 用户登录明细
   api: /sysuser/findUserLoginInfo
-  columns:
-    - label: 登录IP
-      prop: loginIp
-    - label: 登录时间
-      prop: loginTime
+  columns: [{ label: 登录IP, prop: loginIp }, ...]
 
 - name: orderDtl
   label: 订单明细
   api: /sysuser/findUserOrderDtl
-  columns:
-    - label: 订单编号
-      prop: orderNo
-    - label: 订单金额
-      prop: amount
-    - label: 下单时间
-      prop: orderTime
+  columns: [{ label: 订单编号, prop: orderNo }, ...]
 ```
 
 生成：

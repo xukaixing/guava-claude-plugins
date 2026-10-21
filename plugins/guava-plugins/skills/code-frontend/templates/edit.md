@@ -27,7 +27,7 @@ const <feature>Save = async () => {
 
 ## 2. Footer 按钮配置
 
-配置中的 `## 按钮` 小节定义 Drawer/Dialog footer 的操作按钮。
+配置中的 `## 按钮` 小节定义 Drawer/Dialog footer 的操作按钮。视觉稿格式写作 `### 按钮`（`## 编辑表单` 下子节），顿号 / 逗号分隔，语义相同。
 
 ### 配置格式
 
@@ -72,6 +72,32 @@ const <feature>Save = async () => {
   <GvButton type="primary" confirm="false" @click="<feature>Publish">发布</GvButton>
 </template>
 ```
+
+---
+
+## 2.1 只读描述子区（`### 分区名（GvDescriptions）`）
+
+视觉稿格式下，`## 编辑表单` 中标注 `（GvDescriptions）` 的子区渲染为**只读**描述块（不进展单校验 / 提交），与 `（GvForm）` 子区并存于同一 Drawer：
+
+```vue
+<script lang="tsx" setup>
+// helper.tsx 生成：export const build<Feature><Section>InfoHeadList = (): DescItemHead[] => [...]
+import { build<Feature>LoginInfoHeadList } from './helper';
+
+// @data
+const <feature>LoginInfoHeadList = build<Feature>LoginInfoHeadList();
+</script>
+
+<template>
+  <!-- 分区标题 = 子标题去注解文本 -->
+  <GvDescriptions :item-head="<feature>LoginInfoHeadList" :item-data="props.rowData" />
+  <!-- GvForm 子区照旧 -->
+</template>
+```
+
+- 表结构 `名称|字段|占用列|类型|扩展`，映射规则同 [info.md](info.md)（`span` / `dicType`）
+- props（`item-head` / `item-data`）以 MCP `get_props` GvDescriptions 为准
+- 编辑 / 新增均展示（数据来自 `rowData`，新增时为空对象）
 
 ---
 
@@ -270,103 +296,56 @@ watch(() => ({ visible: props.visible, rowId: props.rowData?.id, operateType: pr
 
 ## 6. Variant D：多分区表单 + 多 Tab 页
 
-配置中 `## 编辑` 含多个 `###` 子标题**且**含 `## 标签页` 时启用。编辑框下方渲染 `GvTabs`，Tab 页支持 `table`（列表）和 `form`（表单）两种类型。
+配置中 `## 编辑` 含多个 `###` 子标题**且**含 `## 标签页` 时启用。编辑框下方渲染 `GvTabs`。
+
+**脚本 = Variant C 全部内容 + 下列增量**（props / emit / isShow / formKey / formRefs / `<feature>Save` 主体 / dictCB / init 基座与 C 完全相同）：
 
 ```vue
-<script lang="tsx" setup>
-import { save<Feature>Api, update<Feature>Api } from '@/api/<apiModule>';
+// ↓ import 追加（api 与 helper 工厂）
 import { find<Feature>OrderDtlApi, save<Feature>OrderDtlApi, delete<Feature>OrderDtlApi } from '@/api/<apiModule>';
-import { crud } from '@/hook/service/useCrud';
-import { propTypes, useUtil } from '@/hook/service/useUtil';
-import { useNotify } from '@/hook/web/useNotify';
-import type { FormInstance, TableInstance, TabsPaneContext } from 'element-plus';
-import { ref, watch, computed, nextTick } from 'vue';
-import { create<Feature>BasicInfoList, create<Feature>InvoiceInfoList, create<Feature>OrderDtlTableHeadList, create<Feature>RemarkInfoList } from './helper';
+import { create<Feature>OrderDtlTableHeadList, create<Feature>RemarkInfoList } from './helper';
 
-defineOptions({ name: '<Base>Edit' });
-const props = defineProps({ visible: propTypes.bool.def(false), rowData: propTypes.object, operateType: propTypes.string, title: propTypes.string });
-const emit = defineEmits(['update:visible', 'saved']);
-const { message } = useNotify();
-const { getFormModel } = useUtil();
-
-// 编辑表单
-const <feature>BasicInfoFm = ref<FormInstance>();
-const <feature>BasicInfoList = ref<FormItem[]>([]);
-const <feature>InvoiceInfoFm = ref<FormInstance>();
-const <feature>InvoiceInfoList = ref<FormItem[]>([]);
-const formKey = computed(() => (!props.visible ? 'closed' : (props.rowData?.id ?? `add-${props.operateType}`)));
-const isShow = computed({ get: () => props.visible, set: (v) => emit('update:visible', v) });
-const formRefs = computed(() => [<feature>BasicInfoFm.value, <feature>InvoiceInfoFm.value].filter(Boolean));
-
-// Tab 页数据
+// ↓ Tab 页数据（activeTab 默认第一个 tab 的 name）
 const activeTab = ref('orderDtl');
 const <feature>OrderDtlTableList = ref<TableInstance>();
 const <feature>OrderDtlTableHeadList = ref<TableHeadItem[]>([]);
 const search<Feature>OrderDtlData = ref<Recordable<any>>({});
 const <feature>RemarkInfoFm = ref<FormInstance>();
 const <feature>RemarkInfoList = ref<FormItem[]>([]);
-const masterId = ref<number>(0);
+const masterId = ref<number>(0);   // crud.save 成功后回写 d.id；新增时 0
 
-const <feature>Save = async () => {
-  const fmNodes = formRefs.value;
-  if (!fmNodes.length) return;
-  try {
-    const ok = await crud.checkForms(fmNodes);
-    if (!ok) return;
-    let model = {};
-    fmNodes.forEach((fm) => { model = { ...model, ...getFormModel(fm) }; });
-    if (props.rowData?.id) { const d = await crud.update(fmNodes[0], props.rowData.id, update<Feature>Api, model); if (d) emit('saved', { type: 'update', data: { ...props.rowData, ...d }, rownums: props.rowData?.rownums }); }
-    else { const d = await crud.save(fmNodes[0], save<Feature>Api, true, model); if (d) { masterId.value = d.id; emit('saved', { type: 'insert', data: d }); } }
-  } catch (e) { message(e, 'error'); }
-};
+// ↓ <feature>Save：crud.save 成功后追加 masterId.value = d.id（C 无此行）
 
-// Tab 列表方法
+// ↓ Tab 列表方法
 const find<Feature>OrderDtl = async () => { if (!<feature>OrderDtlTableList.value) return; try { search<Feature>OrderDtlData.value = await crud.searchNoFm(<feature>OrderDtlTableList.value, find<Feature>OrderDtlApi, { <feature>Id: masterId.value }); } catch (e) { message(e, 'error'); } };
 const add<Feature>OrderDtl = () => { if (<feature>OrderDtlTableList.value) search<Feature>OrderDtlData.value.records.unshift({ id: null, <feature>Id: masterId.value }); };
 const save<Feature>OrderDtl = async (row) => { try { const d = await crud.submit(save<Feature>OrderDtlApi, row); if (d) row.id = d.id; } catch (e) { message(e, 'error'); } };
 const delete<Feature>OrderDtl = async (row, idx) => { try { if (row.id) await crud.submit(delete<Feature>OrderDtlApi, { id: row.id }); crud.removeResult(search<Feature>OrderDtlData.value, idx); } catch (e) { message(e, 'error'); } };
 
-// Tab 表单方法
+// ↓ Tab 表单方法
 const save<Feature>RemarkInfo = async () => { const fm = <feature>RemarkInfoFm.value; if (!fm) return; try { const model = getFormModel(fm) || {}; const d = await crud.submit(save<Feature>RemarkApi, { <feature>Id: masterId.value, ...model }); if (d) message('success', '保存成功'); } catch (e) { message(e, 'error'); } };
-
 const handleTabClick = (tab: TabsPaneContext) => { activeTab.value = tab.paneName as string; };
 
-const dictCB = (_, __, ___) => {};
-const dictClearCB = (_, __, ___) => {};
-const init = () => {
-  const row = props.rowData;
-  if (row?.id) {
-    crud.setEditValue(<feature>BasicInfoList.value, row);
-    crud.setEditValue(<feature>InvoiceInfoList.value, row);
-    masterId.value = row.id;
-    crud.setEditValue(<feature>RemarkInfoList.value, row);
-    nextTick(() => find<Feature>OrderDtl());
-  } else {
-    masterId.value = 0;
-    search<Feature>OrderDtlData.value = {};
-    crud.resetEditValue(<feature>BasicInfoList.value);
-    crud.resetEditValue(<feature>InvoiceInfoList.value);
-    crud.resetEditValue(<feature>RemarkInfoList.value);
-  }
-};
+// ↓ init：编辑分支追加 masterId.value = row.id + crud.setEditValue(<feature>RemarkInfoList.value, row) + nextTick(() => find<Feature>OrderDtl())；
+//         新增分支追加 masterId.value = 0 + search<Feature>OrderDtlData.value = {} + crud.resetEditValue(<feature>RemarkInfoList.value)
 
-<feature>BasicInfoList.value = create<Feature>BasicInfoList({ dictCB, dictClearCB }, props.operateType).value;
-<feature>InvoiceInfoList.value = create<Feature>InvoiceInfoList({ dictCB, dictClearCB }, props.operateType).value;
-<OrderDtlTableHeadList.value = create<OrderDtlTableHeadList({ save<OrderDtl, delete<OrderDtl }).value;
-<RemarkInfoList.value = create<Feature>RemarkInfoList({ dictCB, dictClearCB }).value;
-watch(() => ({ visible: props.visible, rowId: props.rowData?.id, operateType: props.operateType }), ({ visible }) => { if (visible) init(); });
-</script>
+// ↓ 工厂赋值追加
+<feature>OrderDtlTableHeadList.value = create<Feature>OrderDtlTableHeadList({ save<Feature>OrderDtl, delete<Feature>OrderDtl }).value;
+<feature>RemarkInfoList.value = create<Feature>RemarkInfoList({ dictCB, dictClearCB }).value;
+```
 
+template 完整形态（GvForm 两分区同 Variant C，仅列增量部分）：
+
+```vue
 <template>
   <div>
     <GvDrawer :title="props.title || (props.rowData?.id ? '编辑' : '新增')" v-model:visible="isShow" size="80%">
-      <GvForm :key="formKey" ref="<feature>BasicInfoFm" ref-form="<feature>BasicInfoFm" :divider="'基本信息'" :form-list="<feature>BasicInfoList" />
-      <GvForm :key="`${formKey}-invoice`" ref="<feature>InvoiceInfoFm" ref-form="<feature>InvoiceInfoFm" :divider="'开票信息'" :form-list="<feature>InvoiceInfoList" />
+      <!-- 基本信息 / 开票信息 GvForm ×2：同 Variant C -->
       <GvTabs v-model="activeTab" @tab-click="handleTabClick">
         <GvTabPane name="orderDtl" :label="'订单明细'">
           <div v-show="masterId !== 0">
             <GvTable ref="<feature>OrderDtlTableList" ref-table="<feature>OrderDtlTableList" :table-head="<feature>OrderDtlTableHeadList" :table-data="search<Feature>OrderDtlData">
-              <GvButton @click="add<Feature>OrderDtl()">新增</GvButton>
+              <GvButton @click="add<Feature>OrderDtl()">新增</GvButton>  <!-- 工具栏按钮从 buttons 生成 -->
             </GvTable>
           </div>
         </GvTabPane>
@@ -375,9 +354,7 @@ watch(() => ({ visible: props.visible, rowId: props.rowData?.id, operateType: pr
           <div class="form-actions"><GvButton type="primary" @click="save<Feature>RemarkInfo()">保存</GvButton></div>
         </GvTabPane>
       </GvTabs>
-      <template #footer>
-        <GvButton type="primary" confirm="false" @click="<feature>Save">保存</GvButton>
-      </template>
+      <!-- footer 同 Variant C -->
     </GvDrawer>
   </div>
 </template>
@@ -387,55 +364,12 @@ watch(() => ({ visible: props.visible, rowId: props.rowData?.id, operateType: pr
 
 ## 7. Tab 页类型（Variant D）
 
-`## 标签页` 小节定义编辑框下方的 Tab 页，支持两种类型：
+`## 标签页` 小节定义编辑框下方的 Tab 页（完整 YAML 示例见 [config-parser.md](../config-parser.md#29-多-tab-页) / [config-template.md](../config-template.md#多分区编辑--多-tab-页)）：
 
 | type | 说明 | 生成内容 |
 | ---- | ---- | -------- |
-| `table` | 列表子表 | `GvTable` + 工具栏按钮，数据用 `crud.searchNoFm` 按 masterId 拉取 |
-| `form` | 表单 Tab | `GvForm` + 保存按钮，数据用 `crud.setEditValue` / `crud.resetEditValue` |
-
-### 配置格式
-
-```markdown
-## 标签页
-- name: orderDtl
-  label: 订单明细
-  type: table
-  columns:
-    - label: 商品名称
-      prop: productName
-  buttons: 新增,删除
-  api:
-    list: /order/findOrderDtl
-    save: /order/saveOrderDtl
-    delete: /order/deleteOrderDtl
-
-- name: remark
-  label: 备注信息
-  type: form
-  fields:
-    - { label: '备注', field: 'remark', type: 'textarea', format: [0, 'isAny', 200] }
-  buttons: 保存
-  api:
-    save: /order/saveRemark
-```
-
-### 生成规则
-
-- **table 类型**：
-  - 工具栏按钮：从 `buttons` 生成（如 新增、删除）
-  - 数据拉取：`crud.searchNoFm` 按 masterId 拉取
-  - 新增/删除：`crud.submit` 调用对应 API
-  - 显隐控制：`v-show="masterId !== 0"`（新增时隐藏）
-  - helper 工厂：`create<Feature><TabName>TableHeadList`
-
-- **form 类型**：
-  - 表单字段：从 `fields` 生成（复用 Edit 表结构）
-  - 保存按钮：从 `buttons` 生成
-  - 数据回填：编辑时 `crud.setEditValue`，新增时 `crud.resetEditValue`
-  - 保存方法：`crud.submit` 调用 `api.save`
-  - helper 工厂：`create<Feature><TabName>List`
-  - 始终显示（不参与 masterId 显隐控制）
+| `table` | 列表子表 | `GvTable` + 工具栏按钮（`buttons` 生成），`crud.searchNoFm` 按 masterId 拉取，`v-show="masterId !== 0"`；工厂 `create<Feature><TabName>TableHeadList` |
+| `form` | 表单 Tab | `GvForm` + 保存按钮（`buttons` 生成），`crud.setEditValue` / `crud.resetEditValue` 回填，`crud.submit(api.save)` 保存；工厂 `create<Feature><TabName>List`；始终显示 |
 
 ---
 

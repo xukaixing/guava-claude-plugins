@@ -1,6 +1,96 @@
 # Guava Page Config
 
 > 复制改 YAML 头 + 配置表即可。文件清单、方法名、API 函数名由 skill **自动推导**。
+> 推荐「视觉稿格式」（`pageType` / `api` 可省略）；其后为精简格式模板（兼容）。
+
+---
+
+## 视觉稿格式（推荐）
+
+解析规则见 [config-parser.md](config-parser.md#1-视觉稿格式推荐)。要点：小节可带 `- 描述` 后缀、`---` 分隔线忽略、表格 7 列、操作列行内 `action:` 声明优先、编辑子区带（GvForm）/（GvDescriptions）注解、无 `api` 块默认 `frontendOnly: true`。
+
+```markdown
+---
+feature: userMng1
+title: 用户管理
+view: sysMng/userMng
+layout: module
+i18n: false
+editPage: true
+infoPage: true
+frontendOnly: true        # 可省略；无 api 块时默认 true
+# pageType 可省略 → 按小节推导：有 ## 表格 = crud-module
+---
+
+## 查询 - 用户信息检索
+
+### 布局                  # 可选；纯描述不生成代码；含「GvDrawer/GvDialog」指令时生效
+
+| 名称     | 字段     | 类型 | 校验  | 长度 | 扩展     |
+| -------- | -------- | ---- | ----- | ---- | -------- |
+| 用户姓名 | text_1   | text | isAny | 30   |          |
+| 用户状态 | select_2 | dic  | isDic | 6    | dic=yxzt |
+
+## 表格 - 用户信息列表
+
+| 名称     | 字段   | 宽度 | 筛选 | 类型             | 固定 | 扩展                 |
+| -------- | ------ | ---- | ---- | ---------------- | ---- | -------------------- |
+| 操作     |        | 80   |      | action:编辑,编辑 | Y    |                      |
+| 用户姓名 | text_1 | 150  | Y    |                  | Y    |                      |
+| 状态     | text_3 |      | Y    | dic:xb           |      |                      |
+| 金额     | text_4 |      |      |                  |      | amount, align: right |
+| 部门     | text_5 | 200  |      |                  |      | type=tag             |
+
+### 表格工具栏 - 用户信息列表    # 可选；顿号分隔 → Index 页工具栏按钮
+
+新增、导入、导出
+
+### 操作列 - 用户信息列表        # 可选；表格无 action: 行时生效
+
+编辑、删除
+
+### 操作列规则 - 用户信息列表    # 可选；`**按钮**：行为描述` → 占位方法注释
+
+- **编辑**：点击后打开「用户信息表单」（Drawer）
+
+---
+
+## 编辑表单 - 用户信息表单
+
+### 布局
+
+使用 GvDrawer 展示
+
+### 登录信息（GvDescriptions）    # 只读描述子区 → build<User>LoginInfoHeadList
+
+| 名称   | 字段   | 占用列 | 类型 | 扩展 |
+| ------ | ------ | ------ | ---- | ---- |
+| 文本项 | text_1 | 1      |      |      |
+
+### 基本信息（GvForm）            # 可编辑子区 → create<User>BasicInfoList（注解省略默认 GvForm）
+
+| 名称     | 字段   | 类型   | 必填 | 校验     | 长度 | 只读 | 占用列 | 扩展                |
+| -------- | ------ | ------ | ---- | -------- | ---- | ---- | ------ | ------------------- |
+| 单行文本 | text_2 | text   | Y    | isAny    | 30   |      | 1      | placeholder: 请输入 |
+
+### 按钮                         # Drawer footer；顿号分隔（保存=提交校验+save/update，取消=关闭）
+
+保存、取消
+```
+
+### 生成结果示例（以上配置自动推导）
+
+- pageType `crud-module`（有 `## 表格`）；frontendOnly（无 api 块）→ **无 `src/api`**，生成 `data.ts`
+- `<Base>` 推导：feature `userMng1` 不以 `Mng` 结尾 → `<Base> = UserMng1`（保持原样转 PascalCase）
+- `src/views/sysMng/userMng/UserMng1Index.vue`：工具栏 = 新增 / 导入 / 导出；操作列含两个「编辑」按钮（重复写法不去重）；金额列右对齐 + `amountFormat`；状态列 `dic:xb`；部门列 tag
+- `src/views/sysMng/userMng/module/helper.tsx`：`createUserMng1SearchList` / `createUserMng1TableHeadList` / `createUserMng1BasicInfoList` / `buildUserMng1LoginInfoHeadList`
+- `src/views/sysMng/userMng/module/types.d.ts`、`module/data.ts`（本地 mock）
+- `UserMng1Edit.vue`：GvDrawer + 登录信息只读 `GvDescriptions` 块 + 基本信息 `GvForm` + footer 保存 / 取消
+- `UserMng1Info.vue`：`infoPage: true` 且无 `## 详情` → 字段回落「登录信息（GvDescriptions）」子区（见 info.md 字段来源）
+
+---
+
+## 精简格式（兼容）
 
 `pageType` 决定页面类型，详见 [page-types.md](page-types.md)。省略默认 `crud-module`。
 
@@ -260,13 +350,10 @@ api:
 
 | 写法 | 含义 |
 | ---- | ---- |
-| `dic=yxzt` | 字典编码 |
+| `dic=yxzt` | 字典编码（写法全集见 [search-conditions.md](search-conditions.md#4-字典字段)：`multiple` / `value=` / `showLabel=` / `filtercode`） |
 | `date=daterange` | 日期类型 |
 | `remote=findDictFromTableApi` | 远程字典 |
 | `disabledOnEdit` | 编辑时禁用 |
-| `multiple` | 字典多选 |
-| `value=100601` | 默认值（文本/字典通用，字典需配合 `showLabel`） |
-| `showLabel=集团公司` | 字典默认值显示文案（与 `value` 配对） |
 
 ### 表格「类型」列
 
@@ -276,6 +363,19 @@ api:
 | `dic:yxzt` | 字典列 |
 | `date:datetime` | 日期列 |
 | `amount` | 金额列（自动右对齐 + `amountFormat`） |
+| `action:编辑,删除` | 操作列（视觉稿格式行内声明，按钮名不去重；优先于 `## 操作列` 小节） |
+
+### 表格「固定 / 扩展」列（视觉稿格式，可选）
+
+| 列 / 写法 | 含义 |
+| ---- | ---- |
+| `固定` = `Y` | `fixed`（方向查 MCP：操作列右、数据列左） |
+| `align: right`（left / center / right） | 列对齐 |
+| `amount` | 右对齐 + `amountFormat` |
+| `type=tag` | 标签列（GvTag，颜色查 MCP） |
+| `dic=yxzt` | 同 `类型` 列 `dic:yxzt` |
+
+> 编辑子区组件注解（`（GvForm）` / `（GvDescriptions）`）与 `### 按钮` 写法见上方视觉稿模板内联注释。
 
 ### 扩展列
 

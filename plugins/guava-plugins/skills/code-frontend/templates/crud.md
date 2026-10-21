@@ -146,12 +146,30 @@ const delete<Feature> = (row, index) => {
     </GvForm>
     <GvTable ref="<feature>TableList" ref-table="<feature>TableList" :table-head="<feature>TableHeadList" :table-data="search<Feature>Data"
       @expand-change="expandChange">  <!-- expand -->
+      <!-- ↓ 工具栏按钮由 ### 表格工具栏（或精简格式 ## 表格工具栏）驱动，未配置时仅保留「新增」 -->
       <GvButton @click="add<Feature>()">新增</GvButton>  <!-- add -->
+      <!-- 例：配置「新增、导入、导出」→
+      <GvButton @click="add<Feature>()">新增</GvButton>
+      <GvButton @click="import<Feature>()">导入</GvButton>
+      <GvButton @click="export<Feature>()">导出</GvButton> -->
     </GvTable>
     <<Base>Edit v-model:visible="dialogVisible" :row-data="rowData" :operate-type="operateType" :title="title" @saved="save<Base>Info" />
   </div>
 </template>
 ```
+
+### 3.3 工具栏按钮映射（`### 表格工具栏`）
+
+| 按钮名 | 生成方法 | 行为 |
+| ------ | -------- | ---- |
+| 新增 | `add<Feature>()` | 打开 Drawer，`operateType = 'add'` |
+| 导入 | `import<Feature>()` | 占位（`// TODO: 导入`） |
+| 导出 | `export<Feature>()` | 占位（`// TODO: 导出`） |
+| 批量删除 | `batchDelete<Feature>()` | 占位（`// TODO: 批量删除`，接 selection） |
+| 其他 | `<按钮名><Feature>()` | 同名占位方法 |
+
+- 按钮文案**原样写入、不去重**（顿号 / 逗号分隔）
+- 未配置工具栏小节时保持默认单个「新增」按钮（`editPage` 启用时）
 
 ---
 
@@ -159,54 +177,11 @@ const delete<Feature> = (row, index) => {
 
 ### 4.1 多分区编辑（Variant C）
 
-`## 编辑` 下用 `###` 子标题拆分多个表单区域，每个子标题生成一个 `GvDivider` + `GvForm`：
-
-```markdown
-## 编辑
-### 基本信息
-| 名称 | 字段 | 类型 | 必填 | 校验 | 长度 | 只读 | 占用列 | 扩展 |
-| 用户账号 | account | text | Y | isNumberLetter | 30 | N | 1 | disabledOnEdit |
-
-### 开票信息
-| 名称 | 字段 | 类型 | 必填 | 校验 | 长度 | 只读 | 占用列 | 扩展 |
-| 发票抬头 | invoiceTitle | text | Y | isAny | 100 | N | 1 | |
-```
-
-**生成规则**：
-- 每个 `###` 子标题生成一个 `GvForm`，`:divider` 设为子标题文本（如 `'基本信息'`、`'开票信息'`）
-- helper 工厂函数命名为 `create<Feature><SectionName>List`（如 `create<Feature>BasicInfoList`、`create<Feature>InvoiceInfoList`）
-- 保存时用 `crud.checkForms(fmNodes)` 校验所有表单，`getFormModel` 依次合并数据
-- 编辑回填 / 新增重置：对每个表单 list 分别调用 `crud.setEditValue` / `crud.resetEditValue`
+`## 编辑` 下用 `###` 子标题拆分多个表单区域，每个子标题生成一个 `:divider` = 子标题文本的 `GvForm`。配置示例见 [config-parser.md](../config-parser.md#27-多分区编辑)；Edit 变体见 [edit.md](edit.md) §5；工厂命名与保存合并规则见 [helper.md](helper.md) §10。
 
 ### 4.2 多分区 + 多 Tab 页（Variant D）
 
-在 4.1 基础上增加 `## 标签页` 小节，编辑框下方渲染 `GvTabs`：
-
-```markdown
-## 标签页
-- name: orderDtl
-  label: 订单明细
-  type: table
-  columns:
-    - label: 商品名称
-      prop: productName
-    - label: 数量
-      prop: quantity
-  buttons: 新增,删除
-  api:
-    list: /order/findOrderDtl
-    save: /order/saveOrderDtl
-    delete: /order/deleteOrderDtl
-
-- name: remark
-  label: 备注信息
-  type: form
-  fields:
-    - { label: '备注', field: 'remark', type: 'textarea', format: [0, 'isAny', 200] }
-  buttons: 保存
-  api:
-    save: /order/saveRemark
-```
+在 4.1 基础上增加 `## 标签页` 小节，编辑框下方渲染 `GvTabs`。YAML 完整示例见 [config-parser.md](../config-parser.md#29-多-tab-页)，Edit 变体见 [edit.md](edit.md) §6。
 
 **Tab type 生成规则**：
 
@@ -214,18 +189,6 @@ const delete<Feature> = (row, index) => {
 | ---- | -------- | -------- |
 | `table` | `GvTable`（含操作列）+ 工具栏按钮 | `crud.searchNoFm` 按 masterId 拉取 |
 | `form` | `GvForm` + 保存按钮 | `crud.setEditValue` 回填 / `crud.resetEditValue` 重置 |
-
-**配置字段说明**：
-
-| 字段 | 必填 | 说明 |
-| ---- | ---- | ---- |
-| `name` | ✅ | Tab 标识 / `GvTabPane` 的 `name` |
-| `label` | ✅ | Tab 显示文本 / `GvTabPane` 的 `label` |
-| `type` | ✅ | `table`（列表）或 `form`（表单） |
-| `columns` | type=table 时 | 表格列配置 |
-| `fields` | type=form 时 | 表单字段配置（复用 FormItem 结构） |
-| `buttons` | | 工具栏按钮，逗号分隔 |
-| `api` | | 相关 API 端点 |
 
 ### 4.3 配置推导
 

@@ -22,7 +22,7 @@ disable-model-invocation: true
 6. **Phase B — code-backend**：严格按 [../code-backend/SKILL.md](../code-backend/SKILL.md) Write 后端文件
 7. **Phase B 代码检查**：按 [../code-backend/code-review.md](../code-backend/code-review.md) 对本轮 Java 做规范 / 安全 / 性能三检；Critical 须修复
 8. 对齐检查：`apiBase`/`paths`/`field` 与前端 API 一致（见 config-bridge）
-9. 汇总简报（前端三检 + 后端三检 + 对齐）· hooks lint 无报错（front eslint + back java format）
+9. 汇总简报（前端三检 + 后端三检 + 对齐）· hooks lint 无报错（front eslint + prettier + back java format）
 
 ## 中断规则
 

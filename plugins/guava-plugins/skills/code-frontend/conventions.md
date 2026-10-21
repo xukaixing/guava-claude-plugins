@@ -66,12 +66,7 @@ API 函数使用单行注释：`// xxx api`
 
 ## 3. UI 组件
 
-### 优先级
-
-1. **优先** `guava-ui` 封装的 `Gv*` 组件
-2. **仅当**无对应 `Gv*` 封装时，才用 `el-*`
-
-使用前须通过 MCP 确认（`get_usage` / `get_props` / `resolve_gv_component`）。
+**优先 `Gv*`，仅当无对应封装才用 `el-*`，写前必须查 MCP**（规则与查询时机见 [SKILL.md](SKILL.md) §1）。
 
 ### 常用对照
 

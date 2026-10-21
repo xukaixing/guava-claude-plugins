@@ -1,6 +1,6 @@
 # 页面类型（pageType）
 
-code-frontend 按 `pageType` 选择生成模板与输出文件。**省略时默认为 `crud-module`**。
+code-frontend 按 `pageType` 选择生成模板与输出文件。**省略时默认为 `crud-module`**（视觉稿格式按小节推导：有 `## 表格` → `crud-module`；仅 `## 编辑表单` → `form-only`；有 `## 标签页` → `tabs`；`## 页面描述` + `## 组件清单` → `free`，见 [config-parser.md](config-parser.md#18-pagetype-推导yaml-显式时优先)）。
 
 ---
 

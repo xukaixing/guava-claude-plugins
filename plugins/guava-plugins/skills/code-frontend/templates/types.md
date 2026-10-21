@@ -20,7 +20,8 @@
 export interface <Feature>TableActions {
   edit<Feature>: TableRowFn;    // ← only if 编辑
   delete<Feature>: TableRowFn;  // ← only if 删除
-  // ↓ 操作列自定义按钮时声明对应方法
+  info<Feature>: TableRowFn;    // ← only if 详情/查看（infoPage）
+  // ↓ 操作列自定义按钮时声明对应方法（含视觉稿格式 action: 未知名称）
   // customAction: TableRowFn;
   // ↓ only if expand enabled
   // expandMap: Recordable<Recordable<any>>;

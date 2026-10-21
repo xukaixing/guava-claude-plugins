@@ -30,17 +30,22 @@
 
 ## 3. 字段名前缀
 
-| 位置 | 属性 | `u@` |
-| ---- | ---- | ---- |
-| 查询 | `field` | ✅ |
-| 表格 | `prop` | ❌ |
-| 编辑 | `field` | ❌ |
+`u@` 规则：**查询 `field` 带 `u@`，表格 `prop` / 编辑 `field` 不带**（视觉稿格式可选）。详见 [search-conditions.md](../search-conditions.md#5-字段名前缀)。
 
 ---
 
 ## 4. 操作列（必须，表格级）
 
 `## 操作列` 单独声明。`编辑,删除` → `content: ['编辑','删除']` + `action: [actions.edit<Feature>, actions.delete<Feature>]`。**无 icon**。
+
+**视觉稿格式行内声明（优先）**：表格内 `类型: action:编辑,编辑` 行 → 操作列，按钮名原样写入 `content`（**不去重**）；无行内声明时回落 `## 操作列` / `### 操作列` 小节。
+
+| 按钮名 | 回调映射 |
+| ------ | -------- |
+| 编辑 | `actions.edit<Feature>` |
+| 删除 | `actions.delete<Feature>` |
+| 详情 / 查看 | `actions.info<Feature>` |
+| 其他 | `actions.<按钮名>` 同名占位（方法体注释引用 `### 操作列规则` 描述） |
 
 ---
 
@@ -101,27 +106,21 @@ export interface <Feature>TableActions {
 
 ## 6. 默认值
 
-不用 `default`，用 `value`。
-
-| 字段类型 | 写法 | 示例 |
-| -------- | ---- | ---- |
-| 文本 / 数字等 | `value: 'xxx'` | `value: 'zhangsan'` |
-| 字典 | `value: '<dictCode>'` + `showLabel: '<displayText>'` | `value: '100601', showLabel: '集团公司'` |
-
-- `value` 适用于所有字段类型（`text`、`number`、`dic`、`textarea` 等）
-- 字典需额外提供 `showLabel`，值与 `value` 一一对应
-- 查询 / 编辑表单均可使用
+不用 `default`，用 `value`（字典配 `showLabel` 与 `value` 一一对应）。写法与规则见 [search-conditions.md](../search-conditions.md#4-字典字段)。
 
 ---
 
-## 7. 数值列格式化
+## 7. 数值列格式化 / 表格视觉稿扩展
 
 | 关键字 | 行为 |
 | ------ | ---- |
-| 「金额」「合计」 | `align: 'right'` + `amountFormat` render |
-| 「数量」 | `align: 'right'` |
+| 「金额」「合计」或 `扩展=amount` | `align: 'right'` + `amountFormat` render |
+| 「数量」或 `扩展=align: right` | `align: 'right'` |
+| `扩展=align: left/center` | 对应 `align` |
+| `扩展=type=tag` | 标签列，render GvTag（颜色 / props 查 MCP `get_props` GvTable） |
+| `固定=Y` | `fixed`（方向查 MCP：操作列右固定、数据列左固定） |
 
-`amountFormat` 从 `guava-ui` 导入。
+`amountFormat` 从 `guava-ui` 导入。以上属性名生成前以 MCP `get_props` GvTable head 类型为准。
 
 ---
 
@@ -200,9 +199,11 @@ export const create<Feature>EditList = (actions: <Feature>EditActions, operateTy
 | ------ | ------------ | ------ |
 | `### 基本信息` | `create<Feature>BasicInfoList` | `createUserBasicInfoList` |
 | `### 开票信息` | `create<Feature>InvoiceInfoList` | `createUserInvoiceInfoList` |
+| `### 登录信息（GvDescriptions）` | `build<Feature>LoginInfoHeadList`（`DescItemHead[]`，见 §13） | `buildUserLoginInfoHeadList` |
 
 **规则**：
-- 函数名 = `create<Feature><SectionName>List`，SectionName 为子标题去空格转 PascalCase
+- 函数名 = `create<Feature><SectionName>List` / `build<Feature><Section>InfoHeadList`，SectionName 为子标题去空格转 PascalCase（组件注解 `(GvForm)` / `(GvDescriptions)` 不计入）
+- GvDescriptions 子区表结构 `名称|字段|占用列|类型|扩展`，只读、不进表单校验与提交
 - 每个工厂函数接收 `(actions: <Feature>EditActions, operateType = '')` 参数
 - 每个工厂函数独立管理自己的 `FormItem[]`
 
@@ -215,7 +216,7 @@ export const create<Feature>BasicInfoList = (actions: <Feature>EditActions, oper
     { type: 'dic', format: [1, 'idDic', 6], dicType: 'yxzt', label: '状态', field: 'status', cb: actions.dictCB, clear: actions.dictClearCB },
   ]);
 
-// 开票信息
+// 开票信息：结构同上（字段 / format 按配置表生成）
 export const create<Feature>InvoiceInfoList = (actions: <Feature>EditActions, operateType = '') =>
   ref<FormItem[]>([
     { type: 'text', format: [1, 'isAny', 100], label: '发票抬头', field: 'invoiceTitle' },
@@ -260,111 +261,25 @@ export const create<Feature>RemarkInfoList = (actions: <Feature>TabEditActions) 
 
 ## 12. 明细展开（Detail Table）
 
-操作列自定义按钮 + 展开明细表格模式（参考 [detail.md](detail.md)）。适用于「用户登录明细」等关联数据异步拉取场景。
+操作列自定义按钮 + 展开明细表格模式，适用于「用户登录明细」等关联数据异步拉取场景。完整生成规则（配置 / Index 方法 / 操作列追加）见 [detail.md](detail.md)；helper 侧只记命名：
 
-### 配置触发
-
-```markdown
-## 明细
-- name: loginLog
-  label: 用户登录明细
-  api: /sysuser/findUserLoginInfo
-  columns:
-    - label: 登录IP
-      prop: loginIp
-    - label: 登录时间
-      prop: loginTime
-```
-
-### helper 工厂函数
-
-```typescript
-export const buildLoginLogHeadList = (): TableHeadItem[] => [
-  { label: '登录IP', prop: loginIp, width: '150px' },
-  { label: '所属地区', prop: 'loginDivision' },
-  { label: '浏览器', prop: 'browser' },
-  { label: '登录时间', prop: 'loginTime', width: '180px' },
-];
-```
-
-### 命名规则
-
-| 配置 name | helper 函数名 | Index 方法名 |
+| 配置 name | helper 工厂函数 | Index 方法名 |
 | --------- | ------------- | ----------- |
-| `loginLog` | `buildLoginLogHeadList` | `showLoginLog` |
+| `loginLog` | `buildLoginLogHeadList`（`TableHeadItem[]`） | `showLoginLog` |
 | `orderDtl` | `buildOrderDtlHeadList` | `showOrderDtl` |
 
-### 操作列追加按钮
-
-```typescript
-{
-  type: 'action',
-  prop: '',
-  label: '操作',
-  content: ['编辑', '删除', '用户登录明细'],
-  icon: ['el-icon-edit', 'gv-icon-tingyong', 'gv-icon-daiban'],
-  action: [actions.editRow, actions.delRow, actions.showLoginLog],
-},
-```
-
-### 与 Expand 的区别
-
-| 项 | Expand | Detail |
-| -- | ------ | ------ |
-| 触发 | 行首图标 | 操作列按钮 |
-| 配置 | `## 扩展列` | `## 明细` |
-| 数据拉取 | `fetchExpandTableData` | `crud.fetchTable` |
+与 Expand 的区别：触发 = 操作列按钮（非行首图标），配置 = `## 明细`（非 `## 扩展列`），数据 = `crud.fetchTable`（非 `fetchExpandTableData`）。
 
 ---
 
 ## 13. 详情页（Info / GvDescriptions）
 
-只读详情展示模式，使用 `GvDescriptions` 组件在 Drawer 中展示字段（参考 [info.md](info.md)）。
-
-### 配置触发
-
-```markdown
-## 详情
-| 名称 | 字段 | 占用列 | 类型 | 扩展 |
-| 用户账号 | account | 1 | | |
-| 性别 | sex | 1 | dic | dic=xb |
-| 备注 | remark | 2 | | |
-```
-
-### helper 工厂函数
-
-```typescript
-export const buildUserInfoHeadList = (): DescItemHead[] => [
-  { prop: 'account', label: '用户账号' },
-  { prop: 'userName', label: '用户姓名' },
-  { prop: 'sex', label: '性别', dicType: 'xb' },
-  { prop: 'birthDate', label: '出生日期' },
-  { prop: 'mobile', label: '联系方式' },
-  { prop: 'email', label: '邮箱' },
-  { prop: 'status', label: '状态', dicType: 'yxzt' },
-  { prop: 'remark', label: '备注', span: 2 },
-];
-```
-
-### 命名规则
+只读详情展示模式，使用 `GvDescriptions` 组件（配置格式 / 工厂示例 / `DescItemHead` 属性映射见 [info.md](info.md)）。helper 侧命名：
 
 | 场景 | helper 函数名 | 返回类型 |
 | ---- | ------------- | -------- |
 | crud-module infoPage | `build<Feature>InfoHeadList` | `DescItemHead[]` |
-| 独立 infoPage 模板 | `build<Feature>InfoHeadList` | `DescItemHead[]` |
-
-### DescItemHead 属性映射
-
-| 属性 | 配置列 | 说明 |
-| ---- | ------ | ---- |
-| `prop` | 字段 | 对应 `itemData` 中的字段 key |
-| `label` | 名称 | 描述项标签文本 |
-| `span` | 占用列 | 列占用栅格数，默认 1 |
-| `dicType` | 类型=dic 时，扩展 `dic=编码` | 字典编码，自动转换 `{c,v}` → 文案 |
-| `formatter` | — | 自定义格式化函数 `(value, itemData) => string` |
-| `render` | — | 自定义渲染 `(value, itemData) => VNode \| string` |
-| `labelWidth` | — | 自定义标签宽度 |
-| `align` | — | 内容对齐方式 |
+| 编辑表单内（GvDescriptions）子区 | `build<Feature><Section>InfoHeadList` | `DescItemHead[]` |
 
 ### 与 Edit / Detail 的区别
 

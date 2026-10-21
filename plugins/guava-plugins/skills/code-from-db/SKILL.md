@@ -93,7 +93,7 @@ Write `src/pages/<domain>/<feature>.md`（覆盖策略见下方）。YAML 头 + 
 ### Step 7：收尾
 
 - 输出「待人工确认」清单（字典编码 `dic=xxx`——默认表已命中者自动填、未命中者留空待补；精确 validator `isPhone/isEmail/...`；中文标签是否按 `COLUMN_COMMENT` 修正；`domain`/`apiBase` 命名）。
-- hooks `lint-fix.sh` 无报错（前端 eslint + 后端 java format）。
+- hooks `lint-fix.sh` 无报错（前端 eslint + prettier + 后端 java format）。
 
 ---
 

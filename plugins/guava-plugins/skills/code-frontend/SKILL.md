@@ -121,7 +121,7 @@ Read 同 pageType 参考页（[page-types.md](page-types.md)）+ 目标 `api` / 
 
 ### Config File Mode
 
-1. Read 配置（YAML + 表）；记下 YAML **`view`** 原文；检查 **`frontendOnly`**
+1. Read 配置（YAML + 表）；**格式识别**（视觉稿 / 精简 / 旧版，按小节标题特征与表格列数，[config-parser.md](config-parser.md)）→ `pageType` 省略时按小节推导 → 无 `api` 块（未标 frontendOnly）**默认 `frontendOnly: true`**；记下 YAML **`view`** 原文
 2. [config-parser.md](config-parser.md) 推导清单 — **所有 Vue / helper / types / data 路径 = `src/views/<view>/...`**，禁止用 `.md` 路径或 `feature` 当目录
 3. 展示清单时核对：例如 `view: sysMng/userMng2` → 必须出现 `src/views/sysMng/userMng2/`；`frontendOnly: true` → 有 `data.ts`、**无** `src/api`
 4. MCP：`get_page_recipe` + 相关 `gv-*` / `get_gv_component`
@@ -152,7 +152,7 @@ Read 同 pageType 参考页（[page-types.md](page-types.md)）+ 目标 `api` / 
 
 ## 3. 配置模板与示例
 
-配置模板：[config-template.md](config-template.md) · 示例：`src/pages/sysMng/userMng.md`
+配置模板（推荐视觉稿格式）：[config-template.md](config-template.md) · 解析规则：[config-parser.md](config-parser.md) · 示例：`src/pages/sysMng/userMng.md`
 
 ---
 
@@ -165,5 +165,8 @@ Read 同 pageType 参考页（[page-types.md](page-types.md)）+ 目标 `api` / 
 | **frontendOnly** | 不生成 api；列表 / 表单数据在 `data.ts` |
 | **i18n** | 默认 `false` = 仅中文，不走 `t()`；`true` = 双语言 + `t()` |
 | **校验必填** | 查询 / 编辑 / 表单 每条 FormItem 必须有 `format[1]` |
-| **操作列独立** | `## 操作列` / `## 扩展列` 为表格级单独声明 |
+| **操作列独立** | `## 操作列` / `## 扩展列` 为表格级单独声明；视觉稿格式行内 `action:` 声明**优先** |
+| **小节后缀** | `## 查询 - xxx` / `## 编辑表单 - xxx` 按 `-` 前前缀匹配；`---` 分隔线忽略 |
+| **布局意图** | `### 布局` 纯描述不生成代码；含 GvDrawer / GvDialog 指令时决定编辑容器 |
+| **GvDescriptions 子区** | `### 分区名（GvDescriptions）` → `build<Feature><Section>InfoHeadList` + Edit 内只读块 |
 | **MCP 优先** | template 标签前必须查 MCP |

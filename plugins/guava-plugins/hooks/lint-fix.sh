@@ -38,6 +38,16 @@ is_front_file() {
   esac
 }
 
+is_style_file() {
+  local f="$1"
+  [[ -n "$f" && -f "$f" ]] || return 1
+  [[ "$f" == *node_modules* ]] && return 1
+  case "$f" in
+    *.css | *.scss | *.sass | *.less | *.styl) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
 is_java_file() {
   local f="$1"
   [[ -n "$f" && -f "$f" && "$f" == *.java ]] || return 1
@@ -61,7 +71,7 @@ resolve_path() {
 
 record_file() {
   local f="$1"
-  if is_front_file "$f"; then
+  if is_front_file "$f" || is_style_file "$f"; then
     echo "$f" >> "$FRONT_CACHE"
   elif is_java_file "$f"; then
     echo "$f" >> "$JAVA_CACHE"
@@ -90,7 +100,7 @@ build_list() {
     [[ -z "$fp" ]] && continue
     fp="$(resolve_path "$fp" || true)"
     [[ -z "$fp" ]] && continue
-    if [[ "$kind" == "front" ]] && is_front_file "$fp"; then
+    if [[ "$kind" == "front" ]] && { is_front_file "$fp" || is_style_file "$fp"; }; then
       echo "$fp" >> "$dst"
     elif [[ "$kind" == "java" ]] && is_java_file "$fp"; then
       echo "$fp" >> "$dst"
@@ -149,16 +159,39 @@ run_prettier() {
   debug "prettier not found in PATH or node_modules/.bin; skipping format"
   return 0
 }
+
+run_stylelint() {
+  local -a args=("$@")
+  setup_path
+  cd "$PROJECT_DIR"
+  if [[ -x "$PROJECT_DIR/node_modules/.bin/stylelint" ]]; then
+    "$PROJECT_DIR/node_modules/.bin/stylelint" "${args[@]}"
+    return $?
+  fi
+  if command -v pnpm >/dev/null 2>&1; then
+    pnpm exec stylelint "${args[@]}"
+    return $?
+  fi
+  if command -v npx >/dev/null 2>&1; then
+    npx stylelint "${args[@]}"
+    return $?
+  fi
+  debug "stylelint not found in PATH or node_modules/.bin; skipping"
+  return 0
+}
+
 run_eslint_fix() {
   local list="$1"
   local -a files=()
   [[ -s "$list" ]] || return 0
   while IFS= read -r f; do
-    [[ -n "$f" ]] && files+=("$f")
+    [[ -n "$f" ]] || continue
+    is_style_file "$f" && continue
+    files+=("$f")
   done < "$list"
   ((${#files[@]})) || return 0
   debug "eslint --fix ${files[*]}"
-  run_eslint --cache --fix "${files[@]}" 2>&1 || true
+  run_eslint --cache --fix "${files[@]}" >&2 2>&1 || true
 }
 
 run_prettier_fix() {
@@ -170,10 +203,42 @@ run_prettier_fix() {
   done < "$list"
   ((${#files[@]})) || return 0
   debug "prettier --write ${files[*]}"
-  run_prettier --write "${files[@]}" 2>&1 || true
+  run_prettier --write "${files[@]}" >&2 2>&1 || true
+}
+
+run_stylelint_fix() {
+  local list="$1"
+  local -a files=()
+  [[ -s "$list" ]] || return 0
+  while IFS= read -r f; do
+    [[ -n "$f" ]] || continue
+    is_style_file "$f" || continue
+    files+=("$f")
+  done < "$list"
+  ((${#files[@]})) || return 0
+  debug "stylelint --fix ${files[*]}"
+  run_stylelint --fix "${files[@]}" >&2 2>&1 || true
 }
 
 run_eslint_check() {
+  local list="$1"
+  local -a files=()
+  [[ -s "$list" ]] || return 0
+  while IFS= read -r f; do
+    [[ -n "$f" ]] || continue
+    is_style_file "$f" && continue
+    files+=("$f")
+  done < "$list"
+  ((${#files[@]})) || return 0
+  local out
+  if ! out=$(run_eslint "${files[@]}" 2>&1); then
+    printf '%s\n' "$out"
+    return 1
+  fi
+  return 0
+}
+
+run_prettier_check() {
   local list="$1"
   local -a files=()
   [[ -s "$list" ]] || return 0
@@ -182,7 +247,25 @@ run_eslint_check() {
   done < "$list"
   ((${#files[@]})) || return 0
   local out
-  if ! out=$(run_eslint "${files[@]}" 2>&1); then
+  if ! out=$(run_prettier --check "${files[@]}" 2>&1); then
+    printf '%s\n' "$out"
+    return 1
+  fi
+  return 0
+}
+
+run_stylelint_check() {
+  local list="$1"
+  local -a files=()
+  [[ -s "$list" ]] || return 0
+  while IFS= read -r f; do
+    [[ -n "$f" ]] || continue
+    is_style_file "$f" || continue
+    files+=("$f")
+  done < "$list"
+  ((${#files[@]})) || return 0
+  local out
+  if ! out=$(run_stylelint "${files[@]}" 2>&1); then
     printf '%s\n' "$out"
     return 1
   fi
@@ -289,7 +372,11 @@ emit_stop_block() {
 
 lint_front_and_java() {
   local front_list="$1" java_list="$2"
+  # 顺序：先 prettier --write 统一格式，再 eslint/stylelint --fix 修规则，
+  # 最后再过一次 prettier 消除 fix 引入的格式差异
+  run_prettier_fix "$front_list"
   run_eslint_fix "$front_list"
+  run_stylelint_fix "$front_list"
   run_prettier_fix "$front_list"
   run_java_fix "$java_list"
 }
@@ -300,6 +387,12 @@ collect_lint_errors() {
   local out=""
   if ! out=$(run_eslint_check "$front_list" 2>&1); then
     err+="[Frontend ESLint]\n${out}\n"
+  fi
+  if ! out=$(run_stylelint_check "$front_list" 2>&1); then
+    err+="[Frontend Stylelint]\n${out}\n"
+  fi
+  if ! out=$(run_prettier_check "$front_list" 2>&1); then
+    err+="[Frontend Prettier]\n${out}\n"
   fi
   if ! out=$(run_java_check "$java_list" 2>&1); then
     err+="[Backend Java]\n${out}\n"
@@ -331,9 +424,9 @@ handle_write_edit_lint() {
   err="$(collect_lint_errors "$front_list" "$java_list")"
   if [[ -n "$err" ]]; then
     if [[ "$event" == "Stop" ]]; then
-      emit_stop_block "生成代码 ESLint/Java 校验未通过，请修复后再结束：${err}"
+      emit_stop_block "生成代码 ESLint/Stylelint/Prettier/Java 校验未通过（已自动修复一次仍失败），请修复后再结束：${err}"
     else
-      emit_hook_context "$event" "已运行 eslint --fix，仍有错误需修复：${err}"
+      emit_hook_context "$event" "已运行 prettier --write + eslint --fix + stylelint --fix，仍有错误需修复：${err}"
     fi
     return 1
   fi

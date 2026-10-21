@@ -124,42 +124,12 @@ api:
 
 ## 5. 模板（Variant B：GvDialog + GvDescriptions）
 
-需要弹窗而非 Drawer 时，使用 `GvDialog`：
+需要弹窗而非 Drawer 时（`## 改进` 指定 Dialog），**脚本与 Variant A 完全相同**，仅 template 容器替换：
 
 ```vue
-<script lang="ts" setup>
-  import { propTypes } from '@/hook/service/useUtil';
-  import { computed } from 'vue';
-
-  defineOptions({
-    name: '<Base>Info',
-  });
-
-  const props = defineProps({
-    visible: propTypes.bool.def(false),
-    title: propTypes.string.def(''),
-    itemHead: propTypes.array.def(() => []),
-    itemData: propTypes.object.def(() => ({})),
-  });
-
-  const emit = defineEmits(['update:visible']);
-
-  const isShow = computed({
-    get: () => props.visible,
-    set: (value) => emit('update:visible', value),
-  });
-</script>
-
-<template>
-  <GvDialog
-    :title="props.title"
-    v-model:visible="isShow"
-    width="50%">
-    <GvDescriptions
-      :item-head="props.itemHead as DescItemHead[]"
-      :item-data="props.itemData" />
-  </GvDialog>
-</template>
+<GvDialog :title="props.title" v-model:visible="isShow" width="50%">
+  <GvDescriptions :item-head="props.itemHead as DescItemHead[]" :item-data="props.itemData" />
+</GvDialog>
 ```
 
 ---
@@ -258,7 +228,8 @@ export const build<Feature>InfoHeadList = (): DescItemHead[] => [
 
 | 规则 | 说明 |
 | ---- | ---- |
-| 触发条件 | `infoPage: true` 或 `## 操作列` 含「详情」「查看」「信息」 |
+| 触发条件 | `infoPage: true` 或 `## 操作列` 含「详情」「查看」「信息」；`## 编辑表单` 内 `### 分区名（GvDescriptions）` 子区复用本表规则（见 edit.md §2.1） |
+| 字段来源 | `## 详情` 小节 → 缺省时回落 `## 编辑表单` 的（GvDescriptions）子区 → 再缺省回落 `## 表格` 列（视觉稿格式常见：只标 `infoPage: true` 不写 `## 详情`） |
 | 容器选择 | 默认 `GvDrawer`（size=40%）；`## 改进` 指定 Dialog 时用 Variant B |
 | helper 命名 | `build<Feature>InfoHeadList`（PascalCase） |
 | 返回类型 | `DescItemHead[]`（全局类型，禁止 import） |
@@ -286,50 +257,19 @@ export const build<Feature>InfoHeadList = (): DescItemHead[] => [
 
 ## 10. 完整配置示例
 
+在标准 crud-module 配置（见 [config-template.md](../config-template.md#精简格式兼容)）基础上加两项：
+
 ```markdown
----
-feature: userMng
-title: 用户管理
-view: sysMng/userMng
-pageType: crud-module
-layout: module
-editPage: true
-infoPage: true
-api:
-  module: admin/user
-  base: /sysuser
-  operations:
-    list: /sysuser/findUsers
-    create: /sysuser/saveUser
-    update: /sysuser/updateUser/{id}
-    delete: /sysuser/deleteUser
----
-
-## 查询
-| 名称 | 字段 | 类型 | 校验 | 长度 | 扩展 |
-| 用户账号 | u@account | text | isNumberLetter | 30 | |
-| 状态 | u@status | dic | isDic | 6 | dic=yxzt |
-
-## 表格
-| 名称 | 字段 | 宽度 | 筛选 | 类型 |
-| 用户账号 | account | 150 | Y | |
+infoPage: true          # YAML 头追加
 
 ## 操作列
 编辑,删除,详情
 
-## 编辑
-| 名称 | 字段 | 类型 | 必填 | 校验 | 长度 | 只读 | 占用列 | 扩展 |
-| 用户账号 | account | text | Y | isNumberLetter | 30 | N | 1 | disabledOnEdit |
-
 ## 详情
 | 名称 | 字段 | 占用列 | 类型 | 扩展 |
 | 用户账号 | account | 1 | | |
-| 用户姓名 | userName | 1 | | |
 | 性别 | sex | 1 | dic | dic=xb |
 | 出生日期 | birthDate | 1 | date | |
-| 联系方式 | mobile | 1 | | |
-| 邮箱 | email | 1 | | |
-| 状态 | status | 1 | dic | dic=yxzt |
 | 备注 | remark | 2 | | |
 ```
 
