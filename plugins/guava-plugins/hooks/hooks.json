@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/lint-fix.sh",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/lint-fix.sh\"",
             "timeout": 180
           }
         ]
@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/lint-fix.sh",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/lint-fix.sh\"",
             "timeout": 180
           }
         ]
@@ -28,7 +28,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/lint-fix.sh",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/lint-fix.sh\"",
             "timeout": 180
           }
         ]

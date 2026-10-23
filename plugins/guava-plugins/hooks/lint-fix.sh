@@ -128,6 +128,8 @@ run_eslint() {
     "$PROJECT_DIR/node_modules/.bin/eslint" "${args[@]}"
     return $?
   fi
+  # 非前端工程（如插件仓库自身编辑 .mjs）无 package.json：跳过，避免 pnpm exec 报 ERR_PNPM_RECURSIVE_EXEC_NO_PACKAGE
+  [[ -f "$PROJECT_DIR/package.json" ]] || { debug "no package.json in $PROJECT_DIR; skipping eslint"; return 0; }
   if command -v pnpm >/dev/null 2>&1; then
     pnpm exec eslint "${args[@]}"
     return $?
@@ -148,6 +150,8 @@ run_prettier() {
     "$PROJECT_DIR/node_modules/.bin/prettier" "${args[@]}"
     return $?
   fi
+  # 非前端工程（如插件仓库自身编辑 .mjs）无 package.json：跳过，避免 pnpm exec 报 ERR_PNPM_RECURSIVE_EXEC_NO_PACKAGE
+  [[ -f "$PROJECT_DIR/package.json" ]] || { debug "no package.json in $PROJECT_DIR; skipping prettier"; return 0; }
   if command -v pnpm >/dev/null 2>&1; then
     pnpm exec prettier "${args[@]}"
     return $?
@@ -168,6 +172,8 @@ run_stylelint() {
     "$PROJECT_DIR/node_modules/.bin/stylelint" "${args[@]}"
     return $?
   fi
+  # 非前端工程（如插件仓库自身编辑 .mjs）无 package.json：跳过，避免 pnpm exec 报 ERR_PNPM_RECURSIVE_EXEC_NO_PACKAGE
+  [[ -f "$PROJECT_DIR/package.json" ]] || { debug "no package.json in $PROJECT_DIR; skipping stylelint"; return 0; }
   if command -v pnpm >/dev/null 2>&1; then
     pnpm exec stylelint "${args[@]}"
     return $?

@@ -6,10 +6,7 @@
     "GUAVA_JAVA_FORMAT": "auto"
   },
   "permissions": {
-    "additionalDirectories": [
-      "~/.claude/plugins/cache/guava-tools",
-      "~/.claude/plugins/marketplaces/guava-tools"
-    ],
+    "additionalDirectories": ["~/.claude/plugins/cache/guava-tools", "~/.claude/plugins/marketplaces/guava-tools"],
     "allow": [
       "Read(./**)",
       "Read(../context/**)",
@@ -53,17 +50,7 @@
       "Bash(gh issue *)",
       "Bash(gh run *)"
     ],
-    "deny": [
-      "Read(./.env)",
-      "Read(./.env.*)",
-      "Read(./secrets/**)",
-      "Bash(curl *)",
-      "Bash(git push*)",
-      "Bash(git commit*)",
-      "Bash(git reset --hard*)",
-      "Bash(git clean -f*)",
-      "Bash(rm -rf *)"
-    ]
+    "deny": ["Read(./.env)", "Read(./.env.*)", "Read(./secrets/**)", "Bash(curl *)", "Bash(git push*)", "Bash(git commit*)", "Bash(git reset --hard*)", "Bash(git clean -f*)", "Bash(rm -rf *)"]
   },
   "includeCoAuthoredBy": true
 }

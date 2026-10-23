@@ -1,5 +1,29 @@
 # Guava 全栈代码生成（guava-plugins）
 
+## Agent
+
+| Agent | 说明 |
+|-------|------|
+| `guava-codegen` | 给一个 md 路径 / 表名 / 生成请求，自动选择并执行下面的 code-* skill（也可显式指定） |
+
+### guava-codegen 用法
+
+在消费项目里用自然语言派活，agent 读取输入后自动选择 skill：
+
+| 你说 | agent 执行 |
+|------|-----------|
+| "用 guava-codegen 按 `src/pages/userMng.md` 生成代码" | 读 md → 前后端配置都有 → `code-all` |
+| "根据 `src/pages/deptList.md` 只生成前端" | → `code-frontend` |
+| "从 `sys_user` 表生成全栈页面" | → `code-from-db`（走 mysql-schema MCP） |
+| "生成 `sys_role` 的 PO 就行" | → `code-from-db` PO-only 模式 |
+| "优化 `src/views/userMng/` 的性能，有点卡" | → `code-optimize`（frontend） |
+| "分析一下后端这个接口为什么慢" | → `code-optimize`（backend） |
+| "用 code-backend 生成这个 md 的接口" | 显式指定 → `code-backend` |
+
+调度规则：md 含前端+后端配置 → `code-all`；只含一端 → 对应单端 skill；表名/表结构 → `code-from-db`；优化类请求 → `code-optimize`。也可显式点名：`Task(subagent_type: "guava-plugins:guava-codegen", prompt: "...")`。
+
+前置条件与直接调用 skill 相同：已 `pnpm install`（含 guava-ui）、`GUAVA_BACKEND_ROOT` 已配置、`db.yml` 已填（code-from-db 需要）。
+
 ## 命令
 
 | 命令 | 说明 |
@@ -8,6 +32,7 @@
 | `/guava-plugins:code-backend` | `GUAVA_BACKEND_ROOT` 下 Java（Controller/Service/ServiceImpl + PO 实体；缺实体时连库读表生成 PO） |
 | `/guava-plugins:code-all` | 先 front 后 back |
 | `/guava-plugins:code-from-db` | 连接 MySQL 读表结构 → 生成 `.md` → 全栈页面表单 |
+| `/guava-plugins:code-optimize` | 前端/后端性能分析 + 优先级排序的修复 |
 
 配置放在消费项目的 `src/pages/**/*.md`。
 

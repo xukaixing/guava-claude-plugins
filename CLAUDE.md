@@ -30,7 +30,10 @@ plugins/guava-plugins/
     code-frontend/ (+ templates/)    # Vue 3 + Guava UI page gen from src/pages/*.md
     code-backend/  (+ templates/)    # Spring Boot Controller/Service/ServiceImpl
     code-all/                        # front → back pipeline + config-bridge
+    code-from-db/                    # MySQL 表结构 → md → 全栈（或 PO-only）
     code-optimize/                   # front + back performance analysis + prioritized fixes
+  agents/
+    guava-codegen.md                 # 调度 agent：按 md 路径/表名自动选择并执行 code-* skill
 ```
 
 ## Commands

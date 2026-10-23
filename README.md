@@ -28,6 +28,14 @@ claude --plugin-dir /path/to/guava-claude-plugins/plugins/guava-plugins
 | `/guava-plugins:code-frontend` | 生成 Vue/Gv* 页面与 API（写 template 前用自带 MCP） |
 | `/guava-plugins:code-backend` | 生成 Spring Boot Controller/Service |
 | `/guava-plugins:code-all` | 全栈：先 front 后 back |
+| `/guava-plugins:code-from-db` | 从 MySQL 表结构生成（PO-only 或全栈） |
+| `/guava-plugins:code-optimize` | 前端/后端性能分析与修复 |
+
+## Agent
+
+| Agent | 说明 |
+|-------|------|
+| `guava-plugins:guava-codegen` | 调度 agent：给定 md 路径 / 表名 / 请求，自动选择并执行上面的 code-* skill（用法示例见插件 README） |
 
 ## Skill 与 MCP
 
@@ -38,7 +46,8 @@ plugins/guava-plugins/
 ├── .claude-plugin/plugin.json
 ├── .mcp.json              # ${CLAUDE_PLUGIN_ROOT}/mcp/...
 ├── mcp/                   # guava-ui catalog + gv-* 单组件
-├── skills/                # code-frontend / code-backend / code-all
+├── skills/                # code-frontend / code-backend / code-all / code-from-db / code-optimize
+├── agents/                # guava-codegen（按 md 自动调度 code-* skill）
 ├── context/
 └── hooks/
 ```
