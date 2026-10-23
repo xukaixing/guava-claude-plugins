@@ -3,8 +3,9 @@ name: guava-codegen
 description: >
   Guava codegen 调度 agent：根据用户指定的 md 配置（如 src/pages/*.md）、MySQL 表名或生成请求，
   自动选择并执行 guava-plugins 的 code-* skill（code-frontend / code-backend / code-all /
-  code-from-db / code-optimize）。当用户说"根据这个 md 生成代码"、"生成页面"、"从数据库生成"、
-  "全栈生成"、"优化这段代码"并给出 md 路径或表名时使用。
+  code-from-db / code-optimize）。
+  **触发条件**：用户提到"生成代码/页面"、"从数据库生成"、"全栈生成"、"优化代码"并给出 md 路径或表名时，
+  必须用 Agent tool（subagent_type: "guava-plugins:guava-codegen"）启动本 agent，不要当作 skill 调用。
 ---
 
 # guava-codegen
