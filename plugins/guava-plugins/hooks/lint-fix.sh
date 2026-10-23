@@ -6,10 +6,21 @@ set -uo pipefail
 
 PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
 PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"
-CACHE_DIR="$PROJECT_DIR/.claude/cache"
+BACKEND_ROOT="${GUAVA_BACKEND_ROOT:-$PROJECT_DIR/../guava-admin}"
+JAVA_FORMAT_MODE="${GUAVA_JAVA_FORMAT:-auto}" # auto | google-java-format | spotless | none
+
+# 会话级缓存：避免跨会话共享（其他会话写入的文件不该在本会话 Stop 时被 lint）
+SESSION_ID="${CLAUDE_SESSION_ID:-$$}"
+CACHE_DIR="$PROJECT_DIR/.claude/cache/$SESSION_ID"
 FRONT_CACHE="$CACHE_DIR/lint-front.txt"
 JAVA_CACHE="$CACHE_DIR/lint-java.txt"
 mkdir -p "$CACHE_DIR"
+# 清理 1 天前残留的会话缓存目录（异常退出时 SESSION_ID 目录不会被清空）
+find "$PROJECT_DIR/.claude/cache" -mindepth 1 -maxdepth 1 -type d -mtime +1 -exec rm -rf {} + 2>/dev/null || true
+
+# 归一化根路径，供 is_project_file 用 realpath 做前缀比较（防符号链接路径形态不同导致误判）
+PROJECT_DIR_REAL="$(realpath "$PROJECT_DIR" 2>/dev/null || echo "$PROJECT_DIR")"
+BACKEND_ROOT_REAL="$(realpath "$BACKEND_ROOT" 2>/dev/null || echo "$BACKEND_ROOT")"
 
 INPUT=$(cat)
 EVENT=$(echo "$INPUT" | jq -r '.hook_event_name // empty')
@@ -19,9 +30,6 @@ case "$EVENT" in
   stop) EVENT="Stop" ;;
 esac
 HOOK_CWD=$(echo "$INPUT" | jq -r '.cwd // empty')
-
-BACKEND_ROOT="${GUAVA_BACKEND_ROOT:-$PROJECT_DIR/../guava-admin}"
-JAVA_FORMAT_MODE="${GUAVA_JAVA_FORMAT:-auto}" # auto | google-java-format | spotless | none
 
 debug() {
   [[ "${GUAVA_LINT_DEBUG:-}" == "1" ]] || return 0
@@ -55,6 +63,16 @@ is_java_file() {
   return 0
 }
 
+# 只处理本项目（含 backend root）内的文件；/tmp、其他仓库等外部文件直接跳过，
+# 否则外部文件会被记入缓存，在 Stop 时被 lint 甚至阻断结束
+is_project_file() {
+  local f="$1" rp
+  [[ -n "$f" ]] || return 1
+  [[ "$f" == "$PROJECT_DIR"/* || "$f" == "$BACKEND_ROOT"/* ]] && return 0
+  rp="$(realpath "$f" 2>/dev/null)" || return 1
+  [[ "$rp" == "$PROJECT_DIR_REAL"/* || "$rp" == "$BACKEND_ROOT_REAL"/* ]]
+}
+
 resolve_path() {
   local f="$1"
   [[ -n "$f" ]] || return 1
@@ -71,6 +89,7 @@ resolve_path() {
 
 record_file() {
   local f="$1"
+  is_project_file "$f" || return 0
   if is_front_file "$f" || is_style_file "$f"; then
     echo "$f" >> "$FRONT_CACHE"
   elif is_java_file "$f"; then
@@ -100,6 +119,7 @@ build_list() {
     [[ -z "$fp" ]] && continue
     fp="$(resolve_path "$fp" || true)"
     [[ -z "$fp" ]] && continue
+    is_project_file "$fp" || continue
     if [[ "$kind" == "front" ]] && { is_front_file "$fp" || is_style_file "$fp"; }; then
       echo "$fp" >> "$dst"
     elif [[ "$kind" == "java" ]] && is_java_file "$fp"; then
