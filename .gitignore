@@ -44,3 +44,5 @@ settings.*.json
 plugins/guava-plugins/mcp/mysql-schema/db.yml
 
 /.mcp.json
+
+db.yml

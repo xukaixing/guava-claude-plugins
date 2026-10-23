@@ -36,9 +36,25 @@
 
 配置放在消费项目的 `src/pages/**/*.md`。
 
+## 数据库配置（code-from-db / code-backend 需要）
+
+每个项目的数据库连接信息不同，**不要修改插件目录里的 `db.yml`**，而是在你的业务工程根目录创建自己的 `db.yml`：
+
+```bash
+# 在你的业务工程根目录（如 ses-web/）
+cp <插件目录>/mcp/mysql-schema/db.example.yml ./db.yml
+# 编辑 db.yml 填写真实连接信息
+```
+
+**查找优先级**（高 → 低）：
+1. `${CLAUDE_PROJECT_DIR}/db.yml` ← **推荐**：每个工程独立配置，文件已 gitignore
+2. 插件自带 `mcp/mysql-schema/db.yml` ← 全局兜底（占位值，生产勿用）
+
+> ⚠️ `db.yml` 含密码，务必确认它已在你的 `.gitignore` 中！
+
 ## 从 MySQL 表生成（code-from-db）
 
-1. 准备 `db.yml`（`db.yml` 已 gitignore）：优先放业务工程根 `${CLAUDE_PROJECT_DIR}/db.yml`（每个工程连自己的库），否则复制 `mcp/mysql-schema/db.example.yml` 为 `mcp/mysql-schema/db.yml`。
+1. 按上方「数据库配置」在业务工程根目录准备好 `db.yml`。
 2. `/mcp` 确认 `mysql-schema` 已连接。
 3. 运行 `/guava-plugins:code-from-db`：
    - **PO-only**：指定一张或多张表，只生成 `{Entity}PO.java`（不生成其它文件）。

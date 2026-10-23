@@ -1,14 +1,21 @@
-# MySQL 连接配置模板。复制为 db.yml 并填写真实连接信息（db.yml 已 gitignore，不提交）。
+# =============================================================================
+# MySQL 连接配置模板
+# =============================================================================
+#
+# 使用方法：在你的业务工程根目录（如 ses-web/）创建 db.yml，复制本文件内容并填写。
 #
 # db.yml 查找优先级（高 → 低）：
-#   1. 业务工程根 ${CLAUDE_PROJECT_DIR}/db.yml —— 如 ses-web/db.yml，每个工程可连自己的库
-#   2. 插件自身 mcp/mysql-schema/db.yml —— 全局兜底
+#   1. ${CLAUDE_PROJECT_DIR}/db.yml  ← 推荐：每个工程连自己的库，文件gitignore
+#   2. 插件自带 mcp/mysql-schema/db.yml  ← 全局兜底（占位值，需覆盖）
 #
-host: 211.149.179.63
+# 提示：db.yml 含密码，务必加入业务工程的 .gitignore！
+# =============================================================================
+
+host: 127.0.0.1
 port: 3306
-database: sentury_mps
+database: your_database
 user: root
-password: 1q2w3e4r!
+password: your_password
 
 # ---- MySQL 8.0 SSL ----
 # ssl: true  开启 TLS；服务端 require_secure_transport=ON（报 "insecure transport" 错）时必须 true

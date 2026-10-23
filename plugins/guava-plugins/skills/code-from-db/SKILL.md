@@ -19,7 +19,23 @@ disable-model-invocation: true
 
 ## 0. 前置
 
-- MCP `mysql-schema` 已连接（`/mcp` 应看到）；`db.yml` 已填——优先放业务工程根 `${CLAUDE_PROJECT_DIR}/db.yml`（每个工程连自己的库），否则用插件 `mcp/mysql-schema/db.yml`（复制 `db.example.yml`）。
+### 0.1 数据库配置（首次使用必读）
+
+`mysql-schema` MCP 通过 `db.yml` 连接你的 MySQL。**每个项目数据库不同，请按以下步骤配置**：
+
+1. 在你的**业务工程根目录**（如 `ses-web/`，即 `${CLAUDE_PROJECT_DIR}`）创建 `db.yml`。
+2. 复制模板 `mcp/mysql-schema/db.example.yml` 为 `db.yml`，填写真实连接信息（host/port/database/user/password）。
+3. `db.yml` 含密码，**务必加入该工程的 `.gitignore`**，不要提交到 git。
+
+**查找优先级**（高 → 低）：
+1. `${CLAUDE_PROJECT_DIR}/db.yml`  ← **推荐**：每个工程连自己的库
+2. 插件自带 `mcp/mysql-schema/db.yml`  ← 全局兜底（占位值，生产勿用）
+
+> 环境变量：若 `CLAUDE_PROJECT_DIR` 未设置，会尝试 `GUAVA_PROJECT_DIR`。
+
+### 0.2 其他前置
+
+- MCP `mysql-schema` 已连接（`/mcp` 应看到）。
 - 前端工程已 `pnpm install`（含 `guava-ui`）；后端 `GUAVA_BACKEND_ROOT` 正确指向 Maven/Gradle 多模块根。
 
 ---
