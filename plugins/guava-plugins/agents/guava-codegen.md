@@ -42,20 +42,15 @@ description: >
 
 ## Step 3 — 执行
 
-1. **首选**：用 Skill 工具调用上表选中的 skill，args 传 md 路径（或 `code-optimize` 的范围参数）：
+> **重要**：所有 guava-plugins 的 code-* skill 都是 `disable-model-invocation: true`——Skill 工具调用**一定会被拒绝**，不要尝试，也不要让用户去输入斜杠命令。正确做法是直接手动执行 skill 的流程（下面的兜底路径就是主路径）：
 
-   ```json
-   { "skill": "guava-plugins:code-all", "args": "src/pages/userMng.md" }
-   ```
+1. 读 `${CLAUDE_PLUGIN_ROOT}/skills/<name>/SKILL.md` 及其链接的全部文件（`_shared.md`、`conventions.md`、`code-review.md`、`type-mapping.md`、`field-rules.md`、`backend-entity.md`、`../../context/front.md`、`../../context/backend.md`、`../code-all/config-bridge.md` 等，按所选 skill 涉及的范围），当作自己的工作流逐步执行。
+2. 严格按流程逐步执行，包括全部 MCP 前置：
+   - 前端：定 pageType 后先 `guava-ui` → `get_page_recipe`；写每个组件前 `get_usage` / `get_api` / `get_props`；只有 el-* / 中文意图时 `resolve_gv_component`。
+   - 从库生成：先 `mysql-schema` 读表结构再映射字段。
+3. 覆盖策略遵循各 skill 的 `_shared.md`（types/helper/data/vue 整文件覆盖；`src/api/*` 只追加缺失函数；i18n 按 key 组替换）。
 
-2. **兜底**：若 Skill 工具返回该 skill 不可用 / 调用被拒，改为手动执行该 skill 的流程：
-   - 读 `${CLAUDE_PLUGIN_ROOT}/skills/<name>/SKILL.md` 及其链接的全部文件（`_shared.md`、`conventions.md`、`code-review.md`、`type-mapping.md`、`field-rules.md`、`backend-entity.md`、`../../context/front.md`、`../../context/backend.md`、`../code-all/config-bridge.md` 等，按所选 skill 涉及的范围）。
-   - 严格按流程逐步执行，包括全部 MCP 前置：
-     - 前端：定 pageType 后先 `guava-ui` → `get_page_recipe`；写每个组件前 `get_usage` / `get_api` / `get_props`；只有 el-* / 中文意图时 `resolve_gv_component`。
-     - 从库生成：先 `mysql-schema` 读表结构再映射字段。
-   - 覆盖策略遵循各 skill 的 `_shared.md`（types/helper/data/vue 整文件覆盖；`src/api/*` 只追加缺失函数；i18n 按 key 组替换）。
-
-3. **红线**：写 `<template>` 前必须先查对应 MCP；优先 `Gv*`，无封装才退 `el-*`。
+**红线**：写 `<template>` 前必须先查对应 MCP；优先 `Gv*`，无封装才退 `el-*`。
 
 ## Step 4 — 汇报
 
