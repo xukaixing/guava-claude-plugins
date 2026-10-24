@@ -70,7 +70,7 @@ frontendOnly: true         # 可省略：无 api 块时默认 true（1.9）
 | 列 | 取值 | 生成 |
 | ---- | ---- | ---- |
 | `固定` | `Y` | `fixed`（方向生成前查 MCP `get_props` GvTable head 属性；操作列默认右固定、数据列左固定） |
-| `类型` | `multi:<分组名>`（字段留空） | 多级表头分组起始行：生成 `{ label, prop, multiLabel, heads }`，其后连续带字段行作子列（映射见 [helper.md §7.1](templates/helper.md#71-多级表头类型multi分组名)） |
+| `类型` | `multiHeader`（组名写在「名称」列，字段留空） | 多级表头分组起始行：生成 `{ label, prop, multiLabel, heads }`，其后连续带字段行作子列（映射见 [helper.md §7.1](templates/helper.md#71-多级表头类型multiheader)）；兼容旧写法 `multi:<分组名>` |
 
 `扩展` 逗号分隔多值，取值与 `TableHeadItem` 属性映射见 [helper.md §7](templates/helper.md#7-数值列格式化--表格视觉稿扩展)（`amount` / `align:` / `type=tag` / `dic=`）；属性名生成前查 MCP `get_props` GvTable。
 

@@ -122,23 +122,25 @@ export interface <Feature>TableActions {
 
 `amountFormat` 从 `guava-ui` 导入。以上属性名生成前以 MCP `get_props` GvTable head 类型为准。
 
-### 7.1 多级表头（`类型=multi:<分组名>`）
+### 7.1 多级表头（`类型=multiHeader`）
 
-表格 7 列表中 `类型` 填 `multi:<分组名>`、**字段留空**的行 = 分组起始行；其后连续带字段的行归入该组作子列（直到下一个 `multi:` 行 / 操作列行 / 表尾）：
+表格 7 列表中 `类型` 填 `multiHeader`、**组名写在「名称」列、字段留空**的行 = 分组起始行；其后连续带字段的行归入该组作子列（直到下一个 `multiHeader` 行 / 操作列行 / 表尾）：
 
 ```markdown
-| 资金信息 |       |     |   | multi:现金账户 |   |                 |
-| 余额     | djJe  | 120 |   |                |   | align: right    |
-| 可用金额 | djKy  |     |   |                |   | sum, decimal: 2 |
+| 资金信息 |       |     |   | multiHeader |   |                 |
+| 余额     | djJe  | 120 |   |             |   | align: right    |
+| 可用金额 | djKy  |     |   |             |   | sum, decimal: 2 |
 ```
+
+兼容旧格式：`类型=multi:<分组名>`（字段留空，组名在类型列）视为同一语义，`multiLabel` 取 `:` 后分组名。
 
 生成一个 TableHeadItem，位置 = 分组起始行处：
 
 ```typescript
 {
-  label: '资金信息',        // 分组行「名称」；缺省同 multiLabel
-  prop: 'djJe',            // 分组行「字段」；留空取首子列字段
-  multiLabel: '现金账户',
+  label: '资金信息',        // 分组行「名称」；缺省 '多级表头'
+  prop: 'multiHeader',     // 分组行「字段」；留空固定 'multiHeader'
+  multiLabel: '资金信息',   // 分组行「名称」（旧格式 multi:<分组名> 取 : 后部分）
   heads: [
     { label: '余额', prop: 'djJe', width: 120, align: 'right' },
     { label: '可用金额', prop: 'djKy', sum: true, decimal: 2 },

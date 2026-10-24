@@ -364,6 +364,7 @@ api:
 | `date:datetime` | 日期列 |
 | `amount` | 金额列（自动右对齐 + `amountFormat`） |
 | `action:编辑,删除` | 操作列（视觉稿格式行内声明，按钮名不去重；优先于 `## 操作列` 小节） |
+| `multiHeader`（组名写在「名称」列，字段留空） | 多级表头分组起始行，其后连续带字段行作子列（生成 `multiLabel` + `heads`，见 [helper.md §7.1](templates/helper.md#71-多级表头类型multiheader)）；兼容旧写法 `multi:<分组名>` |
 
 ### 表格「固定 / 扩展」列（视觉稿格式，可选）
 
