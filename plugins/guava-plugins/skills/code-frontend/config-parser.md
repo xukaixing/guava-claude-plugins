@@ -70,6 +70,7 @@ frontendOnly: true         # 可省略：无 api 块时默认 true（1.9）
 | 列 | 取值 | 生成 |
 | ---- | ---- | ---- |
 | `固定` | `Y` | `fixed`（方向生成前查 MCP `get_props` GvTable head 属性；操作列默认右固定、数据列左固定） |
+| `类型` | `multi:<分组名>`（字段留空） | 多级表头分组起始行：生成 `{ label, prop, multiLabel, heads }`，其后连续带字段行作子列（映射见 [helper.md §7.1](templates/helper.md#71-多级表头类型multi分组名)） |
 
 `扩展` 逗号分隔多值，取值与 `TableHeadItem` 属性映射见 [helper.md §7](templates/helper.md#7-数值列格式化--表格视觉稿扩展)（`amount` / `align:` / `type=tag` / `dic=`）；属性名生成前查 MCP `get_props` GvTable。
 
@@ -106,6 +107,18 @@ frontendOnly: true         # 可省略：无 api 块时默认 true（1.9）
 | 保存 | `crud.checkForms` 校验 + `crud.save / crud.update` 提交 |
 | 取消 | 关闭 Drawer |
 | 其他 | 同名占位方法 |
+
+多个 `## 编辑表单 - <描述>` 小节：每个生成独立 Edit 子组件；首个为主编辑（表格「新增 / 编辑」入口），其余按标题注解生成对应容器（如 `（GvDialog，宽度 50%）` → `GvDialog` + `width="50%"`）。
+
+编辑表单项 `扩展` 关键字 `suffixBtn=<图标名>:<子表单>(<容器>)`（仅 `类型=text`）：
+
+| 部分 | 语义 |
+| ---- | ---- |
+| `<图标名>` | GvInput 后缀图标 → FormItem `suffixIcon`（GvIcon 图标名，属性 / 事件以 MCP `get_props` GvInput 为准） |
+| `<子表单>` | 点击后弹出的子表单标题，必须存在对应 `## 编辑表单 - <子表单>` 小节 |
+| `(<容器>)` | 弹窗容器 `Dialog` / `Drawer`，与目标小节注解一致时可省略 |
+
+生成规则见 [edit.md §2.2](templates/edit.md#22-弹窗子表单扩展suffixbtn) 与 [helper.md §8](templates/helper.md#8-format--日期--只读--占用列)。
 
 ### 1.8 pageType 推导（YAML 显式时优先）
 

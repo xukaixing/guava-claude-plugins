@@ -116,11 +116,47 @@ export interface <Feature>TableActions {
 | ------ | ---- |
 | 「金额」「合计」或 `扩展=amount` | `align: 'right'` + `amountFormat` render |
 | 「数量」或 `扩展=align: right` | `align: 'right'` |
-| `扩展=align: left/center` | 对应 `align` |
+| `扩展=align: left` | `align: 'left'`（官方 API 可选值仅 `left` / `right`） |
 | `扩展=type=tag` | 标签列，render GvTag（颜色 / props 查 MCP `get_props` GvTable） |
 | `固定=Y` | `fixed`（方向查 MCP：操作列右固定、数据列左固定） |
 
 `amountFormat` 从 `guava-ui` 导入。以上属性名生成前以 MCP `get_props` GvTable head 类型为准。
+
+### 7.1 多级表头（`类型=multi:<分组名>`）
+
+表格 7 列表中 `类型` 填 `multi:<分组名>`、**字段留空**的行 = 分组起始行；其后连续带字段的行归入该组作子列（直到下一个 `multi:` 行 / 操作列行 / 表尾）：
+
+```markdown
+| 资金信息 |       |     |   | multi:现金账户 |   |                 |
+| 余额     | djJe  | 120 |   |                |   | align: right    |
+| 可用金额 | djKy  |     |   |                |   | sum, decimal: 2 |
+```
+
+生成一个 TableHeadItem，位置 = 分组起始行处：
+
+```typescript
+{
+  label: '资金信息',        // 分组行「名称」；缺省同 multiLabel
+  prop: 'djJe',            // 分组行「字段」；留空取首子列字段
+  multiLabel: '现金账户',
+  heads: [
+    { label: '余额', prop: 'djJe', width: 120, align: 'right' },
+    { label: '可用金额', prop: 'djKy', sum: true, decimal: 2 },
+  ],
+}
+```
+
+| 子列配置 | 生成 heads item 属性 |
+| ---- | ---- |
+| 名称 / 字段 / 宽度 | `label` / `prop` / `width` |
+| `扩展=align: left/right` | `align` |
+| `扩展=amount` | `align: 'right'` + `render` 调 `amountFormat` |
+| `扩展=sum` | `sum: true`（开启合计） |
+| `扩展=decimal: N` | `decimal: N`（小数位，默认 2） |
+
+- 子列不支持「筛选」「固定」「类型」（dic / date / tag 等）
+- 有 render 需求时在生成代码中手写 `render: (scope) => ...`，配置表不表达
+- `multiLabel` / `heads` / `sum` / `decimal` 属性名生成前以 MCP `get_props` GvTable head 类型为准
 
 ---
 
@@ -129,6 +165,7 @@ export interface <Feature>TableActions {
 - format: `[required, validator, maxlength, decimal?]`，查询 `required=0`
 - 日期查询一律 `isDate` + `daterange`；编辑按 label 关键字推导
 - 只读 `Y` → `readonly: true`；占用列 `≥2` → `colspan: N`
+- `扩展=suffixBtn=<图标名>:<子表单>(<容器>)`（编辑表单 `type: 'text'` 项）→ FormItem 追加 `suffixIcon: '<图标名>'` + 点击回调 `actions.open<Section>`（`<Section>` = 子表单标题 PascalCase）；图标点击事件名以 MCP `get_props` GvInput 实际暴露为准，无该事件时方法体留 `@todo` 注释（guava-ui 需补 suffixIcon 点击事件）
 
 ---
 

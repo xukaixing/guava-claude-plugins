@@ -31,6 +31,7 @@ export interface <Feature>TableActions {
 export interface <Feature>EditActions {
   dictCB: DictSelectedFn;
   dictClearCB: DictSelectedFn;
+  open<Section>?: () => void;  // ← only if 扩展=suffixBtn 引用子表单 <Section>
 }
 
 // <feature>-编辑页子表格回调方法赋类型  ← only if 子表

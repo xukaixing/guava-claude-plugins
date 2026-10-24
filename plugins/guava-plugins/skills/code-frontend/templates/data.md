@@ -130,7 +130,7 @@ export const mockFormModel: Recordable<any> = {
 ## 6. 生成规则
 
 1. 根据 ## 表格列生成 `listTransHash`（仅 dic / date / dept / user）
-2. 生成 2～3 条 `mockListRecords`（**不含** transHash）；`id`、`rownums` 必填
+2. 生成 2～3 条 `mockListRecords`（**不含** transHash）；`id`、`rownums` 必填；**`扩展=amount` 列给原始 number 值**（如 `amount: 1234567.89`），千分位由列 `render` 的 `amountFormat` 处理，mock 数据不做格式化；多级表头（`multi:` 分组）子列字段按普通列生成 mock 值，`sum` 合计由 GvTable 计算
 3. `getListResult`：必须返回分页字段；按 `query.pageinfo` 切片；`records = [{ transHash }, ...pageRows]`
 4. `filterListRecords`：dic 字段用 `row.field?.c` 比较
 5. 可选 `## 示例数据` 表优先填充

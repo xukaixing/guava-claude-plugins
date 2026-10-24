@@ -156,7 +156,7 @@ export const createOrderTableHeadList = () =>
     { label: '订单编号', prop: 'orderNo', width: 180 },
     { label: '客户', prop: 'customer', width: 120 },
     { label: '金额', prop: 'amount', width: 120, align: 'right', render: (scope) => <span>{amountFormat(scope.row.amount)}</span> },
-    { label: '状态', prop: 'status', width: 100, align: 'center' },
+    { label: '状态', prop: 'status', width: 100 },
   ]);
 ```
 

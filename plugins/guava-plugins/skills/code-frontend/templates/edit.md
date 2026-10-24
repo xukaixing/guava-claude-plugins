@@ -101,6 +101,45 @@ const <feature>LoginInfoHeadList = build<Feature>LoginInfoHeadList();
 
 ---
 
+## 2.2 弹窗子表单（`扩展=suffixBtn=…`）
+
+字段 `扩展=suffixBtn=<图标名>:<子表单>(<容器>)`（`类型=text`）的生成：
+
+| 部分 | 生成 |
+| ---- | ---- |
+| 图标 | helper FormItem 追加 `suffixIcon: '<图标名>'`（GvInput prop，属性查 MCP `get_props` GvInput） |
+| 点击行为 | `<Feature>EditActions` 追加 `open<Section>: () => void`（`<Section>` = 子表单标题 PascalCase）；图标点击事件名以 MCP `get_props` GvInput 实际暴露为准，当前版本若无 icon 点击事件，方法体留 `@todo` 注释待 guava-ui 补齐 |
+| 子表单 | 目标 `## 编辑表单 - <子表单>（GvDialog/GvDrawer…）` 小节生成独立 Edit 子组件 `<Base><Section>Edit.vue`（容器 / 宽度取小节注解） |
+
+父组件持有子表单弹窗开关并挂载子组件：
+
+```vue
+<script setup lang="tsx">
+// @data
+const <section>EditVisible = ref(false);
+
+// @methods
+/**
+ * @todo: 打开<子表单标题>
+ */
+const open<Section> = () => {
+  <section>EditVisible.value = true;
+};
+</script>
+
+<template>
+  <div>
+    <!-- 主 GvDrawer / GvForm 照旧 -->
+    <<Base><Section>Edit v-model:visible="<section>EditVisible" />
+  </div>
+</template>
+```
+
+- 子组件复用 §3 模板（frontendOnly 时同 §1），容器为 GvDialog 时 `size` 取注解宽度
+- 子表单 `## 按钮` 独立配置（省略默认 `保存`）；`saved` 事件由父组件按需回填触发字段
+
+---
+
 ## 3. Variant A：纯表单
 
 ```vue
