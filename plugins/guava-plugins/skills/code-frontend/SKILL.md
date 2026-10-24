@@ -28,6 +28,8 @@ disable-model-invocation: true
 
 **规则**：优先 `Gv*`；仅当 MCP / 类型无对应封装时才用 `el-*`。详见 [conventions.md](conventions.md#ui-组件)。
 
+**同轮复用**（省 token / 省往返）：同一次生成任务中，`get_page_recipe` 每个 pageType 只查一次；同一组件的 `get_usage` / `get_api` / `get_props` 结果只查一次，后续相同标签直接复用，禁止重复查询。
+
 ## 1.1 Icon 图标规则
 
 **优先使用 `src/views/iconsMng/` 中已定义的图标**：
@@ -81,11 +83,12 @@ fallback 查找顺序：
 
 ### Step 0：准备
 
-Read 同 pageType 参考页（[page-types.md](page-types.md)）+ 目标 `api` / `helper` / `types` / `locales`。
+**并行 Read**（一条消息内并发调用，勿串行）：同 pageType 参考页（[page-types.md](page-types.md)）+ 目标 `api` / `helper` / `types` / `locales`。
 
 ### 配置文件路径
 
 **核心规则**：用户指定路径时，**必须用 Read 工具实际读取**，禁止凭判断说"不存在"。
+**例外（省 token）**：若本会话刚用 Write 生成 / 更新过该 md（如先产出配置再生成代码），内容已在上下文中，**跳过 Read 直接复用写入内容**；仅当文件可能被外部修改过（跨会话、他人编辑）才必须重新 Read。
 
 **路径解析规则**（按顺序尝试，每一步都用 Read 工具验证）：
 
@@ -121,7 +124,7 @@ Read 同 pageType 参考页（[page-types.md](page-types.md)）+ 目标 `api` / 
 
 ### Config File Mode
 
-1. Read 配置（YAML + 表）；**格式识别**（视觉稿 / 精简 / 旧版，按小节标题特征与表格列数，[config-parser.md](config-parser.md)）→ `pageType` 省略时按小节推导 → 无 `api` 块（未标 frontendOnly）**默认 `frontendOnly: true`**；记下 YAML **`view`** 原文
+1. 获取配置：**本会话刚 Write 过该 md → 直接用上下文内容，跳过 Read**；否则 Read 配置（YAML + 表）。然后 **格式识别**（视觉稿 / 精简 / 旧版，按小节标题特征与表格列数，[config-parser.md](config-parser.md)）→ `pageType` 省略时按小节推导 → 无 `api` 块（未标 frontendOnly）**默认 `frontendOnly: true`**；记下 YAML **`view`** 原文
 2. [config-parser.md](config-parser.md) 推导清单 — **所有 Vue / helper / types / data 路径 = `src/views/<view>/...`**，禁止用 `.md` 路径或 `feature` 当目录
 3. 展示清单时核对：例如 `view: sysMng/userMng2` → 必须出现 `src/views/sysMng/userMng2/`；`frontendOnly: true` → 有 `data.ts`、**无** `src/api`
 4. MCP：`get_page_recipe` + 相关 `gv-*` / `get_gv_component`

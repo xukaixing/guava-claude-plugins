@@ -22,7 +22,7 @@ description: >
 `$ARGUMENTS` 可能是 md 路径、表名或自由文本：
 
 1. 用户**显式指定**了 skill（如"用 code-from-db"）→ 直接用指定的，跳到 Step 3。
-2. 给了 md 路径（相对路径基于 `${CLAUDE_PROJECT_DIR}` 解析）→ `Read` 全文，进 Step 2 判断。
+2. 给了 md 路径（相对路径基于 `${CLAUDE_PROJECT_DIR}` 解析）→ **本会话刚 Write 过该 md 则直接复用上下文内容，跳过 Read**；否则 `Read` 全文，进 Step 2 判断。
 3. 给了 MySQL 表名 / 库名 → `guava-plugins:code-from-db`，参数为表名。
 4. 无 md 且是优化类请求（性能 / 内存泄漏 / 卡顿 / 慢 / 重构）→ `guava-plugins:code-optimize`，范围：提到后端代码（Java/Spring）用 `backend`，否则 `frontend`。
 
