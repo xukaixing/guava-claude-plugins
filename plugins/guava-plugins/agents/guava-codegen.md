@@ -50,6 +50,7 @@ description: >
    - 前端：定 pageType 后先 `guava-ui` → `get_page_recipe`；写每个组件前 `get_usage` / `get_api` / `get_props`；只有 el-* / 中文意图时 `resolve_gv_component`。
    - 从库生成：先 `mysql-schema` 读表结构再映射字段。
 3. 覆盖策略遵循各 skill 的 `_shared.md`（types/helper/data/vue 整文件覆盖；`src/api/*` 只追加缺失函数；i18n 按 key 组替换）。
+4. 写文件遵循各 SKILL 的并行规则：无依赖的多个 Write 在一条消息内并发发出（hook 的 `PostToolBatch` 会对整批统一 lint，不会重复跑）。
 
 **红线**：写 `<template>` 前必须先查对应 MCP；优先 `Gv*`，无封装才退 `el-*`。
 

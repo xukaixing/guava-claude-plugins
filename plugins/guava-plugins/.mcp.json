@@ -84,6 +84,13 @@
         "${CLAUDE_PLUGIN_ROOT}/mcp/components/GvCol/server.mjs"
       ]
     },
+    "gv-descriptions": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/mcp/components/GvDescriptions/server.mjs"
+      ]
+    },
     "gv-dialog": {
       "type": "stdio",
       "command": "node",
@@ -166,6 +173,13 @@
       "command": "node",
       "args": [
         "${CLAUDE_PLUGIN_ROOT}/mcp/components/GvSelect/server.mjs"
+      ]
+    },
+    "gv-tag": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/mcp/components/GvTag/server.mjs"
       ]
     },
     "gv-table": {

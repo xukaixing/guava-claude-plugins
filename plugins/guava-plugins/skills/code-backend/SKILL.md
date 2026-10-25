@@ -22,7 +22,7 @@ Step 1.2：业务字段（add/edit 时）。
 
 Step 1.3：CRUD（禁止默认全开，查询必选）。
 
-Step 2–4：Write Controller → Service → ServiceImpl（覆盖策略 [_shared.md](_shared.md)）：
+Step 2–4：**并发 Write** Controller / Service / ServiceImpl（一条消息内多个 Write 调用；覆盖策略 [_shared.md](_shared.md)）：
 
 | 文件 | 模板 |
 |------|------|
@@ -38,6 +38,10 @@ Step 4.5：PO 实体（ServiceImpl 引用 `{Entity}PO`，缺失则编译失败�
 
 Step 5：Mapper/SqlProvider、`getTransHash()`、`@MarkLog`、与前端 `paths` 对齐。
 
-Step 6 — 本次生成代码检查（必做）：按 [code-review.md](code-review.md) 对本轮 Java 做三检（**规范** / **安全** / **性能**）。Critical 须修复并再检；通过后输出三行简报。
+Step 6 — 本次生成代码检查（必做，速查优先）：
+
+先凭刚写完的内容速查：包路径 / 命名与前端 `paths` 对齐；写操作有 `@MarkLog` + `AssertMyUtil` 校验；查询条件走 `MyUtil.getConditionsWhere`，不拼用户原始入参；列表查询分页；无循环内单条查库；Javadoc 齐全、覆盖时保留原 `@since`。
+
+全过 → 输出三行简报（`规范 / 安全 / 性能：通过（速查）`）；任一可疑 → Read [code-review.md](code-review.md) 深检，Critical 须修复并再检。
 
 Step 7：Step 6 通过 · `lint-fix.sh` Java 格式化无报错。

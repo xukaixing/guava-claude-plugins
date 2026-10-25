@@ -1,6 +1,6 @@
 # 列表页模板
 
-> [\_shared.md](../_shared.md)
+> [\_shared.md](../_shared.md) · [\_common.md](_common.md)（文件头 / i18n / frontendOnly 片段）
 
 生成 `src/views/<view>/<Base>Index.vue`。**仅生成 enabled 的方法。**
 
@@ -8,30 +8,7 @@
 
 ## 1. frontendOnly
 
-- 禁止 `@/api` import，用 [data.md](data.md) 的 `getListResult` / `filterListRecords`
-- 删除：有 `id` 时从 `mockListRecords` 移除；无 API
-
-```typescript
-import { getFormModel } from 'guava-ui';
-import { filterListRecords, getListResult, mockListRecords } from './module/data';
-
-const search<Feature>List = async () => {
-  const fm = <feature>SearchFm.value;
-  try {
-    const query = fm ? getFormModel(fm) || {} : {};
-    search<Feature>Data.value = getListResult(filterListRecords(query), { current: 1, size: search<Feature>Data.value?.size || 10 });
-  } catch (e) { message(e, 'error'); }
-};
-
-const delete<Feature> = (row, index) => {
-  confirm('确认删除？').then(async () => {
-    try {
-      if (row.id) { mockListRecords.splice(mockListRecords.findIndex((r) => r.id === row.id), 1); search<Feature>List(); message('删除成功', 'success'); }
-      else crud.removeResult(search<Feature>Data.value, index);
-    } catch (e) { message(e, 'error'); }
-  }).catch(() => {});
-};
-```
+禁止 `@/api` import；查询 / 删除片段直接用 [\_common.md §4.1](_common.md#41-列表页查询--删除crud--tabs)（数据来自 [data.md](data.md)）。
 
 ---
 
@@ -55,6 +32,7 @@ const delete<Feature> = (row, index) => {
 ## 3. 模板
 
 ```vue
+<!-- 文件头注释块见 [_common.md §1](_common.md#1-vue-文件头注释)，原样置于本文件顶部 -->
 <script setup lang="tsx">
   import type { FormInstance, TableInstance } from 'element-plus';
   import { nextTick, onMounted, reactive, ref } from 'vue';
@@ -158,7 +136,7 @@ const delete<Feature> = (row, index) => {
 </template>
 ```
 
-### 3.3 工具栏按钮映射（`### 表格工具栏`）
+### 3.3 工具栏按钮映射
 
 | 按钮名 | 生成方法 | 行为 |
 | ------ | -------- | ---- |
@@ -203,73 +181,18 @@ const delete<Feature> = (row, index) => {
 
 ## 5. 明细展开（Detail Table）
 
-操作列自定义按钮 + 展开明细表格模式。点击按钮后在当前行下方展开子表，展示关联数据。
+操作列自定义按钮 + 行内展开子表。触发 = 操作列按钮，配置 = `## 明细`，数据 = `crud.fetchTable`，helper 命名 `build<Feature><DetailName>HeadList`，Index 方法 `show<DetailName>`。
 
-### 5.1 配置
-
-```markdown
-## 明细
-- name: loginLog
-  label: 用户登录明细
-  api: /sysuser/findUserLoginInfo
-  columns:
-    - label: 登录IP
-      prop: loginIp
-      width: 150
-    - label: 所属地区
-      prop: loginDivision
-    - label: 浏览器
-      prop: browser
-    - label: 登录时间
-      prop: loginTime
-      width: 180
-```
-
-### 5.2 生成方法
-
-```typescript
-/**
- * @todo: 展开用户登录明细
- */
-const showLoginLog = async (row: Recordable<any>, index: number) => {
-  const filter = { userId: row.id };
-  const detailData = await crud.fetchTable(findUserLoginInfoApi, filter);
-  return () => (
-    <GvTable
-      ref-table={`userLoginLogList-${index}`}
-      table-head={buildLoginLogHeadList()}
-      table-data={detailData}
-      table-type="detail"
-      table-fetch={findUserLoginInfoApi}
-      table-filter={filter}
-    />
-  );
-};
-```
-
-### 5.3 关键规则
-
-| 规则 | 说明 |
-| ---- | ---- |
-| 触发条件 | `## 明细` 小节存在 |
-| helper 命名 | `build<Feature><DetailName>HeadList` |
-| 方法命名 | `show<DetailName>` |
-| 数据拉取 | `crud.fetchTable(fetch, { <parent>Id: row.id })` |
-| 渲染方式 | 返回 render 函数，`table-type="detail"` |
-| 按钮位置 | 操作列末尾追加，icon 用 `gv-icon-daiban` |
-| API import | 自动追加 `find<DetailName>Api` |
-
-> 详见 [detail.md](detail.md)。
+> 完整规则（配置格式 / icon / 多明细 / API 命名推导）见 [detail.md](detail.md)——以该文件为唯一真相。
 
 ---
 
 ## 6. 关键规则
 
 - 删除：`crud.submit(api, { id: row.id })`
-- `@hook`：`useI18n` + `useNotify`（`i18n: false` 时省略）
+- `@hook`：`useI18n` + `useNotify`（`i18n: false` 时省略，见 [\_common.md §2](_common.md#2-i18n-开关)）
 - 无 add/edit：省略 dialog state 和 Edit 组件
-- `i18n: false`：template 内 `t('xxx')` 替换为中文；不 `import useI18n`
 - TableInstance：有 `checkAllEdit()` / `createEditRow()` 时用 `TableInstanceExp`
 - 多分区编辑：`crud.checkForms(fmNodes)` 校验 + `getFormModel` 合并
 - 多 Tab：`table` 类型用 `v-show="masterId !== 0"` 控制显隐，`form` 类型始终显示
-- 明细展开：`crud.fetchTable` 按需拉取，返回 `table-type="detail"` 的 render 函数
+- 明细展开：见 [detail.md](detail.md)，本节不重复

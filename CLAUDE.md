@@ -23,7 +23,7 @@ plugins/guava-plugins/
     cursor-hooks.json.example        # non-Claude-Code Agent equivalent
   mcp/
     generate-components.mjs          # author-only: refresh usage.json from guava-press
-    _shared/                         # MCP infra (paths, stdio, press extraction, npm-types)
+    _shared/                         # MCP infra (paths, stdio, disk-cache, npm-types, npm-source, press extraction)
     guava-ui/                        # catalog MCP: list/resolve/search Gv*, page recipes
     components/Gv{Anchor,Form,…}/    # one dir per component: usage.json + server.mjs
   skills/
@@ -32,6 +32,7 @@ plugins/guava-plugins/
     code-all/                        # front → back pipeline + config-bridge
     code-from-db/                    # MySQL 表结构 → md → 全栈（或 PO-only）
     code-optimize/                   # front + back performance analysis + prioritized fixes
+    guava-codegen/                   # entry skill: delegates to the guava-codegen agent
   agents/
     guava-codegen.md                 # 调度 agent：按 md 路径/表名自动选择并执行 code-* skill
 ```
@@ -74,17 +75,17 @@ Env consumed: `GUAVA_BACKEND_ROOT` (defaults to `${CLAUDE_PROJECT_DIR}/../guava-
 
 1. **Skills** (`skills/*/SKILL.md` + `templates/`) define the code-generation workflow. `code-frontend` reads a consumer's `src/pages/<feature>.md` config (YAML + tables) and writes Vue/API/helper/types/i18n into `src/views/<view>/`. `code-backend` writes Java under `GUAVA_BACKEND_ROOT`. `code-all` runs front then back, bridged by `config-bridge.md`. `code-optimize` analyzes front/back code for performance bottlenecks, memory leaks, and optimization opportunities, delivering prioritized fixes. Each skill owns an **overlay policy** (`_shared.md`): e.g. `types/helper/data/vue` are whole-file overwritten; `src/api/*` is append-only for missing functions; `zh-CN.ts`/`en.ts` replace per-key groups.
 
-2. **MCP servers** (`mcp/`) supply component knowledge. `guava-ui` is the **catalog** (list/resolve/search Gv*, page recipes like `crud-list` / `form-edit` / `tabs`). Each `gv-*` server exposes `get_usage` / `get_api` / `get_examples` (vendored from press at generate time) and `get_props` (live from the consumer's `node_modules/guava-ui/lib/types/index.d.ts`). The skill mandates: **never write `<template>` without first calling the relevant MCP**; prefer `Gv*`, fall back to `el-*` only when no wrapper exists.
+2. **MCP servers** (`mcp/`) supply component knowledge. `guava-ui` is the **catalog** (list/resolve/search Gv*, page recipes like `crud-list` / `form-edit` / `tabs`). Each `gv-*` server exposes `get_usage` / `get_api` / `get_examples` (vendored from press at generate time; may lag npm), `get_props` (live from the consumer's `node_modules/guava-ui/lib/types/index.d.ts`), and `get_source` (original SFC shipped inside the installed package's source map — the npm-freshness ground truth). Responses to the doc tools carry an `npm` block (`packageVersion` / `sfcLastEditTime` / `pressGeneratedAt`) so callers can judge press staleness; props / emits / 源码 are always npm-authoritative. The skill mandates: **never write `<template>` without first calling the relevant MCP**; prefer `Gv*`, fall back to `el-*` only when no wrapper exists.
 
 3. **Hook** (`hooks/lint-fix.sh`) fires on `PostToolUse`/`PostToolBatch`/`Stop`. For front files (`*.ts/*.tsx/*.vue/*.js/*.mjs/...`) and style files (`*.css/*.scss/*.less/*.sass/*.styl`) it runs `prettier --write` → `eslint --fix` / `stylelint --fix` → `prettier --write`. For `*.java` it formats via `google-java-format -i`, `mvn spotless:apply`, or `GUAVA_JAVA_FORMAT_CMD`. On `Stop`, accumulated files are re-checked (eslint + stylelint + `prettier --check` + java); failure **blocks** the stop.
 
-**Generation-time vs. runtime split:** `mcp/_shared/press-extract.mjs` runs **only on the author machine** (reads guava-press markdown, writes vendored `usage.json` per component). `mcp/_shared/npm-types.mjs` runs **on the consumer machine** (reads installed `guava-ui` types). The `generate-components.mjs` script bridges the two — it must NOT be shipped as a runtime dependency.
+**Generation-time vs. runtime split:** `mcp/_shared/press-extract.mjs` runs **only on the author machine** (reads guava-press markdown, writes vendored `usage.json` per component). On the consumer machine, `mcp/_shared/npm-types.mjs` reads installed `guava-ui` types and `mcp/_shared/npm-source.mjs` extracts original SFCs from the shipped source map. The `generate-components.mjs` script bridges the two — it must NOT be shipped as a runtime dependency. All tool results pass through `mcp/_shared/disk-cache.mjs` (cross-session cache at `${CLAUDE_PROJECT_DIR}/.claude/cache/guava-mcp/`, keyed on source-file mtime+size), so press regeneration or a `pnpm install` upgrade invalidates automatically.
 
 ## Conventions worth knowing before editing
 
 - Skill files are Markdown consumed as system prompts; `disable-model-invocation: true` means they're only reachable via `/guava-plugins:<name>`.
 - Component MCP servers are generated (templated `server.mjs` written by `generate-components.mjs`); don't hand-edit them — regenerate.
-- `paths.mjs` `resolveProjectRoot()` walks up from `MCP_ROOT` looking for `node_modules/guava-ui`; layout changes between plugin and consumer can break prop resolution.
+- `paths.mjs` `resolveProjectRoot()` resolves the consumer project in order: `CLAUDE_PROJECT_DIR` / `GUAVA_PROJECT_DIR` env → cwd if it has `node_modules/guava-ui` → walk up from cwd; missing env vars or unusual layouts break prop/source resolution.
 - Front code style is strict: `const fn = () => {}` only (no `function`, no `reactive`, no bare `any` → `Recordable<any>`), `@section` markers, multi-line JSDoc per method. Enforced by `code-review.md` checklists and the lint hook.
 - Backend targets JDK >= 25; generated Java must compile at that level.
 - Consumer settings live in the consumer's `.claude/settings.json` (env + permissions), **not** here. This repo's `.claude/settings.json` is for developing the plugin itself.

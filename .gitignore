@@ -46,3 +46,5 @@ plugins/guava-plugins/mcp/mysql-schema/db.yml
 /.mcp.json
 
 db.yml
+# guava-mcp disk cache (consumer projects + this repo when used as CLAUDE_PROJECT_DIR)
+.claude/cache/

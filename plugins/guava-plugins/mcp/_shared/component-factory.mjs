@@ -5,9 +5,11 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { getComponentFromTypes } from './npm-types.mjs';
+import { getComponentNpmSource, getPackageVersion } from './npm-source.mjs';
 import { createStdioServer } from './stdio.mjs';
 import { toMcpKey } from './paths.mjs';
 import { loadVendoredUsage } from './vendored-docs.mjs';
+import { componentSources, withDiskCache } from './disk-cache.mjs';
 
 /**
  * @param {{ gvName: string; componentDir?: string }} opts
@@ -43,6 +45,11 @@ export function startComponentServer({ gvName, componentDir }) {
       inputSchema: { type: 'object', properties: {} },
     },
     {
+      name: 'get_source',
+      description: `Get ${gvName} original SFC source shipped inside the installed guava-ui package (source map). npm-fresh: use when press usage may be stale.`,
+      inputSchema: { type: 'object', properties: {} },
+    },
+    {
       name: 'get_all',
       description: `Full ${gvName}: npm props + vendored usage/API/examples.`,
       inputSchema: { type: 'object', properties: {} },
@@ -53,6 +60,20 @@ export function startComponentServer({ gvName, componentDir }) {
     const usage = loadVendoredUsage(gvName, dir);
     const pkg = getComponentFromTypes(gvName);
 
+    // npm freshness: press usage.json can lag behind the installed guava-ui.
+    // props / emits / 源码 are npm-live (get_props / get_source); the block
+    // below lets callers compare versions and distrust stale press tables.
+    const npm = (() => {
+      const src = getComponentNpmSource(gvName);
+      return {
+        packageVersion: getPackageVersion(),
+        sfcVersion: src.sfcVersion || null,
+        sfcLastEditTime: src.sfcLastEditTime || null,
+        pressGeneratedAt: usage.generatedAt || null,
+        note: 'press 用法可能滞后；以 npm 为准（get_props / get_source）。',
+      };
+    })();
+
     switch (name) {
       case 'get_usage':
         return {
@@ -62,6 +83,7 @@ export function startComponentServer({ gvName, componentDir }) {
           docSlug: usage.docSlug,
           generatedAt: usage.generatedAt,
           error: usage.error,
+          npm,
         };
       case 'get_api':
         return {
@@ -69,6 +91,7 @@ export function startComponentServer({ gvName, componentDir }) {
           api: usage.api,
           tip: usage.tip,
           error: usage.error || (usage.api ? undefined : 'No API in usage.json'),
+          npm,
         };
       case 'get_examples': {
         let list = usage.examples || [];
@@ -81,11 +104,14 @@ export function startComponentServer({ gvName, componentDir }) {
       case 'get_props':
       case 'get_package':
         return pkg;
+      case 'get_source':
+        return getComponentNpmSource(gvName);
       case 'get_all':
         return {
           component: gvName,
           rule: 'Prefer Gv*; use vendored usage + npm props. Do not invent props. No press/guava-ui source needed.',
           props: pkg,
+          npm,
           docs: {
             tip: usage.tip,
             markdown: usage.usageMarkdown || usage.markdown,
@@ -105,7 +131,7 @@ export function startComponentServer({ gvName, componentDir }) {
     name: serverName,
     version: '1.1.0',
     tools,
-    callTool,
+    callTool: withDiskCache(serverName, callTool, componentSources(dir)),
   });
 }
 

@@ -3,6 +3,7 @@
  * + vendored usage.json (generated from press).
  */
 import { getComponentFromTypes, listGvFromTypes } from '../../_shared/npm-types.mjs';
+import { getComponentNpmSource, getPackageVersion } from '../../_shared/npm-source.mjs';
 import { GUAVA_UI_NPM, GUAVA_UI_TYPES, REPO_ROOT } from '../../_shared/paths.mjs';
 import { loadVendoredUsage } from '../../_shared/vendored-docs.mjs';
 
@@ -25,6 +26,7 @@ export const COMPONENT_META = {
   GvRadioGroup: { category: 'form', summary: '单选组', elFallback: 'el-radio-group' },
   GvRadioButton: { category: 'form', summary: '按钮式单选', elFallback: 'el-radio-button' },
   GvTable: { category: 'data', summary: '配置驱动表格（TableHeadItem[]）', pageLevel: true, elFallback: 'el-table' },
+  GvDescriptions: { category: 'data', summary: '描述列表（只读详情，DescItemHead[]）', pageLevel: true, elFallback: 'el-descriptions' },
   GvTableBar: { category: 'data', summary: '表格工具栏', pageLevel: true },
   GvTree: { category: 'data', summary: '树', elFallback: 'el-tree' },
   GvTag: { category: 'data', summary: '标签', elFallback: 'el-tag' },
@@ -85,6 +87,7 @@ export const EL_TO_GV = {
   'el-divider': 'GvDivider',
   'el-tree': 'GvTree',
   'el-tag': 'GvTag',
+  'el-descriptions': 'GvDescriptions',
   'el-badge': 'GvBadge',
   'el-icon': 'GvIcon',
   'el-popover': 'GvPopover',
@@ -100,7 +103,10 @@ export const EL_TO_GV = {
   dialog: 'GvDialog',
   drawer: 'GvDrawer',
   search: 'GvSearchBar',
+  descriptions: 'GvDescriptions',
   查询: 'GvSearchBar',
+  描述: 'GvDescriptions',
+  详情: 'GvDescriptions',
   表单: 'GvForm',
   表格: 'GvTable',
   按钮: 'GvButton',
@@ -194,11 +200,19 @@ export function getComponentDetail(name) {
     catalog.find((c) => c.name.toLowerCase() === `gv${key}`.toLowerCase());
   if (!item) return null;
   const usage = loadVendoredUsage(item.name);
+  const src = getComponentNpmSource(item.name);
   return {
     ...item,
     npmRoot: GUAVA_UI_NPM,
     typesPath: GUAVA_UI_TYPES,
     usageNotes: usageNotesFor(item.name),
+    npm: {
+      packageVersion: getPackageVersion(),
+      sfcVersion: src.sfcVersion || null,
+      sfcLastEditTime: src.sfcLastEditTime || null,
+      pressGeneratedAt: usage.generatedAt || null,
+      note: 'press 用法可能滞后；以 npm 为准（组件 MCP 的 get_props / get_source）。',
+    },
     docs: {
       tip: usage.tip,
       markdown: usage.usageMarkdown || usage.markdown,

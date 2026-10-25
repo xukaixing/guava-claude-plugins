@@ -8,7 +8,7 @@ code-frontend 按 `pageType` 选择生成模板与输出文件。**省略时默�
 
 | pageType | 说明 | 参考页 | 模板 |
 | -------- | ---- | ------ | ---- |
-| `crud-module` | 搜索 + 表格 + Drawer | `sysMng/userMng2` | crud / edit |
+| `crud-module` | 搜索 + 表格 + Drawer | `sysMng/userMng` | crud / edit |
 | `tabs` | GvTabs 多 Tab | `demo/demoFormTabs` | tabs |
 | `form-only` | 纯表单 | `sysMng/systemConfig` | form |
 | `free` | 自由布局（看板 / 复合页 / 报表） | — | free |
@@ -100,7 +100,7 @@ tabs:
 | ---- | ---- |
 | Index | [templates/tabs.md](templates/tabs.md) |
 | Edit（drawer） | [templates/edit.md](templates/edit.md) Variant A |
-| helper | [templates/helper.md#tabs](templates/helper.md#tabs) |
+| helper | [templates/helper.md#14-form-only--tabs](templates/helper.md#14-form-only--tabs) |
 
 ---
 
@@ -130,9 +130,9 @@ tabs:
 | 文件 | 模板 |
 | ---- | ---- |
 | 主页面 | [templates/form.md](templates/form.md) |
-| helper | [templates/helper.md#form-only](templates/helper.md#form-only) |
+| helper | [templates/helper.md#14-form-only--tabs](templates/helper.md#14-form-only--tabs) |
 | types | [templates/types.md#form-only](templates/types.md#form-only) |
-| API | [templates/api.md#form-only](templates/api.md#form-only) |
+| API | [templates/api.md#6-form-only](templates/api.md#6-form-only) |
 
 ---
 

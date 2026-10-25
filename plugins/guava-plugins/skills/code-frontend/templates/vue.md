@@ -1,6 +1,6 @@
 # Vue 文件格式
 
-> [\_shared.md](../_shared.md) · [conventions.md](../conventions.md)
+> [\_shared.md](../_shared.md) · [\_common.md](_common.md)（文件头 / i18n 片段）· [conventions.md](../conventions.md)
 
 本模板定义 `*.vue` 文件的**通用格式规范**，所有 Vue 组件（Index / Edit / form-only / free）均遵循此结构。
 
@@ -105,10 +105,7 @@
 
 ## 4. i18n 开关
 
-| `i18n` | 行为 |
-| ------ | ---- |
-| `false`（**默认**） | label / 文案直接写中文，不 `import useI18n`，不使用 `t()` |
-| `true` | label 使用 `t('i18nKey.xxx')`，需 `import useI18n` |
+见 [\_common.md §2](_common.md#2-i18n-开关)（唯一真相，全文统一引用）。
 
 ---
 

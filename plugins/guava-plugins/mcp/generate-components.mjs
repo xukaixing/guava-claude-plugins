@@ -33,8 +33,12 @@ console.log(`[generate] mcp root: ${MCP_ROOT}`);
 
 fs.mkdirSync(COMPONENTS_DIR, { recursive: true });
 
-const pressList = listPressComponents(pressDir).filter((c) => c.hasDoc);
 const npmNames = new Set(listGvFromTypes());
+
+// Ship every press-documented component; ALSO ship npm-only components that
+// have no press doc yet (e.g. GvTag / GvDescriptions) — their usage.json
+// carries a pointer tip and get_props works from installed guava-ui types.
+const pressList = listPressComponents(pressDir).filter((c) => c.hasDoc || npmNames.has(c.gvName));
 
 const components = pressList.map((c) => ({
   ...c,
@@ -44,11 +48,34 @@ const components = pressList.map((c) => ({
 let ok = 0;
 let fail = 0;
 
-for (const { gvName, docSlug, inNpm } of components) {
+for (const { gvName, docSlug, inNpm, hasDoc } of components) {
   const dir = path.join(COMPONENTS_DIR, gvName);
   fs.mkdirSync(dir, { recursive: true });
 
-  const extracted = extractFromPress(gvName, docSlug, pressDir);
+  // npm-only component (no press doc): preserve a previously vendored
+  // usage.json when it carries real content (examples / API), only refresh
+  // the inNpm flag; otherwise fall back to the pointer stub.
+  const existingUsagePath = path.join(dir, 'usage.json');
+  const existingUsage =
+    !hasDoc && fs.existsSync(existingUsagePath)
+      ? JSON.parse(fs.readFileSync(existingUsagePath, 'utf8'))
+      : null;
+
+  const extracted = hasDoc
+    ? extractFromPress(gvName, docSlug, pressDir)
+    : existingUsage && (existingUsage.examples?.length || existingUsage.api)
+      ? { ...existingUsage, inNpm, source: `${existingUsage.source || 'vendored'} (preserved: no press doc)` }
+      : {
+          gvName,
+          docSlug,
+          tip: `${gvName} 暂无 press 用法文档。组件用法：先 get_props（消费项目安装版 guava-ui 类型），或读 node_modules/guava-ui/lib/components/${gvName}/src/${gvName}.vue 源码。`,
+          markdown: '',
+          api: null,
+          examples: [],
+          usageMarkdown: '',
+          generatedAt: new Date().toISOString(),
+          source: 'npm-types only (no press doc)',
+        };
   if (extracted.error && !extracted.usageMarkdown) {
     console.warn(`[generate] skip ${gvName}: ${extracted.error}`);
     fail++;
@@ -98,8 +125,9 @@ startComponentServer({
 
 | 数据 | 来源 |
 | --- | --- |
-| 用法 / API / 示例 | 本目录 \`usage.json\` |
+| 用法 / API / 示例 | 本目录 \`usage.json\`（press 快照，可能滞后） |
 | props / emits | 消费项目 \`node_modules/guava-ui\`（\`CLAUDE_PROJECT_DIR\`） |
+| 源码（npm 原版 SFC） | 安装包 \`lib/guava-ui.es.js.map\` 内嵌（\`get_source\` 工具） |
 
 注册名：\`${mcpKey}\`
 `,

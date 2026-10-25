@@ -1,21 +1,12 @@
 # 自由页面
 
-> [\_shared.md](../_shared.md) · [vue.md](vue.md) · [conventions.md](../conventions.md)
+> [\_shared.md](../_shared.md) · [\_common.md](_common.md) · [vue.md](vue.md) · [conventions.md](../conventions.md)
 
-生成**自定义布局页面**，无固定查询/列表/编辑结构。适用于看板、仪表盘、复合布局等。
-
----
-
-## 1. 适用场景
-
-- 数据看板 / 仪表盘（多卡片 + 图表 + 表格混合）
-- 复合操作页（多步骤表单 + 预览 + 结果展示）
-- 自定义详情页（非标准编辑，自由组合组件）
-- 报表页（筛选 + 图表 + 导出）
+生成**自定义布局页面**（看板 / 仪表盘 / 复合布局 / 报表），无固定查询/列表/编辑结构。
 
 ---
 
-## 2. 文件结构
+## 1. 文件结构
 
 **与 crud.md 一致**：`<Base>Index.vue` + `helper.tsx` + `types.d.ts` + `data.ts`。
 
@@ -42,7 +33,7 @@ src/views/<view>/data.ts
 
 ---
 
-## 3. 配置格式
+## 2. 配置格式
 
 ```markdown
 ---
@@ -92,7 +83,7 @@ const orderList = [
 
 ---
 
-## 4. 生成规则
+## 3. 生成规则
 
 | 步骤 | 说明 |
 | ---- | ---- |
@@ -105,19 +96,11 @@ const orderList = [
 
 ---
 
-## 5. data.ts 模板
+## 4. data.ts 模板
+
+mock 数据结构按配置生成；**`getListResult` / `listTransHash` / `filterListRecords` 一律用 [data.md](data.md) §4 的权威实现**（free 页曾有一份简化副本已废弃，禁止照抄旧版）：
 
 ```typescript
-/**
- * @title: <title> 前端静态数据（frontendOnly）
- * @description: mock 数据
- */
-
-/** 列表转换 */
-export const listTransHash: Recordable<string> | null = {
-  status: 'dic|ddzt',
-};
-
 /** 统计数据 */
 export const mockStatCards = [
   { title: '今日订单', value: 128, icon: 'el-icon-s-order', color: '#409EFF' },
@@ -128,23 +111,13 @@ export const mockStatCards = [
 export const mockOrderList: Recordable<any>[] = [
   { orderNo: 'OD202601001', customer: '张三', amount: 1280, status: { c: '1001', v: '已支付' } },
 ];
-
-/** 构造分页结果 */
-export const getListResult = (records = mockOrderList, query = {}): Recordable<any> => {
-  const size = query.size || 10;
-  const current = query.current || 1;
-  const total = records.length;
-  const pages = Math.max(1, Math.ceil(total / size));
-  return {
-    records: listTransHash ? [{ transHash: { ...listTransHash } }, ...records] : records,
-    total, size, current, pages,
-  };
-};
 ```
+
+> 有 dic / date 列时按 [data.md §2](data.md) 补 `listTransHash`。
 
 ---
 
-## 6. helper.tsx 模板
+## 5. helper.tsx 模板
 
 ```typescript
 import { ref } from 'vue';
@@ -162,7 +135,7 @@ export const createOrderTableHeadList = () =>
 
 ---
 
-## 7. types.d.ts 模板
+## 6. types.d.ts 模板
 
 ```typescript
 /** 自由页面自定义类型（仅在有特殊类型时生成） */
@@ -176,9 +149,10 @@ export interface StatCard {
 
 ---
 
-## 8. Index.vue 模板
+## 7. Index.vue 模板
 
 ```vue
+<!-- 文件头注释块见 [_common.md §1](_common.md#1-vue-文件头注释)，原样置于本文件顶部 -->
 <script setup lang="tsx">
   import { ref, onMounted } from 'vue';
   import { GvCard, GvTable, GvButton } from 'guava-ui';
@@ -213,7 +187,7 @@ export interface StatCard {
 
 ---
 
-## 9. 关键规则
+## 8. 关键规则
 
 | 规则 | 说明 |
 | ---- | ---- |
@@ -225,6 +199,6 @@ export interface StatCard {
 | MCP 必查 | 每个组件使用前必须查询 MCP |
 | i18n: false 默认 | 不生成多语言，文案直接写中文 |
 
-## 10. 改进（可选）
+## 9. 改进（可选）
 
 同 crud.md，可在末尾追加 `## 改进` 小节对生成的代码做二次调整。

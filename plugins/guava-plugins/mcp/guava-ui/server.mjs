@@ -4,6 +4,9 @@
  * Exposes Gv* component catalog so Claude Code can generate pages with Guava UI.
  */
 import { EL_TO_GV, getCatalog, getComponentDetail, getPageRecipe, resolveComponent, searchComponents } from './lib/catalog.mjs';
+import { allUsageJsonSources, withDiskCache } from '../_shared/disk-cache.mjs';
+import { GUAVA_UI_TYPES } from '../_shared/paths.mjs';
+import { GUAVA_UI_SOURCE_MAP } from '../_shared/npm-source.mjs';
 
 const SERVER_INFO = {
   name: 'guava-ui',
@@ -148,6 +151,13 @@ function callTool(name, args = {}) {
   }
 }
 
+// Cross-session disk cache; invalidated by mtime/size of npm types + source map + all usage.json.
+const cachedCallTool = withDiskCache(SERVER_INFO.name, callTool, () => [
+  GUAVA_UI_TYPES,
+  GUAVA_UI_SOURCE_MAP,
+  ...allUsageJsonSources(),
+]);
+
 function send(msg) {
   process.stdout.write(`${JSON.stringify(msg)}\n`);
 }
@@ -191,7 +201,9 @@ async function handleMessage(msg) {
       case 'tools/call': {
         const toolName = params?.name;
         const args = params?.arguments || {};
-        const result = callTool(toolName, args);
+        // Disk cache: on hit the wrapped callTool never runs, so the
+        // getCatalog(true) rebuild in list_gv_components only happens on miss.
+        const result = cachedCallTool(toolName, args);
         ok(id, {
           content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
           structuredContent: result,

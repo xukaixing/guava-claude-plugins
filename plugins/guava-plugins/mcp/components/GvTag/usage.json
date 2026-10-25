@@ -1,12 +1,12 @@
 {
   "gvName": "GvTag",
   "docSlug": "tag",
-  "tip": "GvTag 组件。",
-  "markdown": "# GvTag 组件\n\n::: tip\nGvTag 组件。\n:::\n\n## 导入\n\n```typescript\nimport { GvTag } from 'guava-ui';\n```\n\n## API\n\n### GvTag Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvTag Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
-  "api": "## API\n\n### GvTag Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvTag Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
+  "tip": "GvTag 暂无 press 用法文档。组件用法：先 get_props（消费项目安装版 guava-ui 类型），或读 node_modules/guava-ui/lib/components/GvTag/src/GvTag.vue 源码。",
+  "markdown": "",
+  "api": null,
   "examples": [],
-  "usageMarkdown": "> GvTag 组件。\n\n# GvTag 组件\n\n::: tip\nGvTag 组件。\n:::\n\n## 导入\n\n```typescript\nimport { GvTag } from 'guava-ui';\n```\n\n## API\n\n### GvTag Attributes\n\n| 属性名 | 说明 | 类型 | 默认值 |\n| ------ | ---- | ---- | ------ |\n| — | — | — | — |\n\n### GvTag Events\n\n| 事件名 | 说明 |\n| ------ | ---- |\n| — | — |\n",
-  "generatedAt": "2026-07-24T15:02:48.362Z",
-  "source": "guava-ui packages/GvTag (synced 2026-07-24)",
-  "inNpm": false
+  "usageMarkdown": "",
+  "generatedAt": "2026-10-25T08:04:03.306Z",
+  "source": "npm-types only (no press doc)",
+  "inNpm": true
 }

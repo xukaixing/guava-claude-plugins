@@ -9,7 +9,7 @@ disable-model-invocation: true
 
 # code-frontend
 
-> [\_shared.md](_shared.md) · [conventions.md](conventions.md) · [../../context/front.md](../../context/front.md) · [MCP](../../mcp/guava-ui/README.md)
+> [\_shared.md](_shared.md) · [\_common.md](templates/_common.md) · [conventions.md](conventions.md) · [../../context/front.md](../../context/front.md) · [MCP](../../mcp/guava-ui/README.md)
 
 **职责**：按配置 Write API / Vue / helper / types / i18n。**不做**：路由、git。
 
@@ -26,9 +26,9 @@ disable-model-invocation: true
 | 只有 el-* / 中文意图 | `guava-ui` → `resolve_gv_component` |
 | 不确定有哪些 | `guava-ui` → `list_gv_components`（可 `pageLevelOnly: true`） |
 
-**规则**：优先 `Gv*`；仅当 MCP / 类型无对应封装时才用 `el-*`。详见 [conventions.md](conventions.md#ui-组件)。
+**规则**：优先 `Gv*`；仅当 MCP / 类型无对应封装时才用 `el-*`。详见 [conventions.md](conventions.md#3-ui-组件)。
 
-**同轮复用**（省 token / 省往返）：同一次生成任务中，`get_page_recipe` 每个 pageType 只查一次；同一组件的 `get_usage` / `get_api` / `get_props` 结果只查一次，后续相同标签直接复用，禁止重复查询。
+**同轮复用**（省 token / 省往返）：同一次生成任务中，`get_page_recipe` 每个 pageType 只查一次；同一组件的 `get_usage` / `get_api` / `get_props` / `get_source` 结果只查一次，后续相同标签直接复用，禁止重复查询。
 
 ## 1.1 Icon 图标规则
 
@@ -52,23 +52,21 @@ disable-model-invocation: true
 
 ### MCP 不可用时的 fallback
 
-如果 MCP 工具（`guava-ui` / `gv-form` / `gv-table` 等）**不可用**，从工程的 `node_modules/guava-ui` 依赖获取组件信息：
+如果 MCP 工具（`guava-ui` / `gv-form` / `gv-table` 等）**不可用**，从工程的 `node_modules/guava-ui` 依赖获取组件信息（发布包只含 4 个文件，**没有** `lib/components/**/*.vue` 和 `lib/index.d.ts`，勿引用不存在的路径）：
 
 1. **读取类型定义**：`${CLAUDE_PROJECT_DIR}/node_modules/guava-ui/lib/types/index.d.ts`
    - 包含所有 Gv* 组件的 props / emits 类型声明
-2. **读取组件源码**：`${CLAUDE_PROJECT_DIR}/node_modules/guava-ui/lib/components/Gv*/src/Gv*.vue`
-   - 包含组件实现和用法示例
-3. **读取导出列表**：`${CLAUDE_PROJECT_DIR}/node_modules/guava-ui/lib/index.d.ts`
-   - 包含所有导出组件名称
+2. **读取组件源码**：`${CLAUDE_PROJECT_DIR}/node_modules/guava-ui/lib/guava-ui.es.js.map`
+   - source map 内嵌全部 Gv* 原始 SFC 源码（`sourcesContent`，按 `packages/Gv*/src/*.vue` 索引），与消费项目实际运行的代码一致
 
 ```
 fallback 查找顺序：
-1. MCP 工具（guava-ui / gv-*）     ← 优先
-2. node_modules/guava-ui/lib/types  ← MCP 不可用时
-3. node_modules/guava-ui/lib/components ← 需要查看源码时
+1. MCP 工具（guava-ui / gv-*）     ← 优先；组件级 get_source = npm 源码，get_props = npm 类型
+2. node_modules/guava-ui/lib/types/index.d.ts  ← props / emits 权威
+3. node_modules/guava-ui/lib/guava-ui.es.js.map ← 原始 SFC 源码（内嵌）
 ```
 
-> **注意**：只要工程执行过 `pnpm install`（含 guava-ui 依赖），fallback 始终可用。
+> **npm 新鲜度**：press 用法文档可能滞后；props / emits / 组件源码永远以安装版 npm 为准（get_props / get_source，或上述 fallback 文件）。各工具响应里的 `npm` 块（packageVersion / sfcLastEditTime / pressGeneratedAt）可用来判断 press 文档是否过期。
 
 ---
 
@@ -128,9 +126,9 @@ fallback 查找顺序：
 2. [config-parser.md](config-parser.md) 推导清单 — **所有 Vue / helper / types / data 路径 = `src/views/<view>/...`**，禁止用 `.md` 路径或 `feature` 当目录
 3. 展示清单时核对：例如 `view: sysMng/userMng2` → 必须出现 `src/views/sysMng/userMng2/`；`frontendOnly: true` → 有 `data.ts`、**无** `src/api`
 4. MCP：`get_page_recipe` + 相关 `gv-*` / `get_gv_component`
-5. Write 每一个文件（覆盖策略见 [\_shared.md](_shared.md#覆盖策略)）；`frontendOnly` 时跳过 api、按 [templates/data.md](templates/data.md) 写 data.ts
+5. **并发 Write 全部文件**（一条消息内多个 Write 调用，勿串行；hook `PostToolBatch` 对整批统一 lint）：覆盖策略见 [\_shared.md](_shared.md#覆盖策略)；`frontendOnly` 时跳过 api、按 [templates/data.md](templates/data.md) 写 data.ts
 6. **读取 `## 改进`**：若配置中存在 `## 改进` 小节，逐条分析并应用到已生成的代码上做二次优化
-7. Step 8
+7. Step 7
 
 ### Interactive Mode
 
@@ -141,15 +139,25 @@ fallback 查找顺序：
 | API | [api.md](templates/api.md) | 同左 | get / save | 不生成 |
 | data | [data.md](templates/data.md)（仅 frontendOnly） | 同左 | mockFormModel | 内联数据 |
 | types | [types.md](templates/types.md) | 同左 | 同左 | 不生成 |
-| helper | [helper.md](templates/helper.md) | [helper.md#tabs](templates/helper.md#tabs) | [helper.md#form-only](templates/helper.md#form-only) | 不生成 |
+| helper | [helper.md](templates/helper.md) | [helper.md §14](templates/helper.md#14-form-only--tabs) | [helper.md §14](templates/helper.md#14-form-only--tabs) | 不生成 |
 | Vue 格式 | [vue.md](templates/vue.md) | 同左 | 同左 | 同左 |
 | 主页 | [crud.md](templates/crud.md) | [tabs.md](templates/tabs.md) | [form.md](templates/form.md) | [free.md](templates/free.md) |
 | Edit | [edit.md](templates/edit.md) | drawer 时 | — | — |
 | i18n | [i18n.md](templates/i18n.md) | 同左 | 同左 | — |
 
+### Step 7：本轮代码检查（速查优先）
+
+每次生成后必做。先凭刚写完的内容过下表速查（无需 Read 任何文件）；**全部通过** → 输出三行简报（`规范 / 安全 / 性能：通过（速查）`）直接进 Step 8；**任一可疑** → 才 Read [code-review.md](code-review.md) 按完整清单深检，Critical 修复后再进 Step 8。
+
+| 维度 | Critical 速查项 |
+| --- | --- |
+| 规范 | 路径 = `src/views/<YAML.view>/`；无 `function` / `reactive` / 裸 `any`；全局类型（`FormItem` / `TableHeadItem` / `Recordable` 等）未 import；format 校验完整（查询 / 编辑 validator 必填） |
+| 安全 | `frontendOnly` 时无 `@/api` import；无未消毒 `v-html`；删除 / 状态变更有确认 |
+| 性能 | 列表走 `crud.search` 分页；字典不在循环内重复请求 |
+
 ### Step 8：收尾
 
-清单 ✅ · i18n 已写 · `## 改进` 已应用 · `lint-fix.sh` 无报错（见 [\_shared.md](_shared.md#生成后)）
+清单 ✅ · i18n 已写 · `## 改进` 已应用 · 本轮检查通过 · `lint-fix.sh` 无报错（见 [\_shared.md](_shared.md#生成后)）
 
 ---
 

@@ -1,6 +1,8 @@
 # 代码检查（前端）
 
 > 每次 Write 完成后**必须**对本轮生成 / 修改的文件执行。有 Critical 须修复后再结束。
+>
+> **流程**：先过 SKILL.md Step 7 内嵌速查表；速查可疑 / 用户要求深检 / 改动面大（≥5 文件）时才读本文件逐项深检。
 
 对照：[conventions.md](conventions.md) · [_shared.md](_shared.md)
 

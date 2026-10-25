@@ -1,6 +1,6 @@
 # 纯表单页
 
-> [\_shared.md](../_shared.md) · [page-types.md#form-only](../page-types.md#form-only)
+> [\_shared.md](../_shared.md) · [\_common.md](_common.md) · [page-types.md#form-only](../page-types.md#form-only)
 
 生成 `<Base>.vue`（非 Index）。整页 GvForm + 保存，无 Table / Edit 子组件。
 
@@ -23,10 +23,7 @@
 
 ## 2. frontendOnly
 
-- **禁止** `@/api` import
-- 生成 [data.md](data.md) 中的 `mockFormModel`
-- `load*`：把 `mockFormModel` 写入 form
-- `save*`：校验后写回 `Object.assign(mockFormModel, getFormModel(fm))` + `message` 成功
+**禁止** `@/api` import；生成 [data.md §5](data.md) 的 `mockFormModel`；load / save 片段直接用 [\_common.md §4.3](_common.md#43-纯表单页-load--saveform-only)。
 
 ---
 

@@ -197,7 +197,7 @@ src/views/<view>/
 
 ## 8. CRUD 方法
 
-生成代码时以 **GvCrud MCP**（对齐 `gv.crud.ts`）为准。详见 [config-parser.md](config-parser.md#crud-方法来源)。
+生成代码时以 **GvCrud MCP**（对齐 `gv.crud.ts`）为准。详见 [config-parser.md](config-parser.md#0-crud-方法来源)。
 
 | 方法 | 用途 |
 | ---- | ---- |

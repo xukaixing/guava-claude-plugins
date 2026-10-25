@@ -1,6 +1,6 @@
 # data.ts（仅 frontendOnly: true）
 
-> [\_shared.md](../_shared.md) · [config-parser.md](../config-parser.md#frontendonly-true仅前端--无后端-api)
+> [\_shared.md](../_shared.md) · [config-parser.md](../config-parser.md#22-frontendonly)
 
 当 YAML **`frontendOnly: true`** 时生成：列表 / 表单**不调后端 API**，数据写在本文件。
 

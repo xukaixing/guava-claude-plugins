@@ -23,7 +23,7 @@
 |----|------|
 | **输出目录** | `src/views/<YAML.view>/`（[config-parser.md](config-parser.md#23-view--目录)） |
 | **frontendOnly** | 不生成 api；列表 / 表单数据在 `data.ts`（[templates/data.md](templates/data.md)） |
-| **i18n** | `false`（默认）= 仅中文，不走 `t()`；`true` = 双语言 + `t()` |
+| **i18n** | `false`（默认）= 仅中文不走 `t()`；`true` = 双语言 + `t()`（语义见 [templates/_common.md §2](templates/_common.md#2-i18n-开关)） |
 | **template** | 优先 `Gv*`；写前用 MCP（`get_page_recipe` / `get_usage` / `get_props`）；无对应封装时才用 `el-*` |
 | **字段配置** | 走 `GvForm` / `GvTable` + helper 的 `FormItem[]` / `TableHeadItem[]` |
 | **工厂函数** | 新页面用 `create*List`；`i18n: false` 时禁止 `t()` |

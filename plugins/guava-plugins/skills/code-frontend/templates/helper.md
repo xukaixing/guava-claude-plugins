@@ -1,6 +1,6 @@
 # Helper 配置工厂
 
-> [\_shared.md](../_shared.md) · 查询字段 [search-conditions.md](../search-conditions.md)
+> [\_shared.md](../_shared.md) · [\_common.md](_common.md)（i18n / dictCB 片段）· 查询字段 [search-conditions.md](../search-conditions.md)
 
 生成 `helper.tsx`。`FormItem` / `TableHeadItem` / `Recordable` 为全局类型，**禁止 import**。
 
@@ -8,12 +8,7 @@
 
 ## 1. i18n 开关
 
-| `i18n` | 行为 |
-| ------ | ---- |
-| `false`（默认） | label 写中文，不 `import useI18n`，不 `const { t } = useI18n()` |
-| `true` | label 用 `t('i18nKey.xxx')` |
-
-> `i18n: false` 时整个文件**禁止** `useI18n`。
+label 中文 / `t()` 规则见 [\_common.md §2](_common.md#2-i18n-开关)；i18n: true 时的 key 规则见 [i18n.md](i18n.md)。
 
 ---
 
@@ -241,27 +236,10 @@ export const create<Feature>EditList = (actions: <Feature>EditActions, operateTy
 | `### 登录信息（GvDescriptions）` | `build<Feature>LoginInfoHeadList`（`DescItemHead[]`，见 §13） | `buildUserLoginInfoHeadList` |
 
 **规则**：
-- 函数名 = `create<Feature><SectionName>List` / `build<Feature><Section>InfoHeadList`，SectionName 为子标题去空格转 PascalCase（组件注解 `(GvForm)` / `(GvDescriptions)` 不计入）
+- 函数名 = `create<Feature><SectionName>List` / `build<Feature><Section>InfoHeadList`，SectionName 为子标题去空格转 PascalCase（组件注解 `(GvForm)` / `(GvDescriptions)` 不计入）；**SectionName 已以 `List` 结尾时不重复追加**（如「登录列表」→ `LoginList` → `create<Feature>LoginList`，禁止 `…LoginListList`）
 - GvDescriptions 子区表结构 `名称|字段|占用列|类型|扩展`，只读、不进表单校验与提交
-- 每个工厂函数接收 `(actions: <Feature>EditActions, operateType = '')` 参数
-- 每个工厂函数独立管理自己的 `FormItem[]`
-
-```typescript
-// 基本信息
-export const create<Feature>BasicInfoList = (actions: <Feature>EditActions, operateType = '') =>
-  ref<FormItem[]>([
-    { type: 'text', format: [1, 'isNumberLetter', 30], label: '用户账号', field: 'account', disabled: operateType === 'update' },
-    { type: 'dic', format: [1, 'idDic', 6], dicType: 'zzjb', label: '组织级别', field: 'orgLevel', value: '100601', showLabel: '集团公司', cb: actions.dictCB, clear: actions.dictClearCB },
-    { type: 'dic', format: [1, 'idDic', 6], dicType: 'yxzt', label: '状态', field: 'status', cb: actions.dictCB, clear: actions.dictClearCB },
-  ]);
-
-// 开票信息：结构同上（字段 / format 按配置表生成）
-export const create<Feature>InvoiceInfoList = (actions: <Feature>EditActions, operateType = '') =>
-  ref<FormItem[]>([
-    { type: 'text', format: [1, 'isAny', 100], label: '发票抬头', field: 'invoiceTitle' },
-    { type: 'text', format: [0, 'isAny', 20], label: '税号', field: 'taxNo' },
-  ]);
-```
+- 每个工厂函数接收 `(actions: <Feature>EditActions, operateType = '')` 参数，独立管理自己的 `FormItem[]`
+- 字段项写法与 §9 模板相同（format / dicType / cb / colspan / readonly 等按配置表生成）
 
 ---
 
@@ -276,25 +254,9 @@ export const create<Feature>InvoiceInfoList = (actions: <Feature>EditActions, op
 
 **规则**：
 - TabName 为 `name` 字段转 PascalCase（如 `orderDtl` → `OrderDtl`）
-- `table` 类型工厂接收 actions 参数（含 `save`、`delete` 等回调）
-- `form` 类型工厂接收 `(actions: <Feature>TabEditActions)` 参数
-
-```typescript
-// Tab 表格列
-export const create<Feature>OrderDtlTableHeadList = (actions: <Feature>OrderDtlTableActions) =>
-  ref<TableHeadItem[]>([
-    { type: 'action', prop: '', label: '操作', content: ['编辑', '删除'], action: [actions.save<Feature>OrderDtl, actions.delete<Feature>OrderDtl] },
-    { label: '商品名称', prop: 'productName', width: '150px' },
-    { label: '数量', prop: 'quantity', width: '100px' },
-    { label: '单价', prop: 'price', width: '120px' },
-  ]);
-
-// Tab 表单
-export const create<Feature>RemarkInfoList = (actions: <Feature>TabEditActions) =>
-  ref<FormItem[]>([
-    { type: 'textarea', format: [0, 'isAny', 200], label: '备注', field: 'remark', colspan: 3 },
-  ]);
-```
+- `table` 类型工厂接收 actions 参数（含 `save`、`delete` 等回调），列含操作列 `content: ['编辑', '删除']` + `action: [actions.save<Feature><TabName>, actions.delete<Feature><TabName>]`
+- `form` 类型工厂接收 `(actions: <Feature>TabEditActions)` 参数（字典字段时）
+- 字段项写法与 §9 模板相同；Tab `table` 列不支持「筛选」「固定」时用 render 手写
 
 ---
 

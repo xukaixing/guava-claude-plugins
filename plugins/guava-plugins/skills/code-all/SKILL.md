@@ -10,17 +10,17 @@ disable-model-invocation: true
 
 > [config-bridge.md](config-bridge.md) · Phase A [../code-frontend/SKILL.md](../code-frontend/SKILL.md) + [code-review](../code-frontend/code-review.md) · Phase B [../code-backend/SKILL.md](../code-backend/SKILL.md) + [code-review](../code-backend/code-review.md)
 
-**顺序固定**：先前端（ses-web）→ 再后端（`GUAVA_BACKEND_ROOT`）。**不做** git、不改路由。
+**顺序固定**：先前端（ses-web）→ 再后端（`GUAVA_BACKEND_ROOT`）。**不做** git、不改路由。各 Phase 内部按对应 SKILL 并发 Write。
 
 ## 流程
 
 1. Read `src/pages/<config>.md` + [config-bridge.md](config-bridge.md) 推导前后端参数
 2. Read [../../context/front.md](../../context/front.md)（仅 Phase A 所需段落）
 3. **Phase A — code-frontend**：严格按 [../code-frontend/SKILL.md](../code-frontend/SKILL.md) Write 本仓库文件（Vue 前用插件 MCP 查 Gv*）
-4. **Phase A 代码检查**：按 [../code-frontend/code-review.md](../code-frontend/code-review.md) 对本轮前端文件做规范 / 安全 / 性能三检；Critical 修复后再进入 Phase B
+4. **Phase A 代码检查**：按 [../code-frontend/SKILL.md](../code-frontend/SKILL.md) Step 7 速查（可疑才深读 [code-review.md](../code-frontend/code-review.md)）；Critical 修复后再进入 Phase B
 5. Read [../../context/backend.md](../../context/backend.md) + `GUAVA_BACKEND_ROOT`
 6. **Phase B — code-backend**：严格按 [../code-backend/SKILL.md](../code-backend/SKILL.md) Write 后端文件
-7. **Phase B 代码检查**：按 [../code-backend/code-review.md](../code-backend/code-review.md) 对本轮 Java 做规范 / 安全 / 性能三检；Critical 须修复
+7. **Phase B 代码检查**：按 [../code-backend/SKILL.md](../code-backend/SKILL.md) Step 6 速查（可疑才深读 [code-review.md](../code-backend/code-review.md)）；Critical 须修复
 8. 对齐检查：`apiBase`/`paths`/`field` 与前端 API 一致（见 config-bridge）
 9. 汇总简报（前端三检 + 后端三检 + 对齐）· hooks lint 无报错（front eslint + prettier + back java format）
 
