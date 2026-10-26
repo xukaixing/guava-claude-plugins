@@ -36,30 +36,36 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * <p>{tableComment}（{tableName}）po实体类</p>
- * @author: {git user.name} <{git user.email}>
- * @created: {YYYY-MM-DD}
- * @version v1.0.1
+ * <p>{tableComment}({tableName}) po实体类</p>
+ *
+ * @author {git user.name} <{git user.email}>
+ * @since {yyyy/M/d}
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("{tableName}")
 public class {Entity}PO extends BasePO
 {
-  /** 编号 */
-  @TableId(value = "id", type = IdType.AUTO)
-  private Long id;
+    /**
+     * 编号
+     */
+    @TableId(value = "id", type = IdType.AUTO)
+    private Long id;
 
-  /** {columnComment} */
-  @TableField("{snake_col}")
-  private {JavaType} {camelField};
-  // ...每列一条
+    /**
+     * {columnComment}
+     */
+    @TableField("{snake_col}")
+    private {JavaType} {camelField};
+    // ...每列一条
 
-  public {Entity}PO()
-  {
-  }
+    public {Entity}PO()
+    {
+    }
 }
 ```
+
+> 风格对齐 `guava-entity-starter` 的 `SysUserPO.java`：4 空格缩进、Allman 大括号、字段 Javadoc 多行、类头 `@since {yyyy/M/d}`。
 
 ### JavaType 映射
 
@@ -88,8 +94,9 @@ import com.guava.{package 末段}.model.po.{Entity}PO;
 
 /**
  * <p>{tableComment} mapper</p>
- * @author: {git user.name} <{git user.email}>
- * @created: {YYYY-MM-DD}
+ *
+ * @author {git user.name} <{git user.email}>
+ * @since {yyyy/M/d}
  */
 public interface {Entity}Mapper extends BaseMapper<{Entity}PO>
 {
@@ -119,13 +126,18 @@ import lombok.Data;
 
 /**
  * <p>{tableComment} dto</p>
+ *
+ * @author {git user.name} <{git user.email}>
+ * @since {yyyy/M/d}
  */
 @Data
 public class {Entity}DTO
 {
-  /** {columnComment} */
-  private {JavaType} {camelField};
-  // ...镜像 PO（去掉继承的审计字段）
+    /**
+     * {columnComment}
+     */
+    private {JavaType} {camelField};
+    // ...镜像 PO（去掉继承的审计字段）
 }
 ```
 
@@ -133,5 +145,5 @@ public class {Entity}DTO
 
 - PO 继承 `BasePO`（`com.guava.component.model.BasePO`），审计字段由基类承载，本表自己的 `create_time/update_time` 等不重复声明（除非基类没有）。
 - 主键统一 `@TableId(value="id", type=IdType.AUTO)` + `private Long id`。
-- 类头 Javadoc 对齐 `SysNoticePO`：`@author` / `@created` / `@version v1.0.1`。
-- 覆盖策略：已存在同文件时**保留**原 `@since`/`@created`，仅补充缺失字段；禁止无脑覆盖。
+- 类头 Javadoc 对齐 `SysUserPO`：`<p>{表注释}({表名}) po实体类</p>` + `@author` + `@since {yyyy/M/d}`。
+- 覆盖策略：已存在同文件时**保留**原 `@since`，仅补充缺失字段；禁止无脑覆盖。

@@ -68,8 +68,20 @@ cp <插件目录>/mcp/mysql-schema/db.example.yml ./db.yml
 |------|------|
 | 生成流程 / 模板 | `skills/code-frontend` 等 |
 | Gv* 用法与 props | `.mcp.json` → `mcp/`（`guava-ui` + `gv-*`） |
+| 后端依赖 / 分层 / 平台类索引 | `.mcp.json` → `mcp/guava-backend`（`get_stack` / `search_dependencies` / `search_platform_classes`） |
 
-写 template 前用 MCP：`get_page_recipe` / `get_usage` / `get_props`。详见 [mcp/README.md](mcp/README.md)。
+写 template 前用 MCP：`get_page_recipe` / `get_usage` / `get_props`；写 Java 前用 `guava-backend`：`get_stack` + `search_platform_classes`。详见 [mcp/README.md](mcp/README.md)。
+
+## 前后端隔离
+
+`guava-codegen` agent 按端拆独立 subagent 执行（全栈 = 前端 subagent → 后端 subagent 串行），每个 subagent 只加载本端 skill 文档与 context，省 token 防串味；汇总与对齐核对由主 agent 完成。
+
+## Java 格式化（IDEA 等价）
+
+后端 `.java` 由 hook 走 **IDEA headless format**（`Contents/MacOS/idea format`，等价 IDE「保存时格式化」：4 空格 + Allman 大括号），按批在 `PostToolBatch` / `Stop` 执行：
+
+- 代码风格来源：项目 `.idea/codeStyles/Project.xml` → `GUAVA_IDEA_SCHEME` env → JetBrains 配置目录自定义方案（如 `Default Custom.xml`）→ 工厂默认
+- IDEA 定位：`GUAVA_IDEA_FORMAT` / `GUAVA_IDEA_HOME` env → `/Applications/IntelliJ IDEA.app`；不可用时回退 google-java-format / spotless（`GUAVA_JAVA_FORMAT` 控制：`auto` | `idea` | `google-java-format` | `spotless` | `none`）
 
 ## 消费项目
 

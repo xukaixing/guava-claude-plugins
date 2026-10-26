@@ -78,7 +78,8 @@
     ]
   },
   "enabledMcpjsonServers": [
-    "guava-ui"
+    "guava-ui",
+    "guava-backend"
   ],
   "disabledMcpjsonServers": [
     "gv-anchor",

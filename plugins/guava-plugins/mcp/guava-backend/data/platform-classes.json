@@ -1,0 +1,3318 @@
+{
+  "generatedAt": "2026-10-26T01:45:59.315Z",
+  "source": {
+    "repo": "guava-pro",
+    "modules": [
+      "guava-platform-starter",
+      "guava-component-starter",
+      "guava-entity-starter"
+    ]
+  },
+  "count": 243,
+  "classes": [
+    {
+      "module": "guava-platform-starter",
+      "name": "PlatformAutoEnable",
+      "kind": "annotation",
+      "package": "com.guava.platform",
+      "summary": "",
+      "methods": []
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "RequestWrapper",
+      "kind": "class",
+      "package": "com.guava.platform.wrapper",
+      "summary": "请求封装类",
+      "methods": [
+        "public RequestWrapper(HttpServletRequest request) throws IOException",
+        "public RequestWrapper(HttpServletRequest request, String aes) throws IOException",
+        "16 if (\"1\".equals(aes) && StrMyUtil.isNotEmpty(sessionStream))",
+        "public String getBodyString(final ServletRequest request)",
+        "Override public BufferedReader getReader() throws IOException",
+        "Override public ServletInputStream getInputStream()",
+        "Override public int read() throws IOException",
+        "Override public boolean isFinished()",
+        "Override public boolean isReady()",
+        "Override public void setReadListener(ReadListener readListener)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ResponseWrapper",
+      "kind": "class",
+      "package": "com.guava.platform.wrapper",
+      "summary": "返回值封装类",
+      "methods": [
+        "public ResponseWrapper(HttpServletResponse httpServletResponse)",
+        "Override public ServletOutputStream getOutputStream() throws IOException",
+        "Override public PrintWriter getWriter() throws UnsupportedEncodingException",
+        "Override public void flushBuffer() throws IOException",
+        "public byte[] getContent() throws IOException",
+        "public WrapperOutputStream(ByteArrayOutputStream bos)",
+        "Override public void write(int b) throws IOException",
+        "Override public boolean isReady()",
+        "Override public void setWriteListener(WriteListener arg0)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "IVerifyCodeGen",
+      "kind": "interface",
+      "package": "com.guava.platform.validatecode",
+      "summary": "验证码生成接口",
+      "methods": [
+        "String generate(int width, int height, OutputStream os) throws IOException",
+        "VerifyCode generate(int width, int height) throws IOException"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "LoginVerifyCode",
+      "kind": "class",
+      "package": "com.guava.platform.validatecode",
+      "summary": "登录验证码配置类",
+      "methods": [
+        "public LoginVerifyEnum getCodeType()",
+        "public void setCodeType(LoginVerifyEnum codeType)",
+        "public Long getExpiration()",
+        "public void setExpiration(Long expiration)",
+        "public int getLength()",
+        "public void setLength(int length)",
+        "public int getWidth()",
+        "public void setWidth(int width)",
+        "public int getHeight()",
+        "public void setHeight(int height)",
+        "public String getFontName()",
+        "public void setFontName(String fontName)",
+        "public int getFontSize()",
+        "public void setFontSize(int fontSize)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "LoginVerifyEnum",
+      "kind": "enum",
+      "package": "com.guava.platform.validatecode",
+      "summary": "登录验证码配置枚举",
+      "methods": []
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "LoginVerifyGen",
+      "kind": "class",
+      "package": "com.guava.platform.validatecode",
+      "summary": "登录验证码生成类",
+      "methods": [
+        "public Captcha getCaptcha()",
+        "private Captcha switchCaptcha(LoginVerifyCode loginCode)",
+        "public FixedArithmeticCaptcha(int width, int height)",
+        "Override protected char[] alphas()"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "SimpleCharVerifyCodeGenImpl",
+      "kind": "class",
+      "package": "com.guava.platform.validatecode",
+      "summary": "图形字符验证码实现类",
+      "methods": [
+        "private static void fillBackground(Graphics graphics, int width, int height)",
+        "Override public String generate(int width, int height, OutputStream os) throws IOException",
+        "Override public VerifyCode generate(int width, int height)",
+        "private void createCharacter(Graphics g, String randomStr)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "VerifyCode",
+      "kind": "class",
+      "package": "com.guava.platform.validatecode",
+      "summary": "验证码实体类",
+      "methods": []
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "MyPropsConfig",
+      "kind": "class",
+      "package": "com.guava.platform.utils",
+      "summary": "读取application.yml自定义属性类",
+      "methods": [
+        "public Map<String, Long> getExectime()",
+        "public void setExectime(Map<String, Long> exectime)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "JwtTokenMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.token",
+      "summary": "token工具类 一个完整的JwtToken由三部分组成：头部+负载信息+签名 header 存放JwtToken签名的算法 | token的类型：{\"alg\": \"HS512\",\"typ\": \"JWT\"} payload 主要存放用户名、…",
+      "methods": [
+        "public String getToken(HttpServletRequest request)",
+        "public String getUserAccountFromToken(String token)",
+        "private Map<String, Object> getClaimsFromToken2(String token)",
+        "private boolean tokenRefreshJustBefore(Claims claims)",
+        "private Claims getClaimsFromToken(String token)",
+        "public String getSubjectFromToken(String token)",
+        "public Map decryptToken(String token)",
+        "private boolean isTokenExpired(Claims claims)",
+        "public boolean checkToken(String token, String publicKey) throws NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, InvalidKeyException",
+        "public boolean checkSign(String preSignStr, String sign, String publicKey) throws InvalidKeySpecException, NoSuchAlgorithmException, InvalidKeyException, SignatureException",
+        "public Boolean verifyScope(String scope, String scopeList)",
+        "public Boolean verifyTokenByRsa(String token, String publicKey)",
+        "public Boolean verifyTokenByScope(String token, String publicKey, String scope)",
+        "public Map<String, Object> verifyToken(String token, String audience)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "PropertiesMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.resource",
+      "summary": "property文件工具类",
+      "methods": [
+        "private PropertiesMyUtil()",
+        "public static Properties loadPropertiesFromFile(Class<?> clazz, String filePath)",
+        "public static Properties loadPropertiesFromInputStream(InputStream inputStream)",
+        "public static Properties loadPropertiesFromSystem()",
+        "public static Properties getProperties(String propertiesSource)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "YmlMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.resource",
+      "summary": "yml读取工具类",
+      "methods": [
+        "private YmlMyUtil()",
+        "public static Map<String, Object> yaml2Map(String ymlSource)",
+        "public static Properties yaml2Properties(String yamlSource)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ReactiveWebUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.reactive",
+      "summary": "基于Reactive的web应用工具类",
+      "methods": [
+        "public static boolean isAjaxRequest(ServerRequest request)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ReflectionUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.reactive",
+      "summary": "反射工具类",
+      "methods": [
+        "public static Class<?> getClassGenricType(final Class clazz)",
+        "public static Class getClassGenricType(final Class clazz, final int index)",
+        "public static Class<?> getFieldGenricType(final Field field)",
+        "public static Class getFieldGenricType(final Field field, final int index)",
+        "public static Set<Field> getAllFields(Class<?> targetClass)",
+        "public static Field findField(Class<?> targetClass, String fieldName)",
+        "public static void setFieldValue(Field field, Object target, Object value)",
+        "public static void setFinalConstsValue(Class<?> constsClass, String fieldName, Object value)",
+        "public static void setFinalFieldValue(Object target, String fieldName, Object value)",
+        "target, findField(target.getClass(), fieldName), value)",
+        "public static void setFinalFieldValue(Object target, Field field, Object value)",
+        "public static <T> T getFieldValue(Field field, Object target)",
+        "public static <T> T getFieldValue(Object target, String fieldName)",
+        "public static Method findMethod(Class<?> targetClass, String methodName, Class<?>... paramTypes)",
+        "public static Method findMethod(Class<?> targetClass, String methodName)",
+        "public static boolean isGetClassMethod(@Nullable Method method)",
+        "public static boolean isCloneMethod(@Nullable Method method)",
+        "public static boolean isNotifyMethod(@Nullable Method method)",
+        "public static boolean isNotifyAllMethod(@Nullable Method method)",
+        "public static boolean isWaitMethod(@Nullable Method method)",
+        "public static boolean isFinalizeMethod(@Nullable Method method)",
+        "public ReflectionException(String message, Throwable cause)",
+        "public ReflectionException(String message)",
+        "public ReflectionException(Throwable cause)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "CustomObjectMapper",
+      "kind": "class",
+      "package": "com.guava.platform.utils.json",
+      "summary": "定制的ObjectMapper  用来解决启用@JsonRootName注解配合SerializationFeature.WRAP_ROOT_VALUE及DeserializationFeature.UNWRAP_ROOT_VALUE特性时…",
+      "methods": [
+        "public CustomObjectMapper()",
+        "public CustomObjectMapper(JsonFactory jf, DefaultSerializerProvider sp, DefaultDeserializationContext dc)",
+        "public CustomObjectMapper(JsonFactory jf)",
+        "public CustomObjectMapper(ObjectMapper src)",
+        "protected void autoconfigureFeatures(Object value)",
+        "protected void autoconfigureFeatures(JavaType javaType)",
+        "protected void autoconfigureFeatures(DeserializationConfig config, JavaType javaType)",
+        "protected void autoconfigureFeatures(SerializationConfig config, JavaType javaType)",
+        "Override protected ObjectReader _newReader(DeserializationConfig config, JavaType valueType, Object valueToUpdate, FormatSchema schema, InjectableValues injectableValues)",
+        "Override protected ObjectWriter _newWriter(SerializationConfig config, JavaType rootType, PrettyPrinter pp)",
+        "Override protected JsonNode _readTreeAndClose(JsonParser p0) throws IOException",
+        "Override protected Object _readValue(DeserializationConfig cfg, JsonParser p, JavaType valueType) throws IOException",
+        "Override public <T> MappingIterator<T> readValues(JsonParser p, JavaType valueType) throws IOException, JsonProcessingException",
+        "Override protected Object _readMapAndClose(JsonParser p0, JavaType valueType) throws IOException",
+        "Override public void writeValue(JsonGenerator g, Object value) throws IOException, JsonGenerationException, JsonMappingException",
+        "Override public void writeTree(JsonGenerator jgen, TreeNode rootNode) throws IOException, JsonProcessingException",
+        "Override public void writeTree(JsonGenerator jgen, JsonNode rootNode) throws IOException, JsonProcessingException",
+        "Override public void writeValue(File resultFile, Object value) throws IOException, JsonGenerationException, JsonMappingException",
+        "Override public void writeValue(OutputStream out, Object value) throws IOException, JsonGenerationException, JsonMappingException",
+        "Override public void writeValue(DataOutput out, Object value) throws IOException",
+        "Override public void writeValue(Writer w, Object value) throws IOException, JsonGenerationException, JsonMappingException",
+        "Override public String writeValueAsString(Object value) throws JsonProcessingException",
+        "Override public byte[] writeValueAsBytes(Object value) throws JsonProcessingException"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "JacksonJsonException",
+      "kind": "class",
+      "package": "com.guava.platform.utils.json",
+      "summary": "json转换异常封装类",
+      "methods": [
+        "public JacksonJsonException(String message, Throwable cause)",
+        "public JacksonJsonException(String message)",
+        "public JacksonJsonException(Throwable cause)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "JacksonMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.json",
+      "summary": "封装了Jackson的json工具类，用于代替JSONObject",
+      "methods": [
+        "public static <T> String object2Json(T object)",
+        "public static String object2Json(ObjectMapper objectMapper, Object object)",
+        "public static String object2JsonWithPretty(Object object)",
+        "public static byte[] object2Bytes(Object object)",
+        "javabean public static <T> T json2Object(String json, Class<T> clazz)",
+        "public static <T> T json2Object(ObjectMapper objectMapper, String json, Class<T> clazz)",
+        "public static <T> T json2Object(String json, TypeReference<T> typeReference)",
+        "public static <T> T json2Object(String json, Json2ObjectConverter<T> converter)",
+        "public static <T> T json2Object(ObjectMapper objectMapper, String json, TypeReference<T> typeReference)",
+        "public static String json2Str(Object obj)",
+        "SafeVarargs public static <T> List<T> parseList(String json, Class<T>... elementClasses)",
+        "json, getCollectionType(objectMapper, List.class, elementClasses))",
+        "SafeVarargs public static <T> Set<T> parseSet(String json, Class<T>... elementClasses)",
+        "json, getCollectionType(objectMapper, Set.class, elementClasses))",
+        "SafeVarargs public static <T> Collection<T> parseCollection(String json, Class<T>... elementClasses)",
+        "json, getCollectionType(objectMapper, Collection.class, elementClasses))",
+        "public static JavaType getCollectionType(ObjectMapper mapper, Class<?> collectionClass, Class<?>... elementClasses)",
+        "public static ObjectMapper createDefaultObjectMapper()",
+        "public static JsonNode createRootJsonNode(String json)",
+        "public static JsonNode createRootJsonNode(ObjectMapper objectMapper, String json)",
+        "public static boolean isJsonObject(String json)",
+        "public static boolean isJsonArray(String json)",
+        "public static boolean isJsonObjectArray(String json)",
+        "public static String toString(JsonNode parentNode, String fieldName)",
+        "public static String getString(JsonNode parentNode, String fieldName)",
+        "public static String getString(JsonNode parentNode, String fieldName, String defaultValue)",
+        "public static Boolean getBoolean(JsonNode parentNode, String fieldName)",
+        "public static Boolean getBoolean(JsonNode parentNode, String fieldName, Byte defaultValue)",
+        "public static Byte getByte(JsonNode parentNode, String fieldName)",
+        "public static Byte getByte(JsonNode parentNode, String fieldName, Byte defaultValue)",
+        "public static Short getShort(JsonNode parentNode, String fieldName)",
+        "public static Short getShort(JsonNode parentNode, String fieldName, Short defaultValue)",
+        "public static Integer getInteger(JsonNode parentNode, String fieldName)",
+        "public static Integer getInteger(JsonNode parentNode, String fieldName, Integer defaultValue)",
+        "public static Float getFloat(JsonNode parentNode, String fieldName)",
+        "public static Float getFloat(JsonNode parentNode, String fieldName, Float defaultValue)",
+        "public static Double getDouble(JsonNode parentNode, String fieldName)",
+        "public static Double getDouble(JsonNode parentNode, String fieldName, Double defaultValue)",
+        "public static Long getLong(JsonNode parentNode, String fieldName)",
+        "public static Long getLong(JsonNode parentNode, String fieldName, Long defaultValue)",
+        "public static ObjectMapper getDefaultObjectMapper()",
+        "T convert(ObjectMapper objectMapper, JsonNode rootNode) throws Exception"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ObjectRequestParam2StringConverter",
+      "kind": "class",
+      "package": "com.guava.platform.utils.json",
+      "summary": "feign-client在解析@RequestParam注解的复杂对象时，feign-client发起请求时将对象序列化为String的转换器  示例： public Object searchList(@RequestParam Cond…",
+      "methods": [
+        "public Object searchList(@RequestParam Condition condition)",
+        "public ObjectRequestParam2StringConverter()",
+        "Override public Set<ConvertiblePair> getConvertibleTypes()",
+        "Override public Object convert(Object source, TypeDescriptor sourceType, TypeDescriptor targetType)",
+        "Override public boolean matches(TypeDescriptor sourceType, TypeDescriptor targetType)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "String2ObjectRequestParamConverter",
+      "kind": "class",
+      "package": "com.guava.platform.utils.json",
+      "summary": "feign-client在解析@RequestParam注解的复杂对象时，在spring-mvc收到请求时将String反序列化为对象的转换器 示例：spring-mvc收到请求时的url: http://ip:port/search?co…",
+      "methods": [
+        "public Object searchList(@RequestParam Condition condition)",
+        "public String2ObjectRequestParamConverter()",
+        "Override public Set<ConvertiblePair> getConvertibleTypes()",
+        "Override public Object convert(Object source, TypeDescriptor sourceType, TypeDescriptor targetType)",
+        "Override public boolean matches(TypeDescriptor sourceType, TypeDescriptor targetType)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "AssertMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.iassert",
+      "summary": "自定义断言类",
+      "methods": [
+        "public AssertMyUtil()",
+        "public static void isNull(Object object, BizCode bizCode) throws IllegalArgumentException",
+        "public static void isNull(Object object, BizCode bizCode, Object... params) throws IllegalArgumentException",
+        "public static <T> T notNull(T object, BizCode bizCode) throws BizException",
+        "public static <T> T notNull(T object, BizCode bizCode, Object... params) throws BizException",
+        "public static <T extends CharSequence> T notEmpty(T text, BizCode bizCode, Object... params) throws BizException",
+        "public static <T extends CharSequence> T notEmpty(T text, BizCode bizCode) throws BizException",
+        "public static <T> T errMsg(BizCode bizCode, Object... params) throws BizException",
+        "public static <T> T errMsg(BizCode bizCode) throws BizException",
+        "public static <T> T errMsg(String msg) throws BizException",
+        "public static <T> T errMsg(int code, String msg) throws BizException"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "HttpContextHandler",
+      "kind": "class",
+      "package": "com.guava.platform.utils.http",
+      "summary": "HttpContext工具类",
+      "methods": [
+        "public static HttpServletRequest getHttpServletRequest()",
+        "null return ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest()",
+        "public static HttpServletResponse getHttpServletResponse()",
+        "null return ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getResponse()"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "IPMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.http",
+      "summary": "获取ip地址工具类",
+      "methods": [
+        "public static String getIpAddr(HttpServletRequest request)",
+        "public static String getCityInfo(String ip)",
+        "public static String getLocalCityInfo(String ip)",
+        "public static String getLocalIp()",
+        "IP for (Enumeration<InetAddress> inetAddresses = anInterface.getInetAddresses()",
+        "else if (candidateAddress == null)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "FileMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.file",
+      "summary": "文件相关操作",
+      "methods": [
+        "public static void downloadFile(HttpServletResponse response, File file, String newFileName)",
+        "public static String readFile(String file)",
+        "public static String readFile(File file)",
+        "public static void deleteFile(File file)",
+        ". if (file.isDirectory())",
+        "public static String getProjectPath()",
+        "public static String getClassPath()"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "AESMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.common",
+      "summary": "",
+      "methods": [
+        "public static String aesDecrypt(String encrypt)",
+        "public static String aesEncrypt(String content)",
+        "public static String binary(byte[] bytes, int radix)",
+        "public static String base64Encode(byte[] bytes)",
+        "public static byte[] base64Decode(String base64Code) throws IOException",
+        "public static byte[] aesEncryptToBytes(String content, String encryptKey) throws Exception",
+        "Cipher.ENCRYPT_MODE, new SecretKeySpec(encryptKey.getBytes(), \"AES\"))",
+        "public static String aesEncrypt(String content, String encryptKey) throws Exception",
+        "public static String aesDecryptByBytes(byte[] encryptBytes, String decryptKey) throws Exception",
+        "Cipher.DECRYPT_MODE, new SecretKeySpec(decryptKey.getBytes(), \"AES\"))",
+        "public static String aesDecrypt(String encryptStr, String decryptKey) throws Exception",
+        "public static String decryptParam(String aes, String params)",
+        "public static void main(String[] args) throws Exception"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ArrayMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.common",
+      "summary": "数组的工具类",
+      "methods": [
+        "public static Byte[] toObjectArray(byte[] array)",
+        "public static Short[] toObjectArray(short[] array)",
+        "public static Integer[] toObjectArray(int[] array)",
+        "public static Long[] toObjectArray(long[] array)",
+        "public static Float[] toObjectArray(float[] array)",
+        "public static Double[] toObjectArray(double[] array)",
+        "public static Character[] toObjectArray(char[] array)",
+        "public static Boolean[] toObjectArray(boolean[] array)",
+        "public static byte[] toPrimitiveArray(Byte[] array)",
+        "public static short[] toPrimitiveArray(Short[] array)",
+        "public static int[] toPrimitiveArray(Integer[] array)",
+        "public static long[] toPrimitiveArray(Long[] array)",
+        "public static float[] toPrimitiveArray(Float[] array)",
+        "public static double[] toPrimitiveArray(Double[] array)",
+        "public static char[] toPrimitiveArray(Character[] array)",
+        "public static boolean[] toPrimitiveArray(Boolean[] array)",
+        "public static int getLength(Object array)",
+        "public static boolean containsNull(Object[] array)",
+        "public static Object[] filterNull(Object[] array)",
+        "public static String join(String[] array)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "CollectionMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.common",
+      "summary": "集合类型的工具类",
+      "methods": [
+        "public static boolean isEmpty(Collection<?> collection)",
+        "public static boolean isEmpty(Map<?, ?> map)",
+        "public static boolean containsNull(Collection<?> collection)",
+        "public static void filterNull(Collection<?> collection)",
+        "public static <T> Collection<T> defaultIfEmpty(Collection<T> collection, Collection<T> defaultValue)",
+        "public static <T> List<T> defaultIfEmpty(List<T> collection, List<T> defaultValue)",
+        "public static <T> Set<T> defaultIfEmpty(Set<T> collection, Set<T> defaultValue)",
+        "public static <K, V> Map<K, V> defaultIfEmpty(Map<K, V> map, Map<K, V> defaultValue)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "DateMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.common",
+      "summary": "日期工具类",
+      "methods": [
+        "public static Long getTimeStamp(LocalDateTime localDateTime)",
+        "public static LocalDateTime fromTimeStamp(Long timeStamp)",
+        "public static Date toDate(LocalDateTime localDateTime)",
+        "public static Date toDate(LocalDate localDate)",
+        "public static LocalDateTime toLocalDateTime(Date date)",
+        "public static String localDateTimeFormat(LocalDateTime localDateTime, String patten)",
+        "public static String localDateFormat(LocalDate localDate, String patten)",
+        "public static String localDateTimeFormat(LocalDateTime localDateTime, DateTimeFormatter df)",
+        "public static String localDateTimeFormatyMdHms(LocalDateTime localDateTime)",
+        "public String localDateTimeFormatyMd(LocalDateTime localDateTime)",
+        "public static LocalDateTime parseLocalDateTimeFormat(String localDateTime, String pattern)",
+        "public static LocalDateTime parseLocalDateTimeFormat(String localDateTime, DateTimeFormatter dateTimeFormatter)",
+        "public static LocalDateTime parseLocalDateTimeFormatyMdHms(String localDateTime)",
+        "public static LocalDate parseLocalDateFormat(String localDateTime)",
+        "public static LocalDate parseLocalDateFormat(String localDateTime, String pattern)",
+        "public static Long getSecondsNextEarlyMorning()",
+        "public static void main(String[] args)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "LangMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.common",
+      "summary": "多语言翻译工具",
+      "methods": [
+        "public static String get(String code, Object... args)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "MenuComparator",
+      "kind": "class",
+      "package": "com.guava.platform.utils.common",
+      "summary": "菜单对象比较类",
+      "methods": [
+        "public int compare(Object o1, Object o2)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "MyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.common",
+      "summary": "公共类",
+      "methods": [
+        "public static String getValue(HttpServletRequest request, String para)",
+        "public static String getValue(Object o)",
+        "public static String getHeaderValue(HttpServletRequest request, String para)",
+        "public static boolean isempty(String s)",
+        "public static String getRequestParameter(RequestWrapper wrapperRequest)",
+        "public static HashMap<String, QcBean> getConditions(String params, Page pm)",
+        "else if (\"op\".equals(sName)) qc.setOp(jp.getText())",
+        "else if (\"va\".equals(sName)) qc.setValue(jp.getText())",
+        "else if (\"co\".equals(sName)) qc.setCode(jp.getText())",
+        "else if (\"df\".equals(sName)) qc.setDf(jp.getText())",
+        "else if (\"ac\".equals(sName)) qc.setAction(jp.getText())",
+        "else if (\"ds\".equals(sName)) qc.setDs(jp.getText())",
+        "else if (\"ki\".equals(sName)) qc.setKind(jp.getText())",
+        "else if (\"pageinfo\".equals(fieldName))",
+        "else if (\"countrows\".equals(sName)) countrows = \"null\".equals(jp.getText()) ? \"1000\" : jp.getText()",
+        "else if (\"recordsperpage\".equals(sName)) recordPerPage = \"null\".equals(jp.getText()) ? \"10\" : jp.getText()",
+        "else if (\"currentpagenum\".equals(sName)) pageNO = \"null\".equals(jp.getText()) ? \"1\" : jp.getText()",
+        "else if (\"val\".equals(sName))",
+        "else if (\"ordertype\".equals(sName))",
+        "public static String getConditionsWhere(String params, Page pm)",
+        "searchfilter if (\"searchfilter\".equals(fieldName))",
+        "20 if (\"headfilter\".equals(fieldName))",
+        "else if (fieldKind.equalsIgnoreCase(\"month\"))",
+        "else if (operation.equals(\"=\")) condition = new StringBuilder(\"date_format(\" + fieldName + \"-01, '%Y-%m') \" + operation + \" date_format('\" + fieldValue + \"-01','%Y-%m') \")",
+        "else if (fieldKind.equalsIgnoreCase(\"date\"))",
+        "else if (operation.equals(\"=\")) condition = new StringBuilder(\"date_format(\" + fieldName + \", '%Y-%m-%d') \" + operation + \" date_format('\" + fieldValue + \"','%Y-%m-%d') \")",
+        "else if (fieldKind.equalsIgnoreCase(\"datetime\"))",
+        "else if (operation.equals(\"=\")) // condition = new StringBuilder(\"date_format(\" + fieldName + \", '%Y-%m-%d %H:%i') \" + operation + \" date_format('\" + fieldValue + \"', '%Y-%m-%d %H:%i') \")",
+        "public static java.util.Date getCurrentDate()",
+        "public static String getDate(String s)",
+        "public static String getDate(String exp, java.util.Date date)",
+        "public static String getBrowser(HttpServletRequest request)",
+        "public static String getMethodParams(Method method, Object[] args)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "RandomMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.common",
+      "summary": "生成随机数工具类",
+      "methods": [
+        "public static String randomString(int length)",
+        "public static String randomNumberString(int length)",
+        "public static Color randomColor(int fc, int bc)",
+        "public static int nextInt(int bound)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "RsaMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.common",
+      "summary": "Rsa 工具类，公钥私钥生成，加解密 https://www.cnblogs.com/nihaorz/p/10690643.html",
+      "methods": [
+        "public static void main(String[] args) throws Exception",
+        "private static void test1(RsaKeyPair keyPair) throws Exception",
+        "private static void test2(RsaKeyPair keyPair) throws Exception",
+        "public static String decryptByPublicKey(String publicKeyText, String text) throws Exception",
+        "public static String encryptByPrivateKey(String privateKeyText, String text) throws Exception",
+        "public static String decryptByPrivateKey(String privateKeyText, String text) throws Exception",
+        "public static String encryptByPublicKey(String publicKeyText, String text) throws Exception",
+        "private static byte[] doLongerCipherFinal(int opMode, Cipher cipher, byte[] source) throws Exception",
+        "public static RsaKeyPair generateKeyPair() throws NoSuchAlgorithmException",
+        "public RsaKeyPair(String publicKey, String privateKey)",
+        "public String getPublicKey()",
+        "public String getPrivateKey()"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ServletWebMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.common",
+      "summary": "有关HTTP请求的工具类",
+      "methods": [
+        "public static HttpHeaders getRequestHeaders(HttpServletRequest request)",
+        "public static String getHttpDomainUrl(ServletRequest request)",
+        "6 if (\"http\".equalsIgnoreCase(scheme) && port != 80)",
+        "else if (\"https\".equalsIgnoreCase(scheme) && port != 443)",
+        "public static String getRequestBody(HttpServletRequest request)",
+        "public static String getRequestBody(HttpServletRequest request, String charset)",
+        "public static String getRequestURL(HttpServletRequest request, boolean includeQueryString)",
+        "public static String getRequestURI(HttpServletRequest request, boolean includeQueryString)",
+        "public static String getRequestPath(HttpServletRequest request, boolean includeQueryString)",
+        "public static boolean isAjaxRequest(HttpServletRequest request)",
+        "public static MediaType getContentType(String contentType)",
+        "public static ContentCachingRequestWrapper getContentCachingRequestWrapper(ServletRequest request)",
+        "else if (request instanceof HttpServletRequestWrapper)",
+        "public static ContentCachingResponseWrapper getContentCachingResponseWrapper(ServletResponse response)",
+        "else if (response instanceof HttpServletResponseWrapper)",
+        "public static boolean isContentCachingRequest(ServletRequest request)",
+        "public static boolean isContentCachingResponse(ServletResponse response)",
+        "public static String getCharacterEncoding(HttpServletRequest request, String defaultCharset)",
+        "public static String getCharacterEncoding(HttpServletResponse response, String defaultCharset)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "SpringBeanMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.common",
+      "summary": "Spring Bean工具类",
+      "methods": [
+        "public <T> T getEnvProperty(String name, Class<T> constType)",
+        "public <T> T getEnvProperty(String name, Class<T> constType, T defaultValue)",
+        "public static <T> T getBean(Class<T> requiredType)",
+        "public <T> T getBeanQuietly(Class<T> requiredType)",
+        "public static <T> T getBean(String name, Class<T> requiredType)",
+        "public <T> T getBeanQuietly(String name, Class<T> requiredType)",
+        "public static <T> T getBean(String name)",
+        "public <T> T getBeanQuietly(String name)",
+        "public <T> Map<String, T> getBeansOfType(Class<T> type)",
+        "public Map<String, Object> getBeansWithAnnotation(Class<? extends Annotation> annotationType)",
+        "public static ApplicationContext getApplicationContext()",
+        "public void setApplicationContext(ApplicationContext applicationContext) throws BeansException",
+        "public static Environment getEnvironment()",
+        "public void setEnvironment(Environment environment)",
+        "public ApplicationContext getRootApplicationContext(ApplicationContext applicationContext)",
+        "public String createDefaultBeanName(ApplicationContext applicationContext, Class beanClass)",
+        "< Integer.MAX_VALUE; i++) { beanName = beanClass.getName() + \"#\" + i; if (!applicationContext.containsBean(beanName)) { break; } } return beanName; } /** * 创建默认的beanName * @param beanClass * @return *…",
+        "public <T> void registerBean(String beanName, Class<T> beanClass, boolean singleton, Consumer<BeanDefinitionBuilder> beanCustomizer)",
+        "public <T> boolean destroyBean(ApplicationContext applicationContext, String beanName, Object beanInstance)",
+        "else if (beanInstance != null)",
+        "public <T> boolean destroyBean(String beanName, Object beanInstance)",
+        "public void setBeanProperty(Object bean, Map<String, Object> properties, ConversionService conversionService)",
+        "public void setBeanProperty(Object bean, Map<String, Object> properties)",
+        "public void setBeanProperty(List<Object> beans, Map<String, Object> properties, ConversionService conversionService)",
+        "> setBeanProperty(bean, properties, conversionService))",
+        "public void setBeanProperty(List<Object> beans, Map<String, Object> properties)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "SpringWebFluxMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.common",
+      "summary": "Spring WebFlux工具类",
+      "methods": [
+        "public static Mono<ServerWebExchange> getCurrentServerWebExchange()",
+        "public static Mono<Void> writeHttpMessage(ServerWebExchange exchange, Object responseBody, MediaType responseMediaType)",
+        "else if (responseBody instanceof Flux)",
+        "public static boolean isAsyncRequest(ServerRequest request)",
+        "public CustomServerResponseContext(ServerCodecConfigurer serverCodecConfigurer)",
+        "Override public List<HttpMessageWriter<?>> messageWriters()",
+        "Override public List<ViewResolver> viewResolvers()"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "SpringWebMvcMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.common",
+      "summary": "SpringMVC的工具类",
+      "methods": [
+        "public static HttpServletRequest getCurrentHttpServletRequest()",
+        "public static HttpServletResponse getCurrentHttpServletResponse()",
+        "public static HttpSession getCurrentHttpSession()",
+        "public static boolean isAsyncRequest(HttpServletRequest request, Object handler)",
+        "public static void writeHttpMessage(HttpServletRequest request, HttpServletResponse response, Object responseBody, MediaType... responseMediaTypes) throws IOException"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "StrMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.common",
+      "summary": "字符串工具类",
+      "methods": [
+        "public static String firChar2Lower(String str)",
+        "public static String firChar2Upper(String str)",
+        "public static String placeHolder(String template, Object... params)",
+        "public static String toline(String underlineString)",
+        "public static String toHump(String inputString)",
+        "public static String toHump(String inputString, boolean firstCharacterUppercase)",
+        "public static String getValidPropsName(String inputString)",
+        "else if (inputString.length() < 2)",
+        "public static String getSetterMethodName(String property)",
+        "public static String getGetterMethodName(String property)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ThrowableUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.common",
+      "summary": "",
+      "methods": [
+        "public static String getStackTrace(Throwable throwable)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "IBaseService",
+      "kind": "interface",
+      "package": "com.guava.platform.service",
+      "summary": "该类内容拷贝 mybatis-plus：IService",
+      "methods": [
+        "default boolean save(T entity)",
+        "default boolean saveBatch(Collection<T> entityList)",
+        "boolean saveBatch(Collection<T> entityList, int batchSize)",
+        "default boolean saveOrUpdateBatch(Collection<T> entityList)",
+        "boolean saveOrUpdateBatch(Collection<T> entityList, int batchSize)",
+        "default boolean removeById(Serializable id)",
+        "default boolean removeByMap(Map<String, Object> columnMap)",
+        "default boolean remove(Wrapper<T> queryWrapper)",
+        "default boolean removeByIds(Collection<? extends Serializable> idList)",
+        "default boolean updateById(T entity)",
+        "default boolean update(Wrapper<T> updateWrapper)",
+        "default boolean update(T entity, Wrapper<T> updateWrapper)",
+        "default boolean updateBatchById(Collection<T> entityList)",
+        "boolean updateBatchById(Collection<T> entityList, int batchSize)",
+        "boolean saveOrUpdate(T entity)",
+        "default T getById(Serializable id)",
+        "default List<T> listByIds(Collection<? extends Serializable> idList)",
+        "default List<T> listByMap(Map<String, Object> columnMap)",
+        "default T getOne(Wrapper<T> queryWrapper)",
+        "T getOne(Wrapper<T> queryWrapper, boolean throwEx)",
+        "Map<String, Object> getMap(Wrapper<T> queryWrapper)",
+        "<V> V getObj(Wrapper<T> queryWrapper, Function<? super Object, V> mapper)",
+        "default long count()",
+        "default long count(Wrapper<T> queryWrapper)",
+        "default List<T> list(Wrapper<T> queryWrapper)",
+        "default List<T> list()",
+        "default <E extends IPage<T>> E page(E page, Wrapper<T> queryWrapper)",
+        "default <E extends IPage<T>> E page(E page)",
+        "default List<Map<String, Object>> listMaps(Wrapper<T> queryWrapper)",
+        "default List<Map<String, Object>> listMaps()",
+        "default List<Object> listObjs()",
+        "default <V> List<V> listObjs(Function<? super Object, V> mapper)",
+        "default List<Object> listObjs(Wrapper<T> queryWrapper)",
+        "default <V> List<V> listObjs(Wrapper<T> queryWrapper, Function<? super Object, V> mapper)",
+        "default <E extends IPage<Map<String, Object>>> E pageMaps(E page, Wrapper<T> queryWrapper)",
+        "default <E extends IPage<Map<String, Object>>> E pageMaps(E page)",
+        "BaseMapper<T> getBaseMapper()",
+        "default QueryChainWrapper<T> query()",
+        "default LambdaQueryChainWrapper<T> lambdaQuery()",
+        "default UpdateChainWrapper<T> update()",
+        "default LambdaUpdateChainWrapper<T> lambdaUpdate()",
+        "default boolean saveOrUpdate(T entity, Wrapper<T> updateWrapper)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "DictApiService",
+      "kind": "interface",
+      "package": "com.guava.platform.service",
+      "summary": "系统字典服务interface",
+      "methods": [
+        "String findDict()",
+        "String findDictFromTable(String modelName, String vparam, String query)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ExcelApiService",
+      "kind": "interface",
+      "package": "com.guava.platform.service",
+      "summary": "excel api 服务类",
+      "methods": [
+        "List<ExcelErrorDTO> importExl(Map<String, Object> params, MultipartFile file) throws IOException",
+        "List<Map<String, Object>> findTabExport(Long userId, String btnId)",
+        "void saveTabExport(Long userId, String btnId, Long tabExpId, String key)",
+        "void export(HttpServletResponse response, String fileName, List<String> fields, List<List<String>> headerList, List<Map<String, Object>> dataList, HashMap<String, String> transHash)",
+        "void exportMerge(HttpServletResponse response, String fileName, List<String> fields, List<List<String>> headerList, List<Map<String, Object>> dataList, HashMap<String, String> transHash, int mergetRow…",
+        "void export(HttpServletResponse response, String fileName, List<String> fields, List<List<String>> headerList, List<Map<String, Object>> dataList, HashMap<String, String> transHash, Boolean humFlag)",
+        "void exportMerge(HttpServletResponse response, String fileName, List<String> fields, List<List<String>> headerList, List<Map<String, Object>> dataList, HashMap<String, String> transHash, Boolean humFl…",
+        "List<String> toHeader(String header, List<List<String>> list)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "JobApiService",
+      "kind": "interface",
+      "package": "com.guava.platform.service",
+      "summary": "系统定时服务interface",
+      "methods": [
+        "void resumeJob(SysJobPO sysJobPO)",
+        "void pauseJob(SysJobPO sysJobPO)",
+        "void runJobNow(SysJobPO sysJobPO)",
+        "void addJob(SysJobPO sysJobPO)",
+        "void updateJobCron(SysJobPO sysJobPO)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "MenuManagerService",
+      "kind": "interface",
+      "package": "com.guava.platform.service",
+      "summary": "菜单管理服务类",
+      "methods": [
+        "MenuDTO[] getMenusByParent(String parent)",
+        "String showAllMenus(String userAccount, String userType, String rootName, String sysLanguage)",
+        "String showGrantedMenus(String userAccount, String userType, String rootName, String sysLanguage)",
+        "List<MenuDTO> getBuildMenus(String userAccount, String userType, String rootName, String sysLanguage)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "QuartzJobService",
+      "kind": "interface",
+      "package": "com.guava.platform.service",
+      "summary": "",
+      "methods": [
+        "void executionSubJob(String[] tasks) throws InterruptedException",
+        "void execution(SysJobPO quartzJob)",
+        "void pauseJob(SysJobPO quartzJob)",
+        "void resumeJob(SysJobPO quartzJob)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "TransResultService",
+      "kind": "interface",
+      "package": "com.guava.platform.service",
+      "summary": "转换result结果集",
+      "methods": [
+        "IPage<Map<String, Object>> transResult(IPage<Map<String, Object>> result, HashMap<String, String> transHash)",
+        "Map<String, Object> transResult(Map<String, Object> result, HashMap<String, String> transHash)",
+        "List<Map<String, Object>> transResult(List<Map<String, Object>> result, HashMap<String, String> transHash)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "CheckExcelDataService",
+      "kind": "class",
+      "package": "com.guava.platform.service.impl",
+      "summary": "校验导入excel service",
+      "methods": [
+        "public <T> List<Map<String, Object>> checkDataRule(List<T> list) throws IllegalAccessException",
+        "private <T> Map<String, Object> checkData(CheckData checkData, boolean isError, Map<Object, Object> map, Field field, T t, int rowNums, StringBuffer sb) throws IllegalAccessException"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "DBServiceImpl",
+      "kind": "class",
+      "package": "com.guava.platform.service.impl",
+      "summary": "该类内容拷贝 mybatis-plus：ServiceImpl，仅仅是增加了@Service注解， 为了可以注入",
+      "methods": [
+        "Override public M getBaseMapper()",
+        "Deprecated protected boolean retBool(Integer result)",
+        "protected Class<M> currentMapperClass()",
+        "protected Class<T> currentModelClass()",
+        "Deprecated protected SqlSession sqlSessionBatch()",
+        "Deprecated protected void closeSqlSession(SqlSession sqlSession)",
+        "protected String sqlStatement(SqlMethod sqlMethod)",
+        "Override public boolean saveBatch(Collection<T> entityList, int batchSize)",
+        "Override public boolean saveOrUpdate(T entity)",
+        "? save(entity) : updateById(entity)",
+        "Override public boolean saveOrUpdateBatch(Collection<T> entityList, int batchSize)",
+        "Override public boolean updateBatchById(Collection<T> entityList, int batchSize)",
+        "Override public T getOne(Wrapper<T> queryWrapper, boolean throwEx)",
+        "Override public Map<String, Object> getMap(Wrapper<T> queryWrapper)",
+        "Override public <V> V getObj(Wrapper<T> queryWrapper, Function<? super Object, V> mapper)",
+        "log, listObjs(queryWrapper, mapper))",
+        "protected boolean executeBatch(Consumer<SqlSession> consumer)",
+        "protected <E> boolean executeBatch(Collection<E> list, int batchSize, BiConsumer<SqlSession, E> consumer)",
+        "protected <E> boolean executeBatch(Collection<E> list, BiConsumer<SqlSession, E> consumer)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "DictApiServiceImpl",
+      "kind": "class",
+      "package": "com.guava.platform.service.impl",
+      "summary": "系统字典service",
+      "methods": [
+        "public String findDict()",
+        "public String findDictFromTable(String modelName, String vparam, String query)",
+        "else if (t[i].equals(\"'\")) s.append(\"#\").append(t[i])"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ExcelApiServiceImpl",
+      "kind": "class",
+      "package": "com.guava.platform.service.impl",
+      "summary": "excel api 服务实现类",
+      "methods": [
+        "Override public List<ExcelErrorDTO> importExl(Map<String, Object> params, MultipartFile file)",
+        "fileName, DemoData.class, new DemoDataListener()).doReadAll()",
+        ", new ExlReadListener(modelName, errlist, userAccount, bizType, bizPk, maxColumn, maxBlankRows, sysLanguage, params)).build()",
+        "Override public List<Map<String, Object>> findTabExport(Long userId, String btnId)",
+        "Override public void saveTabExport(Long userId, String btnId, Long tabExpId, String key)",
+        "Override public void export(HttpServletResponse response, String fileName, List<String> fields, List<List<String>> headerList, List<Map<String, Object>> dataList, HashMap<String, String> transHash)",
+        "Override public void exportMerge(HttpServletResponse response, String fileName, List<String> fields, List<List<String>> headerList, List<Map<String, Object>> dataList, HashMap<String, String> transHas…",
+        "Override public void export(HttpServletResponse response, String fileName, List<String> fields, List<List<String>> headerList, List<Map<String, Object>> dataList, HashMap<String, String> transHash, Bo…",
+        "Override public void exportMerge(HttpServletResponse response, String fileName, List<String> fields, List<List<String>> headerList, List<Map<String, Object>> dataList, HashMap<String, String> transHas…",
+        "private void exportDetail(HttpServletResponse response, String fileName, List<String> fields, List<List<String>> headerList, List<Map<String, Object>> dataList, HashMap<String, String> transHash, Bool…",
+        "Override public List<String> toHeader(String header, List<List<String>> headList)",
+        "private List<List<Object>> toDataList(List<String> fields, List<Map<String, Object>> dataList, HashMap<String, String> transHash, Boolean humFlag)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "JobApiServiceImpl",
+      "kind": "class",
+      "package": "com.guava.platform.service.impl",
+      "summary": "系统定时任务service",
+      "methods": [
+        "public void resumeJob(SysJobPO sysJobPO)",
+        "public void pauseJob(SysJobPO sysJobPO)",
+        "public void runJobNow(SysJobPO sysJobPO)",
+        "public void addJob(SysJobPO sysJobPO)",
+        "public void updateJobCron(SysJobPO sysJobPO)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "MenuManagerServiceImpl",
+      "kind": "class",
+      "package": "com.guava.platform.service.impl",
+      "summary": "菜单管理服务实现类",
+      "methods": [
+        "Override public MenuDTO[] getMenusByParent(String parent)",
+        "private MenuDTO[] getGrantedMenusByParent(String userAccount, String userType, String parent)",
+        "private MenuDTO[] getGrantedChildMenus(MenuDTO[] menus, Long parentId)",
+        "Override public String showAllMenus(String userAccount, String userType, String rootName, String sysLanguage)",
+        "public String showGrantedMenus(String userAccount, String userType, String rootName, String sysLanguage)",
+        "private String getMenus(MenuDTO[] menus, Set<String> menuLeafSet)",
+        "private MenuDTO[] getMenusByRole(String roleId)",
+        "public List<MenuDTO> getBuildMenus(String userAccount, String userType, String rootName, String sysLanguage)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "QuartzJobServiceImpl",
+      "kind": "class",
+      "package": "com.guava.platform.service.impl",
+      "summary": "",
+      "methods": [
+        "public void executionSubJob(String[] tasks) throws InterruptedException",
+        "Override public void execution(SysJobPO quartzJob)",
+        "Override public void pauseJob(SysJobPO quartzJob)",
+        "Override public void resumeJob(SysJobPO quartzJob)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "TransResultServiceImpl",
+      "kind": "class",
+      "package": "com.guava.platform.service.impl",
+      "summary": "转换result结果集",
+      "methods": [
+        "public IPage<Map<String, Object>> transResult(IPage<Map<String, Object>> result, HashMap<String, String> transHash)",
+        "17 if (valTabDic.indexOf(\",\") > 0)",
+        "17 if (valDic.indexOf(\",\") > 0)",
+        "public Map<String, Object> transResult(Map<String, Object> result, HashMap<String, String> transHash)",
+        "17 if (val.indexOf(\",\") > 0)",
+        "17 if (val.indexOf(\",\") > 0)",
+        "public List<Map<String, Object>> transResult(List<Map<String, Object>> result, HashMap<String, String> transHash)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "MyUrlBlockHandler",
+      "kind": "class",
+      "package": "com.guava.platform.sentinel",
+      "summary": "",
+      "methods": [
+        "Override public void handle(HttpServletRequest request, HttpServletResponse response, String resource, BlockException e) throws Exception"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "SentinelUrlBlockHandler",
+      "kind": "class",
+      "package": "com.guava.platform.sentinel",
+      "summary": "限流异常处理",
+      "methods": [
+        "Override public void handle(HttpServletRequest request, HttpServletResponse response, String resource,BlockException ex) throws Exception",
+        "else if (ex instanceof DegradeException)",
+        "else if (ex instanceof ParamFlowException)",
+        "else if (ex instanceof SystemBlockException)",
+        "else if (ex instanceof AuthorityException)",
+        "jackson new ObjectMapper() .writeValue( response.getWriter(), RestResult.fail(status, msg))"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "RestResult",
+      "kind": "class",
+      "package": "com.guava.platform.ret",
+      "summary": "基础返回结果类",
+      "methods": [
+        "public RestResult()",
+        "public RestResult setCode(RetCode retCode)",
+        "public int getCode()",
+        "public RestResult setCode(int code)",
+        "public String getStatus()",
+        "public RestResult setStatus(String status)",
+        "public String getMessage()",
+        "public RestResult setMessage(String msg)",
+        "public Object getDatas()",
+        "public RestResult setDatas(Object data)",
+        "Override public String toString()",
+        "public static RestResult success()",
+        "public static RestResult success(Object data)",
+        "public static RestResult success(int code, String msg)",
+        "public static RestResult fail(BizCode bizCode)",
+        "public static RestResult fail(BizCode bizCode, Object data)",
+        "public static RestResult fail(String message)",
+        "public static RestResult fail(int code, String msg)",
+        "public static RestResult fail(int code, String msg, Object data)",
+        "public static RestResult fail(Object data)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "RetCode",
+      "kind": "enum",
+      "package": "com.guava.platform.ret",
+      "summary": "定义结果集code",
+      "methods": []
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "DBMapper",
+      "kind": "interface",
+      "package": "com.guava.platform.repository",
+      "summary": "自定义扩展：基础mapper类",
+      "methods": [
+        "default boolean retBool(Integer result)",
+        "default boolean delBool(Integer result)",
+        "default Class<T> currentModelClass()",
+        "default String sqlStatement(Class<T> clz, SqlMethod sqlMethod)",
+        "default SqlSession sqlSessionBatch()",
+        "default SqlSession sqlSessionBatch(Class<T> clz)",
+        "default void closeSqlSession(SqlSession sqlSession)",
+        "default boolean saveBatch(List<T> entityList, int batchSize, Class<T> clz)",
+        "default boolean saveBatch(List<T> entityList, Class<T> clz)",
+        "default boolean save(T entity)",
+        "default boolean updateBatch(List<T> entityList, int batchSize, Class<T> clz)",
+        "default boolean updateBatch(List<T> entityList, Class<T> clz)",
+        "default boolean saveOrUpdate(T entity)",
+        "default boolean saveOrUpdateBatch(List<T> entityList, Class<T> clz)",
+        "default boolean saveOrUpdateBatch(List<T> entityList, int batchSize, Class<T> clz)",
+        "default boolean removeById(Serializable id)",
+        "default boolean removeByMap(Map<String, Object> columnMap)",
+        "default boolean remove(Wrapper<T> wrapper)",
+        "default boolean removeByIds(Collection<? extends Serializable> idList)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "DictApiMapper",
+      "kind": "interface",
+      "package": "com.guava.platform.repository",
+      "summary": "SysDict Mapper类",
+      "methods": [
+        "List<SysDictDTO> findDict()",
+        "List<Map<String, Object>> findDictForTab(String sql)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ImportExcelMapper",
+      "kind": "interface",
+      "package": "com.guava.platform.repository",
+      "summary": "导入excel Mapper 接口",
+      "methods": [
+        "public <T> T isExistDatabase(String fieldName, String value)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "InjectionMapper",
+      "kind": "interface",
+      "package": "com.guava.platform.repository",
+      "summary": "",
+      "methods": [
+        "List<Map<String, Object>> findDictForTabInjection(@Param(\"sql\") String sql, @Param(\"fields\") List<String> fields, @Param(\"query\") String query, @Param(\"swhere\") String swhere)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "JobApiMapper",
+      "kind": "interface",
+      "package": "com.guava.platform.repository",
+      "summary": "sys_job Mapper类",
+      "methods": [
+        "IPage<Map<String, Object>> findJobs(Page<Map<String, Object>> page, String conditions)",
+        "IPage<Map<String, Object>> findJobLogsById(Page<Map<String, Object>> page, String conditions)",
+        "Integer findJobByName(String jobName)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "MenuApiMapper",
+      "kind": "interface",
+      "package": "com.guava.platform.repository",
+      "summary": "Menu Mapper类",
+      "methods": [
+        "MenuDTO[] findMenusByRole(Long roleId)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "NoWarnMapper",
+      "kind": "interface",
+      "package": "com.guava.platform.repository",
+      "summary": "主要用于清除  No MyBatis mapper was found in XX 警告信息",
+      "methods": []
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "QuartzJobLogMapper",
+      "kind": "interface",
+      "package": "com.guava.platform.repository",
+      "summary": "sys_job_log Mapper类",
+      "methods": []
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "QuartzJobMapper",
+      "kind": "interface",
+      "package": "com.guava.platform.repository",
+      "summary": "sys_job Mapper类",
+      "methods": [
+        "List<SysJobPO> findUnPausedJobs(String model)",
+        "SysJobPO findJobById(Long id)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "SupperMapper",
+      "kind": "interface",
+      "package": "com.guava.platform.repository",
+      "summary": "自定义扩展：基础mapper类",
+      "methods": []
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "SysTabExportMapper",
+      "kind": "interface",
+      "package": "com.guava.platform.repository",
+      "summary": "自定义导出字段表(sys_tab_export) Mapper 接口",
+      "methods": [
+        "List<Map<String, Object>> findTabExport(Long userId, String btnId)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "DictApiSqlProvider",
+      "kind": "class",
+      "package": "com.guava.platform.repository.provider",
+      "summary": "dict privider sql",
+      "methods": [
+        "public static String findDict()",
+        "public static String findDictForTab(String sql)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ExportExlSqlProvider",
+      "kind": "class",
+      "package": "com.guava.platform.repository.provider",
+      "summary": "export exl privider sql",
+      "methods": [
+        "public static String findTabExport(Long userId, String btnId)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "JobApiSqlProvider",
+      "kind": "class",
+      "package": "com.guava.platform.repository.provider",
+      "summary": "job provider sql",
+      "methods": [
+        "public static String findJobByName(String jobName)",
+        "count( id ) \\n \")",
+        "public static String findJobs(Page<Map<String, Object>> page, String conditions)",
+        "public static String findJobLogsById(Page<Map<String, Object>> page, String conditions)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "MenuApiSqlProvider",
+      "kind": "class",
+      "package": "com.guava.platform.repository.provider",
+      "summary": "menu privider sql",
+      "methods": [
+        "public static String findMenusByRole(Long roleId)",
+        "public static String findDictForTab(String sql)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "SysJobSqlProvider",
+      "kind": "class",
+      "package": "com.guava.platform.repository.provider",
+      "summary": "job provider sql",
+      "methods": [
+        "public static String findUnPausedJobs(String model)",
+        "public static String findJobById(Long id)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "FastJson2JsonRedisSerializer",
+      "kind": "class",
+      "package": "com.guava.platform.redis",
+      "summary": "",
+      "methods": [
+        "super()"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "RedisConfig",
+      "kind": "class",
+      "package": "com.guava.platform.redis",
+      "summary": "redis配置类",
+      "methods": [
+        "Bean public CacheManager cacheManager(RedisConnectionFactory factory)",
+        "Bean public RedisSerializer<Object> json2JsonRedisSerializer()",
+        "public RedisTemplate redisTemplate(RedisConnectionFactory factory, RedisSerializer json2JsonRedisSerializer)",
+        "Bean public KeyGenerator wiselyKeyGenerator()",
+        "public ZSetOperations redisZSetOps(@Qualifier(\"redisTemplate\") RedisTemplate redisTemplate)",
+        "public SetOperations redisSetOps(@Qualifier(\"redisTemplate\") RedisTemplate redisTemplate)",
+        "public ListOperations redisListOps(@Qualifier(\"redisTemplate\") RedisTemplate redisTemplate)",
+        "public HashOperations redisHashOps(@Qualifier(\"redisTemplate\") RedisTemplate redisTemplate)",
+        "public ValueOperations redisValueOps(@Qualifier(\"redisTemplate\") RedisTemplate redisTemplate)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "RedisMyClient",
+      "kind": "class",
+      "package": "com.guava.platform.redis",
+      "summary": "自定义redis-cli工具类 增加caffine二级缓存优化",
+      "methods": [
+        "public RedisMyClient(RedisTemplate<Object, Object> redisTemplate)",
+        "public void set(String key, Object value)",
+        "public void set(String key, Object value, long milliseconds)",
+        "public Long incrby(String key, long value)",
+        "public String get(String key)",
+        "public long del(String... keys)",
+        "public void setList(String key, Collection values, long milliseconds)",
+        "public List getListAll(String key)",
+        "public void rightPushAll(String key, Collection values, long milliseconds)",
+        "public String hGet(String key, String field)",
+        "public boolean hHasKey(String key, String field)",
+        "public double hincr(String key, String item, double by)",
+        "public double hdecr(String key, String item, double by)",
+        "public Map hmGet(String key)",
+        "public boolean hmSet(String key, Map<String, Object> map)",
+        "public boolean hmSet(String key, Map<String, Object> map, long miniseconds)",
+        "public void hSet(String key, String field, String value)",
+        "public void hSet(String key, String field, String value, Long miniseconds)",
+        "public List hMultiGet(String h, List keys)",
+        "public Map hGetAll(String key)",
+        "public void hPutAll(String key, Map map, long miniseconds)",
+        "public void hSetExpire(String key, String field, String value, long milliseconds)",
+        "public long hDel(String key, String field)",
+        "public Set sGet(String key)",
+        "public long sSet(String key, Object... values)",
+        "public boolean sHasKey(String key, Object value)",
+        "public long sSetAndTime(String key, long miniseconds, Object... values)",
+        "public long sGetSetSize(String key)",
+        "public long sRemove(String key, Object... values)",
+        "public long sAdd(Object key, Object value, long milliseconds)",
+        "public Set sMembers(Object key)",
+        "public long sMembersCount(Object key)",
+        "public Set sIntersect(String key1, String key2)",
+        "public Set sIntersect(String key1, String... key2)",
+        "public Set sIntersect(String... keys)",
+        "else if (keys.length == 1)",
+        "public long sIntersectAndStore(String key1, String key2, String key3)",
+        "public Set sUnion(String key1, String key2)",
+        "public Set sDifference(String key1, String key2)",
+        "public void zsAdd(String key, Object val, Double score)",
+        "public Double zsCore(String key, Object val)",
+        "public long zsCount(String key, Double minScore, Double maxScore)",
+        "public long zsSize(String key)",
+        "public long zsRemove(String key, Object val)",
+        "public long zsRemoveByScore(String key, Double minScore, Double maxScore)",
+        "public long zsRank(String key, Object val)",
+        "public Set zsRange(String key, long val1, long val2)",
+        "public Set<ZSetOperations.TypedTuple<String>> zsRangeByScoreWithScores(String key, double val1, double val2)",
+        "public boolean hasKey(String key)",
+        "public void expire(String key, long miniseconds)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ExecutionJob",
+      "kind": "class",
+      "package": "com.guava.platform.quartz",
+      "summary": "定时任务执行",
+      "methods": [
+        "ThreadPoolProperties.corePoolSize, ThreadPoolProperties.maxPoolSize, ThreadPoolProperties.keepAliveSeconds, ThreadPoolProperties.queueCapacity, new NamedThreadFactory(\"ht-quartz-job\"))",
+        "Override public void executeInternal(JobExecutionContext context)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "QuartzMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.quartz",
+      "summary": "",
+      "methods": [
+        "public void addJob(SysJobPO quartzJob)",
+        ". withIdentity(JOB_NAME + quartzJob.getId()).build()",
+        "public void updateJobCron(SysJobPO quartzJob)",
+        "public void deleteJob(SysJobPO quartzJob)",
+        "public void resumeJob(SysJobPO quartzJob)",
+        "public void runJobNow(SysJobPO quartzJob)",
+        "public void pauseJob(SysJobPO quartzJob)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "QuartzRunnable",
+      "kind": "class",
+      "package": "com.guava.platform.quartz",
+      "summary": "执行定时任务",
+      "methods": [
+        "public Object call() throws Exception"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "JobRunner",
+      "kind": "class",
+      "package": "com.guava.platform.quartz.config",
+      "summary": "启动加载",
+      "methods": [
+        "Override public void run(ApplicationArguments applicationArguments)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "QuartzConfig",
+      "kind": "class",
+      "package": "com.guava.platform.quartz.config",
+      "summary": "",
+      "methods": [
+        "public QuartzJobFactory(AutowireCapableBeanFactory capableBeanFactory)",
+        "Override protected Object createJobInstance(TriggerFiredBundle bundle) throws Exception"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ThreadPoolProperties",
+      "kind": "class",
+      "package": "com.guava.platform.quartz.config",
+      "summary": "线程池配置属性类",
+      "methods": [
+        "public void setCorePoolSize(int corePoolSize)",
+        "public void setMaxPoolSize(int maxPoolSize)",
+        "public void setKeepAliveSeconds(int keepAliveSeconds)",
+        "public void setQueueCapacity(int queueCapacity)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "MetaObjectHandlerImpl",
+      "kind": "class",
+      "package": "com.guava.platform.model",
+      "summary": "自定填充字段实现类",
+      "methods": [
+        "Override public void insertFill(MetaObject metaObject)",
+        "Override public void updateFill(MetaObject metaObject)",
+        "Override public MetaObjectHandler strictFillStrategy(MetaObject metaObject, String fieldName, Supplier<?> fieldVal)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "SysDictPO",
+      "kind": "class",
+      "package": "com.guava.platform.model.po",
+      "summary": "字典表(sys_dict) po实体类",
+      "methods": [
+        "public SysDictPO()"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "SysJobLogPO",
+      "kind": "class",
+      "package": "com.guava.platform.model.po",
+      "summary": "(sys_job_log) po实体类",
+      "methods": [
+        "public SysJobLogPO()"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "SysJobPO",
+      "kind": "class",
+      "package": "com.guava.platform.model.po",
+      "summary": "(sys_job) po实体类",
+      "methods": [
+        "public Long getId()",
+        "public void setId(Long id)",
+        "public String getBeanName()",
+        "public void setBeanName(String beanName)",
+        "public String getCronExpression()",
+        "public void setCronExpression(String cronExpression)",
+        "public String getJobName()",
+        "public void setJobName(String jobName)",
+        "public String getMethodName()",
+        "public void setMethodName(String methodName)",
+        "public String getParams()",
+        "public void setParams(String params)",
+        "public String getSubTask()",
+        "public void setSubTask(String subTask)",
+        "public String getSubUuid()",
+        "public void setSubUuid(String subUuid)",
+        "public Integer getIsPause()",
+        "public void setIsPause(Integer isPause)",
+        "public String getModel()",
+        "public void setModel(String model)",
+        "public String getRemark()",
+        "public void setRemark(String remark)",
+        "public Integer getBizType()",
+        "public void setBizType(Integer bizType)",
+        "public SysJobPO()"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "SysMenuPO",
+      "kind": "class",
+      "package": "com.guava.platform.model.po",
+      "summary": "菜单管理(sys_menu) po实体类",
+      "methods": [
+        "public SysMenuPO()"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "SysRoleMenuPO",
+      "kind": "class",
+      "package": "com.guava.platform.model.po",
+      "summary": "角色菜单关系表(sys_role_menu) po实体类",
+      "methods": [
+        "public SysRoleMenuPO()"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "SysTabColumnPO",
+      "kind": "class",
+      "package": "com.guava.platform.model.po",
+      "summary": "自定义显示字段表(sys_tab_column) po实体类",
+      "methods": [
+        "public SysTabColumnPO()"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "SysTabExportPO",
+      "kind": "class",
+      "package": "com.guava.platform.model.po",
+      "summary": "自定义导出字段表(sys_tab_export) po实体类",
+      "methods": [
+        "public SysTabExportPO()"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "SysUserRolePO",
+      "kind": "class",
+      "package": "com.guava.platform.model.po",
+      "summary": "用户角色关系表(sys_user_role) po实体类",
+      "methods": [
+        "public SysUserRolePO()"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ExcelErrorDTO",
+      "kind": "class",
+      "package": "com.guava.platform.model.dto",
+      "summary": "excel导入产生错误记录dto",
+      "methods": []
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ExlParamsDTO",
+      "kind": "class",
+      "package": "com.guava.platform.model.dto",
+      "summary": "excel上传传递参数dto",
+      "methods": []
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "MenuDTO",
+      "kind": "class",
+      "package": "com.guava.platform.model.dto",
+      "summary": "菜单管理(sys_menu) dto实体类",
+      "methods": [
+        "public Boolean getHasChildren()",
+        "public Boolean getLeaf()",
+        "public String getLabel()",
+        "Override public boolean equals(Object o)",
+        "Override public int hashCode()"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "SysDictDTO",
+      "kind": "class",
+      "package": "com.guava.platform.model.dto",
+      "summary": "字典表(sys_dict) dto实体类",
+      "methods": [
+        "public SysDictDTO()"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "SysTabColumnDTO",
+      "kind": "class",
+      "package": "com.guava.platform.model.dto",
+      "summary": "自定义显示字段表(sys_tab_column) dto实体类",
+      "methods": [
+        "public SysTabColumnDTO()"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "SysTabExportDTO",
+      "kind": "class",
+      "package": "com.guava.platform.model.dto",
+      "summary": "自定义导出字段表(sys_tab_export) dto实体类",
+      "methods": [
+        "public SysTabExportDTO()"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "JwtTokenProvider",
+      "kind": "class",
+      "package": "com.guava.platform.interceptor",
+      "summary": "token工具类 一个完整的JwtToken由三部分组成：头部+负载信息+签名 header 存放JwtToken签名的算法 | token的类型：{\"alg\": \"HS512\",\"typ\": \"JWT\"} payload 主要存放用户名、…",
+      "methods": [
+        "public String getToken(ServerHttpRequest request)",
+        "public String getRefreshToken(ServerHttpRequest request)",
+        "public String getUserAccountFromToken(String token)",
+        "public String createRefreshToken(String subject)",
+        "private boolean tokenRefreshJustBefore(Claims claims)",
+        "private Map<String, Object> getClaimsFromToken(String token)",
+        "public String getSubjectFromToken(String token)",
+        "public Map decryptToken(String token)",
+        "private boolean isTokenExpired(Claims claims)",
+        "private boolean isTokenNearExpired(Claims claims)",
+        "public boolean checkToken(String token, String publicKey) throws NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, InvalidKeyException",
+        "public boolean checkSign(String preSignStr, String sign, String publicKey) throws InvalidKeySpecException, NoSuchAlgorithmException, InvalidKeyException, SignatureException",
+        "public Boolean verifyScope(String scope, String scopeList)",
+        "public Boolean verifyTokenByRsa(String token, String publicKey)",
+        "public Boolean verifyTokenByScope(String token, String publicKey, String scope)",
+        "public Map<String, Object> verifyToken(String token, String audience)",
+        "public Map<String, Object> verifyRefreshToken(String token, String audience)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "TokenInterceptor",
+      "kind": "class",
+      "package": "com.guava.platform.interceptor",
+      "summary": "token校验controller拦截器",
+      "methods": [
+        "Override public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception",
+        "Override public void postHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object handler, ModelAndView modelAndView)",
+        "Override public void afterCompletion(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object handler, Exception e)",
+        "private boolean tokenInvalid(HttpServletResponse response, BizCode bizCode) throws IOException"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "TokenVerify",
+      "kind": "class",
+      "package": "com.guava.platform.interceptor",
+      "summary": "服务间token传递验证",
+      "methods": [
+        "public static Map<String, Object> tokenVerify(JwtTokenProvider jwtTokenProvider, JwtTokenConfig jwtTokenConfig, RedisMyClient redisMyClient, String authToken, String refreshToken, String authTokenNoPr…",
+        "public static void main(String[] args)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "AbstractHystrixConcurrencyStrategy",
+      "kind": "class",
+      "package": "com.guava.platform.hystrix",
+      "summary": "自定义策略 解决将主线程的请求上下文参数(HttpServletRequest, HttpServletResponse, Authentication等)添加到hystrix执行子线程中去",
+      "methods": [
+        "protected abstract HystrixConcurrencyContext detectContext()"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "HystrixConcurrencyContext",
+      "kind": "class",
+      "package": "com.guava.platform.hystrix",
+      "summary": "Hystrix并发上下文",
+      "methods": [
+        "public HystrixConcurrencyContext()",
+        "public HystrixConcurrencyContext(int initialCapacity, float loadFactor)",
+        "public HystrixConcurrencyContext(int initialCapacity)",
+        "public HystrixConcurrencyContext(Map<? extends String, ?> m)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "HystrixConcurrencyContextHolder",
+      "kind": "class",
+      "package": "com.guava.platform.hystrix",
+      "summary": "Hystrix并发上下文Holder",
+      "methods": [
+        "public static void resetContext()",
+        "public static void setContext(HystrixConcurrencyContext context)",
+        "public static HystrixConcurrencyContext getContext()"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "MyFeignClientsConfiguration",
+      "kind": "class",
+      "package": "com.guava.platform.hystrix",
+      "summary": "",
+      "methods": []
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "MyHystrixFallbackHandler",
+      "kind": "class",
+      "package": "com.guava.platform.hystrix",
+      "summary": "默认的服务服务熔断|降级实现工厂类,通过Cglib动态代理来实现统一的服务熔断|降级逻辑",
+      "methods": [
+        "super(feignClientClass, cause)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "MyHystrixFallbackHandlerFactory",
+      "kind": "class",
+      "package": "com.guava.platform.hystrix",
+      "summary": "",
+      "methods": []
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ReactiveDefaultHystrixConcurrencyStrategy",
+      "kind": "class",
+      "package": "com.guava.platform.hystrix",
+      "summary": "自定义策略, 解决将主线程的请求上下文参数(HttpServletRequest, HttpServletResponse)添加到hystrix执行子线程中去",
+      "methods": [
+        "super(existingConcurrencyStrategy)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ReactiveSecurityHystrixConcurrencyStrategy",
+      "kind": "class",
+      "package": "com.guava.platform.hystrix",
+      "summary": "自定义策略, 解决将主线程的请求上下文参数(HttpServletRequest, HttpServletResponse, Authentication)添加到hystrix执行子线程中去",
+      "methods": [
+        "super(existingConcurrencyStrategy)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ServletDefaultHystrixConcurrencyStrategy",
+      "kind": "class",
+      "package": "com.guava.platform.hystrix",
+      "summary": "自定义策略，解决将主线程的请求上下文参数(HttpServletRequest,HttpServletResponse)添加到hystrix执行子线程中去",
+      "methods": [
+        "super(existingConcurrencyStrategy)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ServletSecurityHystrixConcurrencyStrategy",
+      "kind": "class",
+      "package": "com.guava.platform.hystrix",
+      "summary": "自定义策略, 解决将主线程的请求上下文(HttpServletRequest, HttpServletResponse, Authentication)参数添加到hystrix执行子线程中去",
+      "methods": [
+        "super(existingConcurrencyStrategy)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "CustomMDCFilter",
+      "kind": "class",
+      "package": "com.guava.platform.filter",
+      "summary": "",
+      "methods": [
+        "Override public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "CustomTracingFilter",
+      "kind": "class",
+      "package": "com.guava.platform.filter",
+      "summary": "自定义链路跟踪MDC(sleuth + zipkin 方式)",
+      "methods": []
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "JobLogFeignService",
+      "kind": "interface",
+      "package": "com.guava.platform.feign",
+      "summary": "job日志feign服务",
+      "methods": [
+        "void sendJobLog(@RequestBody Map<String, Object> msgInfo)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "OperationLogFeignService",
+      "kind": "interface",
+      "package": "com.guava.platform.feign",
+      "summary": "操作日志feign服务",
+      "methods": [
+        "void sendOperationLog(@RequestBody Map<String, Object> msgInfo)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "BizCode",
+      "kind": "enum",
+      "package": "com.guava.platform.exception",
+      "summary": "异常错误代码枚举类",
+      "methods": [
+        "MB FILE_RECIVE_ERROR(50007, \"bizcode.c50007\"), // 获取上传文件失败 FILE_CHECKCOLUMN_INCORRECT(50008, \"bizcode.c50008\"), // 导入文件的最大列数设置不正确 FILE_OP_ERROR(59999, \"bizcode.c59999\"), // 文件流操作失败 //SQL SQL_DUPLICATE…",
+        "public int getCode()",
+        "public void setCode(int code)",
+        "public String getMessage()",
+        "public void setMessage(String msg)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "BizException",
+      "kind": "class",
+      "package": "com.guava.platform.exception",
+      "summary": "业务异常封装类",
+      "methods": [
+        "public BizException(int code, String message)",
+        "public BizException(BizCode bizcode)",
+        "public BizException(BizCode bizcode, Exception re)",
+        "public BizException(String msg)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "GlobalExceptionHandler",
+      "kind": "class",
+      "package": "com.guava.platform.exception",
+      "summary": "全局异常捕获类",
+      "methods": [
+        "public ResponseEntity<BizException> errorHandler(BizException ex)",
+        "public ResponseEntity<BizException> errorHandler(MethodArgumentNotValidException ex)",
+        "public ResponseEntity<BizException> errorHandler(NoSuchMethodException ex)",
+        "public ResponseEntity<BizException> errorHandler(ClassNotFoundException ex)",
+        "public ResponseEntity<BizException> errorHandler(NullPointerException ex)",
+        "public ResponseEntity<BizException> errorHandler(IndexOutOfBoundsException ex)",
+        "public ResponseEntity<BizException> errorHandler(NumberFormatException ex)",
+        "public ResponseEntity<BizException> errorHandler(IOException ex)",
+        "public ResponseEntity<BizException> errorHandler(DuplicateKeyException ex)",
+        "public ResponseEntity<BizException> errorHandler(DataIntegrityViolationException ex)",
+        "public RestResult errorHandler(IllegalArgumentException ex)",
+        "public RestResult errorHandler(HttpRequestMethodNotSupportedException ex)",
+        "public ResponseEntity<BizException> errorHandler(MyBatisSystemException ex)",
+        "TypeException if (eMsg.contains(\"TypeException\"))",
+        "else if (eMsg.contains(\"ReflectionException\"))",
+        "else if (eMsg.contains(\"TooManyResultsException\"))",
+        "public ResponseEntity<BizException> errorHandler(BadSqlGrammarException ex)",
+        "public ResponseEntity<BizException> errorHandler(TransactionTimedOutException ex)",
+        "public ResponseEntity<BizException> errorHandler(HttpMediaTypeNotSupportedException ex)",
+        "public ResponseEntity<BizException> errorHandler(Exception ex)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "CustomCellWriteHandler",
+      "kind": "class",
+      "package": "com.guava.platform.excel",
+      "summary": "自定义excel导出单元格样式",
+      "methods": [
+        "public CustomCellWriteHandler()",
+        "public static WriteCellStyle getHeadStyle()",
+        "public static WriteCellStyle getContentStyle()",
+        "Override protected void setColumnWidth(WriteSheetHolder writeSheetHolder, List<WriteCellData<?>> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead)",
+        "private Integer dataLength(List<WriteCellData<?>> cellDataList, Cell cell, Boolean isHead)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ExcelCellMergeStrategy",
+      "kind": "class",
+      "package": "com.guava.platform.excel",
+      "summary": "excel单元格合并类",
+      "methods": [
+        "public ExcelCellMergeStrategy(int mergeRowIndex, int[] mergeColumnIndex, int dataSize)",
+        "Override public void beforeCellCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Row row, Head head, Integer integer, Integer integer1, Boolean aBoolean)",
+        "Override public void afterCellCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Cell cell, Head head, Integer integer, Boolean aBoolean)",
+        "Override public void afterCellDataConverted(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, WriteCellData<?> cellData, Cell cell, Head head, Integer relativeRowIndex, Boolean isH…",
+        "Override public void afterCellDispose(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, List<WriteCellData<?>> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean…",
+        "private void mergeWithPrevRow(WriteSheetHolder writeSheetHolder, Cell cell, int curRowIndex, int curColIndex, List<WriteCellData<?>> cellDataList)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ExcelCellStyleStrategy",
+      "kind": "class",
+      "package": "com.guava.platform.excel",
+      "summary": "设置单元格样式以及单元格格式",
+      "methods": [
+        "Override protected void setHeadCellStyle(Cell cell, Head head, Integer relativeRowIndex)",
+        "Override protected void setContentCellStyle(Cell cell, Head head, Integer relativeRowIndex)",
+        "The maximum number of Cell Styles was exceeded. You can define up to 64000 style in a .xlsx Workbook if (cellStyleMap.get(cellType) == null)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ExlReadListener",
+      "kind": "class",
+      "package": "com.guava.platform.excel",
+      "summary": "excel读取数据监听类",
+      "methods": [
+        "public ExlReadListener(String modelName, List<ExcelErrorDTO> errlist, String userAccount, String bizType, Long bizPk, int maxColumn, int maxBlankRows, String language, Map<String, Object> params)",
+        "Override public void invokeHead(Map<Integer, ReadCellData<?>> headMap, AnalysisContext context)",
+        "Override public void invoke(Map<String, Object> data, AnalysisContext context)",
+        "OOM if (cachedDataList.size() >= BATCH_COUNT)",
+        "Override public void doAfterAllAnalysed(AnalysisContext context)",
+        "Override public void onException(Exception exception, AnalysisContext context)",
+        "public void saveData(boolean delFlag)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "WaterMarkHandler",
+      "kind": "class",
+      "package": "com.guava.platform.excel",
+      "summary": "添加水印",
+      "methods": [
+        "public static ByteArrayOutputStream createWaterMark(String content) throws IOException",
+        "public static void putWaterRemarkToExcel(SXSSFSheet sheet, byte[] bytes)",
+        "Override public void beforeSheetCreate(WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder)",
+        "Override public void afterSheetCreate(WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "DictApiController",
+      "kind": "class",
+      "package": "com.guava.platform.controller",
+      "summary": "系统字典controller",
+      "methods": [
+        "public String findDict()",
+        "public String findDictFromTable(@RequestParam String modelName, @RequestParam String vparam, @RequestParam String query)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ExcelApiController",
+      "kind": "class",
+      "package": "com.guava.platform.controller",
+      "summary": "操作excel controller",
+      "methods": [
+        "public List<ExcelErrorDTO> importExl(@RequestParam Map<String, Object> params, @RequestParam(\"file\") MultipartFile file) throws IOException",
+        "public List<Map<String, Object>> findTabExport(@RequestParam String btnId)",
+        "public void saveTabExport(@RequestParam String btnId, @RequestParam String header, @RequestParam Long expId)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "JobApiController",
+      "kind": "class",
+      "package": "com.guava.platform.controller",
+      "summary": "系统定时任务controller",
+      "methods": [
+        "public void runJobNow( @Parameter(description = \"sysJobPO\", required = true) @RequestBody SysJobPO sysJobPO)",
+        "public void resumeJob( @Parameter(description = \"sysJobPO\", required = true) @RequestBody SysJobPO sysJobPO)",
+        "public void pauseJob( @Parameter(description = \"sysJobPO\", required = true) @RequestBody SysJobPO sysJobPO)",
+        "public void addJob( @Parameter(description = \"sysJobPO\", required = true) @RequestBody SysJobPO sysJobPO)",
+        "public void updateJobCron( @Parameter(description = \"sysJobPO\", required = true) @RequestBody SysJobPO sysJobPO)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ContextHolder",
+      "kind": "class",
+      "package": "com.guava.platform.context",
+      "summary": "上下文类  在请求结束时, 调用 @Method remove()",
+      "methods": [
+        "public static void set(String key, Object value)",
+        "AppConstant.DEFAULT_MESSAGE, new Message())",
+        "public static Object get(String key)",
+        "AppConstant.DEFAULT_MESSAGE, new Message())",
+        "public static String getAes()",
+        "public static Long getUserId()",
+        "public static Long getDeptId()",
+        "public static Long getOemCompanyId()",
+        "public static Long getCompanyId()",
+        "public static String getUserAccount()",
+        "public static String getToken()",
+        "public static String getLanguage()",
+        "public static void setAes(String aes)",
+        "public static void setUserId(Long userId)",
+        "public static void setDeptId(Long deptId)",
+        "public static void setOemCompanyId(Long oemCompanyId)",
+        "public static void setCompanyId(Long companyId)",
+        "public static void setToken(String token)",
+        "public static void setLanguage(String language)",
+        "public static void setUserAccount(String userAccount)",
+        "public static void setUserInfo(Long userId, String userAccount, Long deptId, Long oemCompanyId, Long companyId, String language)",
+        "private static String returnObjectValue(Object value, String defaultValue)",
+        "public static void putMessage(String msgStr)",
+        "public static void putMessage(String format, Object... args)",
+        "public static Message getMessage()",
+        "public static void remove()"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "Message",
+      "kind": "class",
+      "package": "com.guava.platform.context",
+      "summary": "",
+      "methods": [
+        "public void putMsg(String msg)",
+        "Override public String toString()"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "RequestHeaderHandler",
+      "kind": "class",
+      "package": "com.guava.platform.context",
+      "summary": "请求头上下文",
+      "methods": [
+        "public static void setHeaderMap(Map<String, String> headerMap)",
+        "public static Map<String, String> getHeaderMap()",
+        "public static void remove()"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ApplicationConstant",
+      "kind": "class",
+      "package": "com.guava.platform.constant",
+      "summary": "应用的全局常量, 其中包括：Spring上下文对象、Servlet上下文对象、应用的上下文路径、应用系统默认字符集、默认Locale、默认日期格式等常量",
+      "methods": [
+        "4, new NamedThreadFactory(\"DEFAULT-PUBLISHER\"))",
+        ", new PathMatchingResourcePatternResolver())"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ApiError",
+      "kind": "class",
+      "package": "com.guava.platform.config",
+      "summary": "MarkLog注解的切面类",
+      "methods": [
+        "public ApiError(String code, String message)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "CorsConfig",
+      "kind": "class",
+      "package": "com.guava.platform.config",
+      "summary": "跨域配置",
+      "methods": [
+        "Override public void addCorsMappings(CorsRegistry registry)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ExecutorConfig",
+      "kind": "class",
+      "package": "com.guava.platform.config",
+      "summary": "自定义线程池配置类",
+      "methods": [
+        "Override public Executor getAsyncExecutor()",
+        "public Executor getAsyncExecutor(AsyncThreadPoolPojo asyncThreadPoolPojo)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "FeignConfig",
+      "kind": "class",
+      "package": "com.guava.platform.config",
+      "summary": "",
+      "methods": [
+        "public Feign.Builder feignSentinelBuilder()",
+        "Bean public RequestInterceptor requestInterceptor()",
+        "private void copyHeader(HttpServletRequest request, feign.RequestTemplate template, String headerName)",
+        "Bean public Encoder feignEncoder(ObjectFactory<HttpMessageConverters> converters)",
+        "Bean Logger.Level feignLoggerLevel()",
+        "Bean public Request.Options options()",
+        "Bean public CloseableHttpClient feignHttpClient()",
+        "Bean public List<FeignFormatterRegistrar> feignFormatterRegistrar()",
+        "Override public void registerFormatters(FormatterRegistry registry)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "FeignInfoLogger",
+      "kind": "class",
+      "package": "com.guava.platform.config",
+      "summary": "重写feign.logger，将默认debug输出级别改为info",
+      "methods": [
+        "public FeignInfoLogger()",
+        "public FeignInfoLogger(Class<?> clazz)",
+        "public FeignInfoLogger(String name)",
+        "Override protected void logRequest(String configKey, Level logLevel, Request request)",
+        "Override protected Response logAndRebufferResponse(String configKey, Level logLevel, Response response, long elapsedTime) throws IOException",
+        "Override protected void log(String configKey, String format, Object... args)",
+        "s support for parameterized messages (even though it // would be more efficient) because it would // require the incoming message formats to be SLF4J-specific. if (logger.isInfoEnabled())"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "HystrixConfig",
+      "kind": "class",
+      "package": "com.guava.platform.config",
+      "summary": "feign-hystrix熔断配置 也可以使用yml文件配置（参考gateway服务的配置）  feign默认集成了Hystrix，通过该类配置，设置hystrix的默认值，而避免每个微服务去配置hystrix参数 另外，也可以指定单个类的…",
+      "methods": []
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "HystrixThreadPoolsStrategy",
+      "kind": "class",
+      "package": "com.guava.platform.config",
+      "summary": "默认的springcloud-hystrix配置  在Servlet环境下，将HttpServletRequest、HttpServletResponse、Authentication(如果引入了Spring-Security)绑定到Hys…",
+      "methods": [
+        "registerConcurrencyStrategy(existingConcurrencyStrategy.getIfAvailable(), ServletDefaultHystrixConcurrencyStrategy::new)",
+        "registerConcurrencyStrategy(existingConcurrencyStrategy.getIfAvailable(), ServletSecurityHystrixConcurrencyStrategy::new)",
+        "registerConcurrencyStrategy(existingConcurrencyStrategy.getIfAvailable(), ReactiveDefaultHystrixConcurrencyStrategy::new)",
+        "registerConcurrencyStrategy(existingConcurrencyStrategy.getIfAvailable(), ReactiveSecurityHystrixConcurrencyStrategy::new)",
+        "super(ConfigurationPhase.REGISTER_BEAN)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "I18nConfig",
+      "kind": "class",
+      "package": "com.guava.platform.config",
+      "summary": "国际化配置",
+      "methods": [
+        "public LocaleResolver localeResolver()",
+        "Override public Locale resolveLocale(HttpServletRequest httpServletRequest)",
+        "Override public void setLocale(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Locale locale)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "JacksonConfig",
+      "kind": "class",
+      "package": "com.guava.platform.config",
+      "summary": "jackson配置类",
+      "methods": [
+        "public ObjectMapper jacksonObjectMapper(Jackson2ObjectMapperBuilder builder)",
+        "LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ofPattern(\"yyyy-MM-dd\")))",
+        "LocalTime.class, new LocalTimeSerializer(DateTimeFormatter.ofPattern(\"HH:mm:ss\")))",
+        "LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(\"yyyy-MM-dd HH:mm:ss\")))"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "JwtTokenConfig",
+      "kind": "class",
+      "package": "com.guava.platform.config",
+      "summary": "JWT Token 配置类",
+      "methods": [
+        "public String getIssuer()",
+        "public void setIssuer(String issuer)",
+        "public String getApiSecretKey()",
+        "public void setApiSecretKey(String apiSecretKey)",
+        "public Long getExpirationTime_HalfHour()",
+        "public void setExpirationTime_HalfHour(Long expirationTime_HalfHour)",
+        "public Long getExpirationTime_OneHour()",
+        "public void setExpirationTime_OneHour(Long expirationTime_OneHour)",
+        "public Long getExpirationRefreshTime()",
+        "public void setExpirationRefreshTime(Long expirationRefreshTime)",
+        "public String getRequestHeader()",
+        "public void setRequestHeader(String requestHeader)",
+        "public String getRequestRefreshHeader()",
+        "public void setRequestRefreshHeader(String requestRefreshHeader)",
+        "public String getTokenPrefix()",
+        "public void setTokenPrefix(String tokenPrefix)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "MybatisPlusConfig",
+      "kind": "class",
+      "package": "com.guava.platform.config",
+      "summary": "mybatis-plus物理分页配置类",
+      "methods": [
+        "Bean public MybatisPlusInterceptor mybatisPlusInterceptor()"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "OpenApiConfig",
+      "kind": "class",
+      "package": "com.guava.platform.config",
+      "summary": "",
+      "methods": [
+        "Bean public OpenAPI customOpenAPI(OpenApiProperties properties)",
+        "Bean public OpenApiCustomizer globalResponseCustomizer()",
+        ", new ApiResponse().description(\"成功\"))",
+        ", new ApiResponse().description(\"请求返回错误\"))",
+        ", new ApiResponse().description(\"找不到资源\"))",
+        ", new ApiResponse().description(\"业务逻辑异常\"))",
+        ", new ApiResponse().description(\"参数校验异常\"))",
+        ", new ApiResponse().description(\"服务器内部错误\"))",
+        ", new ApiResponse().description(\"服务不可用\"))"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "OpenApiProperties",
+      "kind": "class",
+      "package": "com.guava.platform.config",
+      "summary": "OpenAPI 文档基本信息配置 由 application.yml 中的 gateway.openapi 节点绑定。 Knife4j Gateway 不支持 springdoc.info 属性，通过自定义配置 + OpenAPI Bean…",
+      "methods": []
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "PlatformAutoConfigurationPackage",
+      "kind": "class",
+      "package": "com.guava.platform.config",
+      "summary": "自动装配类，platform工程（maven工程，BooApplication启动容器）无法自动装配注解问题；",
+      "methods": [
+        "public PlatformAutoConfigurationPackage()"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "PlatformProperties",
+      "kind": "class",
+      "package": "com.guava.platform.config",
+      "summary": "定义platform的参数配置",
+      "methods": []
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ResponseAdviceConfig",
+      "kind": "interface",
+      "package": "com.guava.platform.config",
+      "summary": "全局封装响应类之前响应接口",
+      "methods": [
+        "Object sucessResponse(ServerHttpRequest request, ServerHttpResponse response, Object body, MethodParameter returnType)",
+        "ResponseEntity exceptionResponse(HttpServletRequest req, Throwable error, HttpServletResponse response)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "WebMvcConfig",
+      "kind": "class",
+      "package": "com.guava.platform.config",
+      "summary": "全局拦截器配置  springboot2.0之后配置拦截器WebMvcConfigurerAdapter过时，取而代之的是WebMvcConfigurationSupport（extends） WebMvcConfigurer是一个接口 继…",
+      "methods": [
+        "Override public void configureAsyncSupport(final AsyncSupportConfigurer configurer)",
+        "Bean public TimeoutCallableProcessingInterceptor timeoutInterceptor()",
+        "Override public void addInterceptors(InterceptorRegistry registry)",
+        "Override public void addResourceHandlers(ResourceHandlerRegistry registry)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "CacheBean",
+      "kind": "class",
+      "package": "com.guava.platform.cache",
+      "summary": "",
+      "methods": []
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "CacheConfig",
+      "kind": "class",
+      "package": "com.guava.platform.cache",
+      "summary": "caffeineCache配置 与redis结合，实现二级缓存； public void getUser(long id){...} 作用于方法之上，如果缓存中有值，则不再执行方法直接返回缓存的值 public void saveUser(…",
+      "methods": [
+        "public void getUser(long id)",
+        "public void saveUser(User user)",
+        "Primary public CacheManager caffeineCacheManager()",
+        "private List<CacheBean> setCacheBean()",
+        "Bean public Cache<String, Object> caffeineCache()",
+        "Bean public Cache<String, Object> caffeineCacheRedis()"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "AbstractSpringConfiguration",
+      "kind": "class",
+      "package": "com.guava.platform.boot",
+      "summary": "",
+      "methods": [
+        "public void setEnvironment(Environment environment)",
+        "public Environment getEnvironment()",
+        "Override public void setApplicationContext(ApplicationContext applicationContext) throws BeansException",
+        "public ApplicationContext getApplicationContext()"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ControllerAspect",
+      "kind": "class",
+      "package": "com.guava.platform.aspect",
+      "summary": "controller切面",
+      "methods": [
+        "public void controllerPointcut()",
+        "public Object handleControllerPointCut(ProceedingJoinPoint joinPoint) throws Throwable",
+        "public void afterThrowing(JoinPoint joinPoint)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ExecTimeAspect",
+      "kind": "class",
+      "package": "com.guava.platform.aspect",
+      "summary": "ExecTime注解的切面类  order值越小越先执行",
+      "methods": [
+        "public void execTimePointcut()",
+        "public Object handleExecTimeLog(ProceedingJoinPoint joinPoint) throws Throwable",
+        "else if (takeTime > warntime)",
+        "public void afterThrowing(JoinPoint joinPoint)",
+        "else if (takeTime > warntime)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "MarkLogAspect",
+      "kind": "class",
+      "package": "com.guava.platform.aspect",
+      "summary": "MarkLog注解的切面类",
+      "methods": [
+        "public void markLogPointcut()",
+        "public Object doAround(ProceedingJoinPoint joinPoint) throws Throwable",
+        "else if (methodName.contains(\"save\")) msgInfo.put(\"op\", AppConstant.OPERATION_TYPE_INSERT)",
+        "else if (methodName.contains(\"delete\")) msgInfo.put(\"op\", AppConstant.OPERATION_TYPE_DELETE)",
+        "else if (methodName.contains(\"remove\")) msgInfo.put(\"op\", AppConstant.OPERATION_TYPE_DELETE)",
+        "public void afterThrowing(JoinPoint joinPoint)",
+        "else if (methodName.indexOf(\"save\") >= 0) msgInfo.put(\"op\", AppConstant.OPERATION_TYPE_INSERT)",
+        "else if (methodName.indexOf(\"delete\") >= 0) msgInfo.put(\"op\", AppConstant.OPERATION_TYPE_DELETE)",
+        "else if (methodName.indexOf(\"remove\") >= 0) msgInfo.put(\"op\", AppConstant.OPERATION_TYPE_DELETE)"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ResponseBodyAdviceImpl",
+      "kind": "class",
+      "package": "com.guava.platform.aspect",
+      "summary": "在注解@ResponseBody将返回值处理成相应格式之前封装返回值",
+      "methods": [
+        "Override public boolean supports(MethodParameter methodParameter, Class<? extends HttpMessageConverter<?>> aClass)",
+        "Override public Object beforeBodyWrite(Object o, MethodParameter returnType, MediaType mediaType, Class<? extends HttpMessageConverter<?>> aClass, ServerHttpRequest request, ServerHttpResponse respons…"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "TransactionAdviceConfig",
+      "kind": "class",
+      "package": "com.guava.platform.aspect",
+      "summary": "通过AOP实现的全局事务控制，可不增加@Transactional注解",
+      "methods": [
+        "Bean public TransactionInterceptor txAdvice()",
+        "Bean public Advisor txAdviceAdvisor()"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "CheckData",
+      "kind": "annotation",
+      "package": "com.guava.platform.annotation",
+      "summary": "excel导入校验数据annotation",
+      "methods": [
+        "public String filedName()"
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "CheckToken",
+      "kind": "annotation",
+      "package": "com.guava.platform.annotation",
+      "summary": "需要校验token注解",
+      "methods": []
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ExecTime",
+      "kind": "annotation",
+      "package": "com.guava.platform.annotation",
+      "summary": "自定义方法执行时间注解；该注解用来记录方法执行时间",
+      "methods": []
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "MarkLog",
+      "kind": "annotation",
+      "package": "com.guava.platform.annotation",
+      "summary": "自定义记录日志注解，使用该注解，表明需要将日志保存到数据库中",
+      "methods": []
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "NoCheckToken",
+      "kind": "annotation",
+      "package": "com.guava.platform.annotation",
+      "summary": "不校验token注解",
+      "methods": []
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "AsyncTaskProperties",
+      "kind": "class",
+      "package": "com.guava.component.utils.thread",
+      "summary": "线程池配置属性类 线程池配置属性类（从yml配置文件读取）",
+      "methods": [
+        "public void setCorePoolSize(int corePoolSize)",
+        "public void setMaxPoolSize(int maxPoolSize)",
+        "public void setKeepAliveSeconds(int keepAliveSeconds)",
+        "public void setQueueCapacity(int queueCapacity)"
+      ]
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "AsyncThreadPoolTask",
+      "kind": "class",
+      "package": "com.guava.component.utils.thread",
+      "summary": "异步线程池工具类 异步线程池工具类",
+      "methods": [
+        "public static ThreadPoolTaskExecutor createAsyncTaskExecutor()",
+        "public static ThreadPoolTaskExecutor createAsyncTaskExecutor(AsyncThreadPoolPojo asyncThreadPoolPojo)"
+      ]
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "NamedThreadFactory",
+      "kind": "class",
+      "package": "com.guava.component.utils.thread",
+      "summary": "命名线程工厂类 命名线程工厂类",
+      "methods": [
+        "public NamedThreadFactory(String threadNamePrefix)",
+        "NAME_PATTERN, checkThreadNamePrefix(threadNamePrefix), THREAD_POOL_NUMBER.getAndIncrement())",
+        "public String checkThreadNamePrefix(String threadNamePrefix)",
+        "public Thread newThread(Runnable r)"
+      ]
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "ThreadPoolMyUtil",
+      "kind": "class",
+      "package": "com.guava.component.utils.thread",
+      "summary": "线程池工具类 线程池工具类",
+      "methods": [
+        "public static ExecutorService newSingleThreadExecutor()",
+        "public static ExecutorService newSingleThreadExecutor(ThreadFactory threadFactory)",
+        "public static ScheduledExecutorService newSingleThreadScheduledExecutor()",
+        "public static ScheduledExecutorService newSingleThreadScheduledExecutor(ThreadFactory threadFactory)",
+        "public static ExecutorService newFixedThreadPool(int nThreads)",
+        "public static ExecutorService newFixedThreadPool(int nThreads, ThreadFactory threadFactory)",
+        "public static ExecutorService newFixedThreadPool(int corePoolSize, int maxPoolSize, int keepAliveSeconds, int capacity, ThreadFactory threadFactory)",
+        "public static ExecutorService newScheduledThreadPool(ThreadFactory threadFactory)"
+      ]
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "PasswordEncoder",
+      "kind": "class",
+      "package": "com.guava.component.utils.security",
+      "summary": "Password encryption utility class (MD5/SHA one-way hash encryption) 密码加密工具类（MD5/SHA单向散列加密）",
+      "methods": [
+        "public PasswordEncoder(Object salt)",
+        "public PasswordEncoder(Object salt, String algorithm)",
+        "private static String byte2HexStr(byte b)",
+        "tests public static void main(String[] args)",
+        "public String encode(String rawPass)",
+        "public boolean matches(String encPass, String rawPass)",
+        "private String mergePasswordAndSalt(String password)",
+        "private String byteArray2HexStr(byte[] b)"
+      ]
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "PasswordUtils",
+      "kind": "class",
+      "package": "com.guava.component.utils.security",
+      "summary": "Password utility class (MD5 one-way hash encryption) 密码工具类（MD5单向散列加密）",
+      "methods": [
+        "public static boolean matches(String salt, String rawPass, String encPass)",
+        "public static String encode(String rawPass, String salt)",
+        "public static String getSalt()",
+        "test public static void main(String[] args)"
+      ]
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "SpringSecurityUtil",
+      "kind": "class",
+      "package": "com.guava.component.utils.security",
+      "summary": "Spring Security utility class Spring Security工具类",
+      "methods": []
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "JsonLocalDateDeserializer",
+      "kind": "class",
+      "package": "com.guava.component.utils.json.serializer",
+      "summary": "LocalDate JSON序列化器 LocalDate JSON反序列化器",
+      "methods": [
+        "Override public LocalDate deserialize(JsonParser p, DeserializationContext ctxt) throws IOException"
+      ]
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "JsonLocalDateSerializer",
+      "kind": "class",
+      "package": "com.guava.component.utils.json.serializer",
+      "summary": "LocalDate JSON序列化器 LocalDate JSON序列化器",
+      "methods": [
+        "Override public void serialize(LocalDate value, JsonGenerator gen, SerializerProvider serializers) throws IOException"
+      ]
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "JsonLocalDateTimeDeserializer",
+      "kind": "class",
+      "package": "com.guava.component.utils.json.serializer",
+      "summary": "LocalDateTime JSON反序列化器 LocalDateTime JSON反序列化器",
+      "methods": [
+        "Override public LocalDateTime deserialize(JsonParser p, DeserializationContext ctxt) throws IOException"
+      ]
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "JsonLocalDateTimeSerializer",
+      "kind": "class",
+      "package": "com.guava.component.utils.json.serializer",
+      "summary": "LocalDateTime JSON序列化器 LocalDateTime JSON序列化器",
+      "methods": [
+        "Override public void serialize(LocalDateTime value, JsonGenerator gen, SerializerProvider serializers) throws IOException"
+      ]
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "AssertUtil2",
+      "kind": "class",
+      "package": "com.guava.component.utils.iassert",
+      "summary": "Custom assertion utility class 自定义断言工具类",
+      "methods": [
+        "public AssertUtil2()",
+        "public static void isNull(Object object, BizCode2 BizCode2) throws IllegalArgumentException",
+        "public static void isNull(Object object, BizCode2 BizCode2, Object... params) throws IllegalArgumentException",
+        "public static <T> T notNull(T object, BizCode2 BizCode2) throws BizException2",
+        "public static <T> T notNull(T object, BizCode2 BizCode2, Object... params) throws BizException2",
+        "public static <T extends CharSequence> T notEmpty(T text, BizCode2 BizCode2, Object... params) throws BizException2",
+        "public static <T extends CharSequence> T notEmpty(T text, BizCode2 BizCode2) throws BizException2",
+        "public static <T> T errMsg(BizCode2 BizCode2, Object... params) throws BizException2",
+        "public static <T> T errMsg(BizCode2 BizCode2) throws BizException2",
+        "public static <T> T errMsg(String msg) throws BizException2"
+      ]
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "HttpStatusMyUtil",
+      "kind": "interface",
+      "package": "com.guava.component.utils.http",
+      "summary": "HTTP status code constants interface (compatible with Apache HttpClient) HTTP状态码常量接口（兼容Apache HttpClient）",
+      "methods": []
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "DateUtil2",
+      "kind": "class",
+      "package": "com.guava.component.utils.common",
+      "summary": "DateUtil2 日期工具类",
+      "methods": [
+        "public static Long getTimeStamp(LocalDateTime localDateTime)",
+        "public static LocalDateTime fromTimeStamp(Long timeStamp)",
+        "public static Date toDate(LocalDateTime localDateTime)",
+        "public static Date toDate(LocalDate localDate)",
+        "public static LocalDateTime toLocalDateTime(Date date)",
+        "public static String localDateTimeFormat(LocalDateTime localDateTime, String patten)",
+        "public static String localDateFormat(LocalDate localDate, String patten)",
+        "public static String localDateTimeFormat(LocalDateTime localDateTime, DateTimeFormatter df)",
+        "public static String localDateTimeFormatyMdHms(LocalDateTime localDateTime)",
+        "public static LocalDateTime parseLocalDateTimeFormat(String localDateTime, String pattern)",
+        "public static LocalDateTime parseLocalDateTimeFormat(String localDateTime, DateTimeFormatter dateTimeFormatter)",
+        "public static LocalDateTime parseLocalDateTimeFormatyMdHms(String localDateTime)",
+        "public static LocalDate parseLocalDateFormat(String localDateTime)",
+        "public static LocalDate parseLocalDateFormat(String localDateTime, String pattern)",
+        "public static Long getSecondsNextEarlyMorning()",
+        "public static void main(String[] args)",
+        "public String localDateTimeFormatyMd(LocalDateTime localDateTime)"
+      ]
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "StrUtil2",
+      "kind": "class",
+      "package": "com.guava.component.utils.common",
+      "summary": "StrUtil2 字符串工具类",
+      "methods": [
+        "public static String firChar2Lower(String str)",
+        "public static String firChar2Upper(String str)",
+        "public static String placeHolder(String template, Object... params)",
+        "public static String toline(String underlineString)",
+        "public static String toHump(String inputString)",
+        "public static String toHump(String inputString, boolean firstCharacterUppercase)",
+        "public static String getValidPropsName(String inputString)",
+        "else if (inputString.length() < 2)",
+        "public static String getSetterMethodName(String property)",
+        "public static String getGetterMethodName(String property)"
+      ]
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "Map2ObjUtil",
+      "kind": "class",
+      "package": "com.guava.component.utils.bean",
+      "summary": "Map2ObjUtil map与object相互转换工具类",
+      "methods": [
+        "public static <T> T copyProperties(Object orig, Class<T> clazz)",
+        "public static void copyProperties(Object orig, Object destObj)",
+        "public static void copyProperties(Object orig, Object destObj, String... ignoreProperties)",
+        "public static void copyPropertiesWithOutNull(Object orig, Object destObj)",
+        "orig, destObj, getNullValueByPropertyNames(orig))",
+        "private static String[] getNullValueByPropertyNames(Object source)",
+        "public static <T> List<T> copyList(List<?> origList, Class<T> destClass)",
+        "public static <T, V> T toObject(Map<String, V> map, T object)",
+        "public static <T, V> T toObject(Map<String, V> map, Class<T> clazz)",
+        "public static <T, V> T toObject(Map<String, V> map, Class<T> clazz, boolean toCamelCase)",
+        "public static <T, V> T toObject(Map<String, V> map, T object, boolean toCamelCase)",
+        "public static Map<String, Object> toMap(Object obj)",
+        "public static Map<String, Object> toMapForLine(Object object)",
+        "public static <T> Collection<Map<String, Object>> toMapList(Collection<T> collection)",
+        "public static <V> Map<String, V> toMapForHump(Map<String, V> map)",
+        "public static <V> Map<String, V> toMapLine(Map<String, V> map)",
+        "public static <T> Collection<Map<String, Object>> toMapListForLine(Collection<T> collection)",
+        "public static void populateValueByMethod(Object object, String methodName, Object value)"
+      ]
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "QcBean",
+      "kind": "class",
+      "package": "com.guava.component.utils.bean",
+      "summary": "QcBean 查询条件过滤封装bean",
+      "methods": [
+        "public QcBean()",
+        "public QcBean(String id, String code, String value, String kind, String format, String action, String ds, String op)"
+      ]
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "AsyncThreadPoolPojo",
+      "kind": "class",
+      "package": "com.guava.component.pojo",
+      "summary": "AsyncThreadPoolPojo 异步线程池配置POJO",
+      "methods": [
+        "public AsyncThreadPoolPojo()",
+        "public AsyncThreadPoolPojo(int corePoolSize, int maxPoolSize, int queueCapacity, int keepAliveSeconds)",
+        "public int getCorePoolSize()",
+        "public void setCorePoolSize(int corePoolSize)",
+        "public int getMaxPoolSize()",
+        "public void setMaxPoolSize(int maxPoolSize)",
+        "public int getQueueCapacity()",
+        "public void setQueueCapacity(int queueCapacity)",
+        "public int getKeepAliveSeconds()",
+        "public void setKeepAliveSeconds(int keepAliveSeconds)"
+      ]
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "BaseDTO",
+      "kind": "class",
+      "package": "com.guava.component.model",
+      "summary": "BaseDTO 基础DTO抽象类",
+      "methods": [
+        "public <T extends BaseModel> T transDto2Po(Class<T> poClass)",
+        "public <T extends BaseModel> void transDto2Po(T po)",
+        "public <T extends BaseModel> void populateValueByMethod(T po)",
+        "public Map<String, Object> toMaps()"
+      ]
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "BaseModel",
+      "kind": "class",
+      "package": "com.guava.component.model",
+      "summary": "BaseModel 基础Model类",
+      "methods": [
+        "public <T extends BaseDTO> T transPo2Dto(Class<T> dtoClass)",
+        "protected <T extends BaseDTO> void transPo2Dto(BaseModel po, T dto)",
+        "protected <T extends BaseDTO> void populateValueByMethod(T po)",
+        "public Map<String, Object> toMaps()",
+        "public Map<String, Object> toMapForLine()"
+      ]
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "BasePO",
+      "kind": "class",
+      "package": "com.guava.component.model",
+      "summary": "BasePO 基础数据PO抽象类",
+      "methods": [
+        "public <T extends BaseDTO> T transPo2Dto(Class<T> dtoClass)"
+      ]
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "AppException",
+      "kind": "class",
+      "package": "com.guava.component.exception",
+      "summary": "AppException 应用异常基类",
+      "methods": [
+        "public AppException(String message)",
+        "public AppException(Throwable cause)",
+        "public AppException(String message, Throwable cause)",
+        "public AppException(String code, String message)",
+        "public AppException(String code, String message, Throwable cause)",
+        "public String getCode()",
+        "public void setCode(String code)"
+      ]
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "AppRuntimeException",
+      "kind": "class",
+      "package": "com.guava.component.exception",
+      "summary": "AppRuntimeException 运行时异常封装类",
+      "methods": [
+        "public AppRuntimeException(String message)",
+        "public AppRuntimeException(Throwable cause)",
+        "public AppRuntimeException(String message, Throwable cause)",
+        "public AppRuntimeException(String code, String message, Throwable cause)",
+        "public AppRuntimeException(String code, String message)",
+        "Override public String getMessage()",
+        "public Throwable getRootCause()",
+        "protected String buildMessage(String message, Throwable cause)"
+      ]
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "BizCode2",
+      "kind": "enum",
+      "package": "com.guava.component.exception",
+      "summary": "BizCode2 业务异常错误码枚举类",
+      "methods": [
+        ", FILE_RECIVE_ERROR(50007, \"获取上传文件失败.\"), FILE_CHECKCOLUMN_INCORRECT(50008, \"导入文件的最大列数设置不正确.\"), FILE_OP_ERROR(59999, \"文件流操作失败.\"), //SQL SQL_DUPLICATE_KEY(60001, \"业务数据冲突，请再次点击重试\"), // 唯一键值列数据重复 SQL_DATA…",
+        "public int getCode()",
+        "public void setCode(int code)",
+        "public String getMessage()",
+        "public void setMessage(String msg)"
+      ]
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "BizException2",
+      "kind": "class",
+      "package": "com.guava.component.exception",
+      "summary": "BizException2 业务异常封装类",
+      "methods": [
+        "public BizException2(int code, String message)",
+        "public BizException2(BizCode2 bizcode)",
+        "public BizException2(BizCode2 bizcode, Exception re)",
+        "public BizException2(String msg)"
+      ]
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "AppConstant",
+      "kind": "class",
+      "package": "com.guava.component.constant",
+      "summary": "AppConstant 全局应用级常量",
+      "methods": [
+        "private AppConstant()"
+      ]
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "Constant",
+      "kind": "class",
+      "package": "com.guava.component.constant",
+      "summary": "Constant 常量抽象基类",
+      "methods": [
+        "protected Constant(String name)",
+        "protected Constant(String name, T defaultValue)",
+        "public static void setConstantPool(ConstantPool<Object> constantPool)",
+        "Override public T get()",
+        "Override public T get(Constant<T> constant)"
+      ]
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "ConstantPool",
+      "kind": "interface",
+      "package": "com.guava.component.constant",
+      "summary": "ConstantPool 常量池接口",
+      "methods": [
+        "public T get(Constant<T> constant)"
+      ]
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "DicConstant",
+      "kind": "class",
+      "package": "com.guava.component.constant",
+      "summary": "DicConstant 系统字典常量类",
+      "methods": []
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "ExcelCheckConstant",
+      "kind": "class",
+      "package": "com.guava.component.constant",
+      "summary": "ExcelCheckConstant Excel导入校验常量类",
+      "methods": []
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "FormatConstant",
+      "kind": "class",
+      "package": "com.guava.component.constant",
+      "summary": "FormatConstant 定义时间、浮点数等格式常量",
+      "methods": [
+        "private FormatConstant()"
+      ]
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "GlobalConstant",
+      "kind": "class",
+      "package": "com.guava.component.constant",
+      "summary": "GlobalConstant 全局常量",
+      "methods": []
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "HeaderConstant",
+      "kind": "class",
+      "package": "com.guava.component.constant",
+      "summary": "HeaderConstant request header定义参数常量",
+      "methods": [
+        "private HeaderConstant()"
+      ]
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "HttpStatusConstant",
+      "kind": "enum",
+      "package": "com.guava.component.constant",
+      "summary": "HttpStatusConstant HttpStatus枚举常量类",
+      "methods": [
+        ", SWITCHING_PROTOCOLS(101, \"Switching Protocols\"), PROCESSING(102, \"Processing\"), CHECKPOINT(103, \"Checkpoint\"), OK(200, \"OK\"), CREATED(201, \"Created\"), ACCEPTED(202, \"Accepted\"), NON_AUTHORITATIVE_IN…",
+        "public static HttpStatusConstant valueOf(int statusCode)",
+        "Nullable public static HttpStatusConstant resolve(int statusCode)",
+        "public int value()",
+        "public String getReasonPhrase()",
+        "public HttpStatusConstant.Series series()",
+        "public boolean is1xxInformational()",
+        "public boolean is2xxSuccessful()",
+        "public boolean is3xxRedirection()",
+        "public boolean is4xxClientError()",
+        "public boolean is5xxServerError()",
+        "public boolean isError()",
+        "public String toString()",
+        ", SUCCESSFUL(2), REDIRECTION(3), CLIENT_ERROR(4), SERVER_ERROR(5)",
+        "public static HttpStatusConstant.Series valueOf(HttpStatusConstant status)",
+        "public static HttpStatusConstant.Series valueOf(int statusCode)",
+        "Nullable public static HttpStatusConstant.Series resolve(int statusCode)",
+        "public int value()"
+      ]
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "MybatisConstant",
+      "kind": "interface",
+      "package": "com.guava.component.constant",
+      "summary": "MybatisConstant mybatis常量",
+      "methods": []
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "RedisConstant",
+      "kind": "class",
+      "package": "com.guava.component.constant",
+      "summary": "RedisConstant redis缓存常量类",
+      "methods": []
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "SpringBeanConstant",
+      "kind": "class",
+      "package": "com.guava.component.constant",
+      "summary": "SpringBeanConstant Spring上下文中的bean常量",
+      "methods": [
+        "public SpringBeanConstant()",
+        "public SpringBeanConstant(String name)",
+        "public SpringBeanConstant(String name, T defaultValue)"
+      ]
+    },
+    {
+      "module": "guava-component-starter",
+      "name": "SysConstant",
+      "kind": "class",
+      "package": "com.guava.component.constant",
+      "summary": "SysConstant 全局系统级配置",
+      "methods": [
+        "public Integer getBusinessId()",
+        "public void setBusinessId(Integer businessId)",
+        "public Integer getInstanceId()",
+        "public void setInstanceId(Integer instanceId)",
+        "public String getWebServerUrl()",
+        "public void setWebServerUrl(String webServerUrl)",
+        "public String getFileServerUrl()",
+        "public void setFileServerUrl(String fileServerUrl)",
+        "public String getLocalTempBaseDirectory()",
+        "public void setLocalTempBaseDirectory(String localTempBaseDirectory)"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "DicCommonConstant",
+      "kind": "class",
+      "package": "constant",
+      "summary": "自定义表选字典配置类",
+      "methods": [
+        "public static String getTableDic(Map<String, Object> user, String vparam)"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysAppConfPO",
+      "kind": "class",
+      "package": "com.guava.entity.po",
+      "summary": "系统参数配置表(sys_app_conf) po实体类",
+      "methods": [
+        "public SysAppConfPO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysAttachmentPO",
+      "kind": "class",
+      "package": "com.guava.entity.po",
+      "summary": "(sys_attachment) po实体类",
+      "methods": [
+        "public SysAttachmentPO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysBizConfPO",
+      "kind": "class",
+      "package": "com.guava.entity.po",
+      "summary": "业务参数配置表(sys_biz_conf) po实体类",
+      "methods": [
+        "public SysBizConfPO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysCompanyPO",
+      "kind": "class",
+      "package": "com.guava.entity.po",
+      "summary": "系统公司组织表(sys_company) po实体类",
+      "methods": [
+        "public SysCompanyPO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysDeptPO",
+      "kind": "class",
+      "package": "com.guava.entity.po",
+      "summary": "机构管理(sys_dept) po实体类",
+      "methods": [
+        "public SysDeptPO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysDictPO",
+      "kind": "class",
+      "package": "com.guava.entity.po",
+      "summary": "字典表(sys_dict) po实体类",
+      "methods": [
+        "public SysDictPO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysDivisionPO",
+      "kind": "class",
+      "package": "com.guava.entity.po",
+      "summary": "行政区划(sys_division) po实体类",
+      "methods": [
+        "public SysDivisionPO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysEventListPO",
+      "kind": "class",
+      "package": "com.guava.entity.po",
+      "summary": "(sys_event_list) po实体类",
+      "methods": [
+        "public SysEventListPO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysEventPO",
+      "kind": "class",
+      "package": "com.guava.entity.po",
+      "summary": "日历事项表(sys_event) po实体类",
+      "methods": [
+        "public SysEventPO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysJobPO",
+      "kind": "class",
+      "package": "com.guava.entity.po",
+      "summary": "(sys_job) po实体类",
+      "methods": [
+        "public SysJobPO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysLanguagePO",
+      "kind": "class",
+      "package": "com.guava.entity.po",
+      "summary": "(sys_language) po实体类",
+      "methods": [
+        "public SysLanguagePO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysLogLoginPO",
+      "kind": "class",
+      "package": "com.guava.entity.po",
+      "summary": "用户登录日志(sys_log_login) po实体类",
+      "methods": [
+        "public SysLogLoginPO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysLogOperationPO",
+      "kind": "class",
+      "package": "com.guava.entity.po",
+      "summary": "用户操作日志(sys_log_operation) po实体类",
+      "methods": [
+        "public SysLogOperationPO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysMenuPO",
+      "kind": "class",
+      "package": "com.guava.entity.po",
+      "summary": "菜单管理(sys_menu) po实体类",
+      "methods": [
+        "public SysMenuPO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysMessagePO",
+      "kind": "class",
+      "package": "com.guava.entity.po",
+      "summary": "提醒信息表(sys_message) po实体类",
+      "methods": [
+        "public SysMessagePO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysPostPO",
+      "kind": "class",
+      "package": "com.guava.entity.po",
+      "summary": "岗位表(sys_post) po实体类",
+      "methods": [
+        "public SysPostPO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysPostRolePO",
+      "kind": "class",
+      "package": "com.guava.entity.po",
+      "summary": "角色岗位关系表(sys_post_role) po实体类",
+      "methods": [
+        "public SysPostRolePO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysRoleMenuPO",
+      "kind": "class",
+      "package": "com.guava.entity.po",
+      "summary": "角色菜单关系表(sys_role_menu) po实体类",
+      "methods": [
+        "public SysRoleMenuPO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysRolePO",
+      "kind": "class",
+      "package": "com.guava.entity.po",
+      "summary": "角色管理(sys_role) po实体类",
+      "methods": [
+        "public SysRolePO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysSystemLogPO",
+      "kind": "class",
+      "package": "com.guava.entity.po",
+      "summary": "系统请求日志(sys_system_log) po实体",
+      "methods": [
+        "public SysSystemLogPO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysUserFavoritePO",
+      "kind": "class",
+      "package": "com.guava.entity.po",
+      "summary": "(sys_user_favorite) po实体类",
+      "methods": [
+        "public SysUserFavoritePO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysUserPO",
+      "kind": "class",
+      "package": "com.guava.entity.po",
+      "summary": "用户管理(sys_user) po实体类",
+      "methods": [
+        "public SysUserPO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysUserPostPO",
+      "kind": "class",
+      "package": "com.guava.entity.po",
+      "summary": "用户岗位关系表(sys_user_post) po实体类",
+      "methods": [
+        "public SysUserPostPO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysUserRecentPO",
+      "kind": "class",
+      "package": "com.guava.entity.po",
+      "summary": "(sys_user_recent) po实体类",
+      "methods": [
+        "public SysUserRecentPO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysAttachmentDTO",
+      "kind": "class",
+      "package": "com.guava.entity.dto",
+      "summary": "(sys_attachment) dto实体类",
+      "methods": [
+        "public SysAttachmentDTO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysCompanyDTO",
+      "kind": "class",
+      "package": "com.guava.entity.dto",
+      "summary": "系统公司组织表(sys_company) dto实体类",
+      "methods": [
+        "public SysCompanyDTO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysDeptDTO",
+      "kind": "class",
+      "package": "com.guava.entity.dto",
+      "summary": "机构管理(sys_dept) dto实体类",
+      "methods": [
+        "public SysDeptDTO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysDictDTO",
+      "kind": "class",
+      "package": "com.guava.entity.dto",
+      "summary": "字典表(sys_dict) dto实体类",
+      "methods": [
+        "public SysDictDTO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysDivisionDTO",
+      "kind": "class",
+      "package": "com.guava.entity.dto",
+      "summary": "行政区划(sys_division) dto实体类",
+      "methods": [
+        "public SysDivisionDTO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysEventDTO",
+      "kind": "class",
+      "package": "com.guava.entity.dto",
+      "summary": "日历事项表(sys_event) dto实体类",
+      "methods": [
+        "public SysEventDTO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysEventListDTO",
+      "kind": "class",
+      "package": "com.guava.entity.dto",
+      "summary": "(sys_event_list) dto实体类",
+      "methods": [
+        "public SysEventListDTO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysLanguageDTO",
+      "kind": "class",
+      "package": "com.guava.entity.dto",
+      "summary": "(sys_language) dto实体类",
+      "methods": [
+        "public SysLanguageDTO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysLogLoginDTO",
+      "kind": "class",
+      "package": "com.guava.entity.dto",
+      "summary": "用户登录日志(sys_log_login) dto实体类",
+      "methods": [
+        "public SysLogLoginDTO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysLogOperationDTO",
+      "kind": "class",
+      "package": "com.guava.entity.dto",
+      "summary": "用户操作日志(sys_log_operation) dto实体类SysLogLoginDTO.java",
+      "methods": [
+        "public SysLogOperationDTO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysMenuDTO",
+      "kind": "class",
+      "package": "com.guava.entity.dto",
+      "summary": "菜单管理(sys_menu) dto实体类",
+      "methods": [
+        "public SysMenuDTO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysMessageDTO",
+      "kind": "class",
+      "package": "com.guava.entity.dto",
+      "summary": "提醒信息表(sys_message) dto实体类",
+      "methods": [
+        "public SysMessageDTO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysPostDTO",
+      "kind": "class",
+      "package": "com.guava.entity.dto",
+      "summary": "岗位表(sys_post) dto实体类",
+      "methods": [
+        "public SysPostDTO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysPostRoleDTO",
+      "kind": "class",
+      "package": "com.guava.entity.dto",
+      "summary": "角色岗位关系表(sys_post_role) dto实体类",
+      "methods": [
+        "public SysPostRoleDTO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysRoleDTO",
+      "kind": "class",
+      "package": "com.guava.entity.dto",
+      "summary": "角色管理(sys_role) dto实体类",
+      "methods": [
+        "public SysRoleDTO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysRoleMenuDTO",
+      "kind": "class",
+      "package": "com.guava.entity.dto",
+      "summary": "角色菜单关系表(sys_role_menu) dto实体类",
+      "methods": [
+        "public SysRoleMenuDTO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysSystemLogDTO",
+      "kind": "class",
+      "package": "com.guava.entity.dto",
+      "summary": "系统请求日志(sys_system_log) dto实体类",
+      "methods": [
+        "public SysSystemLogDTO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysUserDTO",
+      "kind": "class",
+      "package": "com.guava.entity.dto",
+      "summary": "用户管理(sys_user) dto实体类",
+      "methods": [
+        "public SysUserDTO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysUserFavoriteDTO",
+      "kind": "class",
+      "package": "com.guava.entity.dto",
+      "summary": "(sys_user_favorite) dto实体类",
+      "methods": [
+        "public SysUserFavoriteDTO()"
+      ]
+    },
+    {
+      "module": "guava-entity-starter",
+      "name": "SysUserRecentDTO",
+      "kind": "class",
+      "package": "com.guava.entity.dto",
+      "summary": "(sys_user_recent) dto实体类",
+      "methods": [
+        "public SysUserRecentDTO()"
+      ]
+    }
+  ]
+}

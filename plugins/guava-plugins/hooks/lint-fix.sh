@@ -7,7 +7,8 @@ set -uo pipefail
 PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
 PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"
 BACKEND_ROOT="${GUAVA_BACKEND_ROOT:-$PROJECT_DIR/../guava-admin}"
-JAVA_FORMAT_MODE="${GUAVA_JAVA_FORMAT:-auto}" # auto | google-java-format | spotless | none
+JAVA_FORMAT_MODE="${GUAVA_JAVA_FORMAT:-auto}" # auto | idea | google-java-format | spotless | none
+                                                # auto = IDEA headless format（等价 IDE 保存格式化）→ google-java-format → spotless
 
 # 会话级缓存：避免跨会话共享（其他会话写入的文件不该在本会话 Stop 时被 lint）
 SESSION_ID="${CLAUDE_SESSION_ID:-$$}"
@@ -311,6 +312,124 @@ find_pom() {
   return 1
 }
 
+# ================== IDEA headless format ==================
+# 等价 IDE 「保存时格式化」：4 空格缩进 + Allman 大括号（guava-admin-starter 风格）。
+# 用独立 config/system 目录运行，避免与正在运行的 IDE 冲突（Only one instance）。
+# 注意：不能直接调 bin/format.sh —— 它会额外注入一个 "format" 参数，而 macOS 启动器
+# 本身保留命令 token（main 收到 "format,format,..." → 报 File format not found）。
+# 必须直接调 Contents/MacOS/idea，参数以 "format <args>" 形式传入（launcher 会带上命令名，
+# FormatterStarter.main 内部 drop(1) 后正好是我们的参数）。
+# 定位顺序：GUAVA_IDEA_FORMAT（MacOS/idea 或 format.sh 路径）→ GUAVA_IDEA_HOME → 默认 /Applications。
+
+IDEA_FORMAT_BIN_CACHED=""
+idea_format_bin() {
+  if [[ -n "$IDEA_FORMAT_BIN_CACHED" ]]; then
+    echo "$IDEA_FORMAT_BIN_CACHED"
+    return
+  fi
+  local bin=""
+  if [[ -n "${GUAVA_IDEA_FORMAT:-}" && -f "${GUAVA_IDEA_FORMAT:-}" ]]; then
+    bin="$GUAVA_IDEA_FORMAT"
+    # 兼容直接指向 format.sh 的配置：归一化到 MacOS/idea
+    [[ "$bin" == */bin/format.sh ]] && bin="${bin%/bin/format.sh}/MacOS/idea"
+  elif [[ -f "${GUAVA_IDEA_HOME:-}/Contents/MacOS/idea" ]]; then
+    bin="$GUAVA_IDEA_HOME/Contents/MacOS/idea"
+  elif [[ -f "/Applications/IntelliJ IDEA.app/Contents/MacOS/idea" ]]; then
+    bin="/Applications/IntelliJ IDEA.app/Contents/MacOS/idea"
+  fi
+  [[ -n "$bin" && -x "$bin" ]] || bin=""
+  IDEA_FORMAT_BIN_CACHED="$bin"
+  echo "$bin"
+}
+
+idea_format_available() {
+  [[ "$JAVA_FORMAT_MODE" != "google-java-format" && "$JAVA_FORMAT_MODE" != "spotless" ]] || return 1
+  [[ -n "$(idea_format_bin)" ]]
+}
+
+# 从 java 文件向上找项目代码风格 .idea/codeStyles/Project.xml；找不到返回 1
+find_project_codestyle() {
+  local dir
+  dir="$(dirname "$1")"
+  while [[ "$dir" != "/" ]]; do
+    if [[ -f "$dir/.idea/codeStyles/Project.xml" ]]; then
+      echo "$dir/.idea/codeStyles/Project.xml"
+      return 0
+    fi
+    [[ "$dir" == "$BACKEND_ROOT" || "$dir" == "$PROJECT_DIR" ]] && break
+    dir="$(dirname "$dir")"
+  done
+  return 1
+}
+
+# 解析要传给 -s 的代码风格 scheme 文件（IDEA 保存格式化 = 项目 Project.xml 优先，其次全局自定义方案）
+# 顺序：GUAVA_IDEA_SCHEME → 项目 .idea/codeStyles/Project.xml → JetBrains 配置目录 newest 的自定义方案
+resolve_idea_scheme() {
+  local first_file="${1:-}"
+  if [[ -n "${GUAVA_IDEA_SCHEME:-}" && -f "${GUAVA_IDEA_SCHEME:-}" ]]; then
+    echo "$GUAVA_IDEA_SCHEME"
+    return 0
+  fi
+  if [[ -n "$first_file" ]]; then
+    local project_style
+    project_style="$(find_project_codestyle "$first_file" 2>/dev/null || true)"
+    if [[ -n "$project_style" ]]; then
+      echo "$project_style"
+      return 0
+    fi
+  fi
+  local jb_dir scheme
+  jb_dir="$(ls -d "$HOME/Library/Application Support/JetBrains/"IntelliJIdea* 2>/dev/null | sort -V | tail -1)"
+  if [[ -n "$jb_dir" && -d "$jb_dir/codestyles" ]]; then
+    # 优先用户自定义方案（IDE 默认 "Default Custom"），其次任意非内置方案，最后 Default
+    for scheme in "Default Custom" "Default"; do
+      if [[ -f "$jb_dir/codestyles/$scheme.xml" ]]; then
+        echo "$jb_dir/codestyles/$scheme.xml"
+        return 0
+      fi
+    done
+    scheme="$(ls "$jb_dir/codestyles/"*.xml 2>/dev/null | head -1)"
+    if [[ -n "$scheme" ]]; then
+      echo "$scheme"
+      return 0
+    fi
+  fi
+  return 1
+}
+
+# 整批交给 idea format（避免每个文件启一次 JVM）。
+# scheme 解析一次：有则 -s <scheme.xml>，无则 -allowDefaults（工厂默认，避免文件被忽略）。
+run_idea_format_batch() {
+  local bin
+  bin="$(idea_format_bin)"
+  [[ -n "$bin" ]] || return 1
+
+  local conf="$CACHE_DIR/idea-format/config"
+  local sys="$CACHE_DIR/idea-format/system"
+  mkdir -p "$conf" "$sys"
+
+  local -a files=()
+  local first="" f
+  while IFS= read -r f; do
+    [[ -n "$f" && -f "$f" ]] || continue
+    [[ -z "$first" ]] && first="$f"
+    files+=("$f")
+  done
+  ((${#files[@]})) || return 0
+
+  local -a args=(-Didea.config.path="$conf" -Didea.system.path="$sys" format)
+  local scheme
+  scheme="$(resolve_idea_scheme "$first" 2>/dev/null || true)"
+  if [[ -n "$scheme" ]]; then
+    debug "idea format -s $scheme (${#files[@]} files)"
+    args+=(-s "$scheme")
+  else
+    debug "idea format -allowDefaults (${#files[@]} files)"
+    args+=(-allowDefaults)
+  fi
+  "$bin" "${args[@]}" "${files[@]}" >&2 2>&1
+}
+
 format_java_file() {
   local f="$1"
   [[ -f "$f" ]] || return 0
@@ -367,6 +486,15 @@ check_java_file() {
 run_java_fix() {
   local list="$1"
   [[ -s "$list" ]] || return 0
+  # PostToolUse（单文件）只记录缓存，不格式化：IDEA format 按批跑，统一延迟到
+  # PostToolBatch / Stop，避免每个文件各启一次 JVM。
+  [[ "$EVENT" == "PostToolUse" ]] && return 0
+
+  if idea_format_available; then
+    run_idea_format_batch < "$list" || true
+    return 0
+  fi
+
   while IFS= read -r f; do
     [[ -n "$f" ]] && format_java_file "$f" || true
   done < "$list"
@@ -375,6 +503,11 @@ run_java_fix() {
 run_java_check() {
   local list="$1"
   [[ -s "$list" ]] || return 0
+  # IDEA 已在本轮 fix 阶段幂等格式化：format 成功即视为通过
+  if idea_format_available; then
+    return 0
+  fi
+
   local err=""
   while IFS= read -r f; do
     [[ -z "$f" ]] && continue

@@ -2,7 +2,7 @@
 
 > [\_shared.md](../_shared.md) · [conventions.md](../conventions.md)
 
-生成 `{Entity}PO.java`。参考 `SysCompanyPO.java`：`extends BasePO` + `@Data` + `@EqualsAndHashCode(callSuper = true)` + `@TableName`/`@TableId`/`@TableField`。
+生成 `{Entity}PO.java`。参考 `guava-entity-starter` 的 `SysUserPO.java`：`extends BasePO` + `@Data` + `@EqualsAndHashCode(callSuper = true)` + `@TableName`/`@TableId`/`@TableField`。
 DB 驱动生成（`code-from-db`）的补充说明见 [../../code-from-db/backend-entity.md](../../code-from-db/backend-entity.md)。
 
 ## 生成流程（实体缺失时必做，避免编译失败）
@@ -19,7 +19,7 @@ ServiceImpl 引用了 `{Entity}PO`，实体缺失会导致生成的 Controller/S
 
 | 现有 PO 位置 | package |
 |-------------|---------|
-| `guava-entity-starter`（`SysCompanyPO` / `SysBizConfPO`，默认） | `com.guava.entity.po` |
+| `guava-entity-starter`（`SysUserPO` / `SysDeptPO`，默认） | `com.guava.entity.po` |
 | 模块内 `guava-{module}-starter`（`SysNoticePO`） | `com.guava.{module}.model.po` |
 
 ## 模板
@@ -36,34 +36,35 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * <p>{表注释}（{表名}）po实体类</p>
- * @author: {git user.name} <{git user.email}>
- * @created: {YYYY-MM-DD}
- * @version v1.0.1
+ * <p>{表注释}({表名}) po实体类</p>
+ *
+ * @author {git user.name} <{git user.email}>
+ * @since {yyyy/M/d}
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("{表名}")
 public class {Entity}PO extends BasePO
 {
-  /**
-   * 主键ID
-   */
-  @TableId(value = "id", type = IdType.AUTO)
-  private Long id;
+    /**
+     * 编号
+     */
+    @TableId(value = "id", type = IdType.AUTO)
+    private Long id;
+    /**
+     * {字段注释}
+     */
+    @TableField("{列名}")
+    private {JavaType} {camelField};
+    // ...每列一条
 
-  /**
-   * {字段注释}
-   */
-  @TableField("{列名}")
-  private {JavaType} {camelField};
-  // ...每列一条
-
-  public {Entity}PO()
-  {
-  }
+    public {Entity}PO()
+    {
+    }
 }
 ```
+
+> 字段之间**不空行**（对齐 SysUserPO）；有 `java.time.*` 字段时 import 放在 lombok 分组之后、空行之前。
 
 ## 字段来源与 Java 类型映射
 
@@ -89,5 +90,5 @@ Guava 类型兜底（无 MCP 时）：`text`/`textarea` → `String`；`dic` →
 
 - PO 继承 `BasePO`（`com.guava.component.model.BasePO`），审计字段（`create_by`/`create_time`/`last_update_by`/`last_update_time`/`del_flag`/`status`/`version`）由基类承载，本表**不重复声明**（除非基类没有）。
 - 主键统一 `@TableId(value = "id", type = IdType.AUTO)` + `private Long id`。
-- 类头 Javadoc 用 `@author:` / `@created:` / `@version v1.0.1`（区别于 Controller/Service 的 `@since`）。
-- 覆盖策略：已存在时保留原 `@created`，仅补充缺失字段；禁止无脑覆盖。
+- 类头 Javadoc：`<p>{表注释}({表名}) po实体类</p>` + `@author` + `@since {yyyy/M/d}`（与 Controller/Service 一致）。
+- 覆盖策略：已存在时保留原 `@since`，仅补充缺失字段；禁止无脑覆盖。

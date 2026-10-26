@@ -1,0 +1,407 @@
+{
+  "generatedAt": "2026-10-26T01:45:59.312Z",
+  "source": {
+    "repo": "guava-pro",
+    "module": "guava-parent-starter",
+    "catalog": "gradle/libs.versions.toml",
+    "build": "build.gradle.kts",
+    "parentVersion": "1.0.2-RELEASE"
+  },
+  "categories": [
+    "Spring 官方 BOM",
+    "Spring Boot",
+    "Spring Cloud",
+    "OpenFeign",
+    "Database",
+    "Redis",
+    "Alibaba Cloud",
+    "Seata",
+    "JWT",
+    "Jackson",
+    "Hutool",
+    "EasyExcel",
+    "Caffeine",
+    "Quartz",
+    "Jasypt",
+    "Logback",
+    "Logstash",
+    "SpringDoc",
+    "Apache Commons",
+    "HttpClient5",
+    "Bouncy Castle",
+    "File Upload",
+    "Google Guava",
+    "POI"
+  ],
+  "count": 46,
+  "dependencies": [
+    {
+      "name": "spring-boot-dependencies",
+      "group": "org.springframework.boot",
+      "artifact": "spring-boot-dependencies",
+      "version": "3.5.14",
+      "versionRef": "spring-boot",
+      "category": "Spring 官方 BOM"
+    },
+    {
+      "name": "spring-cloud-dependencies",
+      "group": "org.springframework.cloud",
+      "artifact": "spring-cloud-dependencies",
+      "version": "2025.0.0",
+      "versionRef": "spring-cloud",
+      "category": "Spring 官方 BOM"
+    },
+    {
+      "name": "spring-boot-starter",
+      "group": "org.springframework.boot",
+      "artifact": "spring-boot-starter",
+      "version": null,
+      "versionRef": null,
+      "category": "Spring Boot"
+    },
+    {
+      "name": "spring-boot-starter-web",
+      "group": "org.springframework.boot",
+      "artifact": "spring-boot-starter-web",
+      "version": null,
+      "versionRef": null,
+      "category": "Spring Boot"
+    },
+    {
+      "name": "spring-boot-starter-webflux",
+      "group": "org.springframework.boot",
+      "artifact": "spring-boot-starter-webflux",
+      "version": null,
+      "versionRef": null,
+      "category": "Spring Boot"
+    },
+    {
+      "name": "spring-boot-starter-aop",
+      "group": "org.springframework.boot",
+      "artifact": "spring-boot-starter-aop",
+      "version": null,
+      "versionRef": null,
+      "category": "Spring Boot"
+    },
+    {
+      "name": "spring-boot-starter-actuator",
+      "group": "org.springframework.boot",
+      "artifact": "spring-boot-starter-actuator",
+      "version": null,
+      "versionRef": null,
+      "category": "Spring Boot"
+    },
+    {
+      "name": "spring-boot-starter-validation",
+      "group": "org.springframework.boot",
+      "artifact": "spring-boot-starter-validation",
+      "version": null,
+      "versionRef": null,
+      "category": "Spring Boot"
+    },
+    {
+      "name": "spring-boot-starter-cache",
+      "group": "org.springframework.boot",
+      "artifact": "spring-boot-starter-cache",
+      "version": null,
+      "versionRef": null,
+      "category": "Spring Boot"
+    },
+    {
+      "name": "spring-boot-starter-data-redis",
+      "group": "org.springframework.boot",
+      "artifact": "spring-boot-starter-data-redis",
+      "version": null,
+      "versionRef": null,
+      "category": "Spring Boot"
+    },
+    {
+      "name": "spring-cloud-loadbalancer",
+      "group": "org.springframework.cloud",
+      "artifact": "spring-cloud-loadbalancer",
+      "version": null,
+      "versionRef": null,
+      "category": "Spring Cloud"
+    },
+    {
+      "name": "spring-cloud-starter-openfeign",
+      "group": "org.springframework.cloud",
+      "artifact": "spring-cloud-starter-openfeign",
+      "version": null,
+      "versionRef": null,
+      "category": "Spring Cloud"
+    },
+    {
+      "name": "spring-cloud-starter-circuitbreaker-resilience4j",
+      "group": "org.springframework.cloud",
+      "artifact": "spring-cloud-starter-circuitbreaker-resilience4j",
+      "version": null,
+      "versionRef": null,
+      "category": "Spring Cloud"
+    },
+    {
+      "name": "feign-okhttp",
+      "group": "io.github.openfeign",
+      "artifact": "feign-okhttp",
+      "version": null,
+      "versionRef": null,
+      "category": "OpenFeign"
+    },
+    {
+      "name": "feign-hc5",
+      "group": "io.github.openfeign",
+      "artifact": "feign-hc5",
+      "version": null,
+      "versionRef": null,
+      "category": "OpenFeign"
+    },
+    {
+      "name": "mysql-connector-j",
+      "group": "com.mysql",
+      "artifact": "mysql-connector-j",
+      "version": "9.3.0",
+      "versionRef": "mysql",
+      "category": "Database"
+    },
+    {
+      "name": "mybatis-plus-spring-boot3-starter",
+      "group": "com.baomidou",
+      "artifact": "mybatis-plus-spring-boot3-starter",
+      "version": "3.5.16",
+      "versionRef": "mybatis-plus",
+      "category": "Database"
+    },
+    {
+      "name": "mybatis-plus-jsqlparser",
+      "group": "com.baomidou",
+      "artifact": "mybatis-plus-jsqlparser",
+      "version": "3.5.16",
+      "versionRef": "mybatis-plus",
+      "category": "Database"
+    },
+    {
+      "name": "velocity-engine-core",
+      "group": "org.apache.velocity",
+      "artifact": "velocity-engine-core",
+      "version": "2.3",
+      "versionRef": "velocity",
+      "category": "Database"
+    },
+    {
+      "name": "commons-pool2",
+      "group": "org.apache.commons",
+      "artifact": "commons-pool2",
+      "version": "2.12.0",
+      "versionRef": "commons-pool2",
+      "category": "Redis"
+    },
+    {
+      "name": "nacos-config",
+      "group": "com.alibaba.cloud",
+      "artifact": "spring-cloud-starter-alibaba-nacos-config",
+      "version": "2025.0.0.0",
+      "versionRef": "nacos",
+      "category": "Alibaba Cloud"
+    },
+    {
+      "name": "nacos-discovery",
+      "group": "com.alibaba.cloud",
+      "artifact": "spring-cloud-starter-alibaba-nacos-discovery",
+      "version": "2025.0.0.0",
+      "versionRef": "nacos",
+      "category": "Alibaba Cloud"
+    },
+    {
+      "name": "sentinel-starter",
+      "group": "com.alibaba.cloud",
+      "artifact": "spring-cloud-starter-alibaba-sentinel",
+      "version": "2025.0.0.0",
+      "versionRef": "sentinel",
+      "category": "Alibaba Cloud"
+    },
+    {
+      "name": "seata-spring-boot-starter",
+      "group": "io.seata",
+      "artifact": "seata-spring-boot-starter",
+      "version": "2.0.0",
+      "versionRef": "seata",
+      "category": "Seata"
+    },
+    {
+      "name": "jjwt-api",
+      "group": "io.jsonwebtoken",
+      "artifact": "jjwt-api",
+      "version": "0.13.0",
+      "versionRef": "jwt",
+      "category": "JWT"
+    },
+    {
+      "name": "jjwt-impl",
+      "group": "io.jsonwebtoken",
+      "artifact": "jjwt-impl",
+      "version": "0.13.0",
+      "versionRef": "jwt",
+      "category": "JWT"
+    },
+    {
+      "name": "jjwt-jackson",
+      "group": "io.jsonwebtoken",
+      "artifact": "jjwt-jackson",
+      "version": "0.13.0",
+      "versionRef": "jwt",
+      "category": "JWT"
+    },
+    {
+      "name": "jackson-databind",
+      "group": "com.fasterxml.jackson.core",
+      "artifact": "jackson-databind",
+      "version": null,
+      "versionRef": null,
+      "category": "Jackson"
+    },
+    {
+      "name": "hutool-all",
+      "group": "cn.hutool",
+      "artifact": "hutool-all",
+      "version": "5.8.46",
+      "versionRef": "hutool",
+      "category": "Hutool"
+    },
+    {
+      "name": "easyexcel",
+      "group": "com.alibaba",
+      "artifact": "easyexcel",
+      "version": "4.0.3",
+      "versionRef": "easyexcel",
+      "category": "EasyExcel"
+    },
+    {
+      "name": "caffeine",
+      "group": "com.github.ben-manes.caffeine",
+      "artifact": "caffeine",
+      "version": null,
+      "versionRef": null,
+      "category": "Caffeine"
+    },
+    {
+      "name": "quartz",
+      "group": "org.quartz-scheduler",
+      "artifact": "quartz",
+      "version": "2.5.0",
+      "versionRef": "quartz",
+      "category": "Quartz"
+    },
+    {
+      "name": "jasypt-spring-boot-starter",
+      "group": "com.github.ulisesbocchio",
+      "artifact": "jasypt-spring-boot-starter",
+      "version": "3.0.5",
+      "versionRef": "jasypt",
+      "category": "Jasypt"
+    },
+    {
+      "name": "logback-core",
+      "group": "ch.qos.logback",
+      "artifact": "logback-core",
+      "version": "1.5.25",
+      "versionRef": "logback",
+      "category": "Logback"
+    },
+    {
+      "name": "logback-classic",
+      "group": "ch.qos.logback",
+      "artifact": "logback-classic",
+      "version": "1.5.25",
+      "versionRef": "logback",
+      "category": "Logback"
+    },
+    {
+      "name": "logstash-logback-encoder",
+      "group": "net.logstash.logback",
+      "artifact": "logstash-logback-encoder",
+      "version": "8.0",
+      "versionRef": "logstash-encoder",
+      "category": "Logstash"
+    },
+    {
+      "name": "springdoc-openapi-starter-webmvc-ui",
+      "group": "org.springdoc",
+      "artifact": "springdoc-openapi-starter-webmvc-ui",
+      "version": "2.8.8",
+      "versionRef": "springdoc",
+      "category": "SpringDoc"
+    },
+    {
+      "name": "commons-lang3",
+      "group": "org.apache.commons",
+      "artifact": "commons-lang3",
+      "version": "3.18.0",
+      "versionRef": "commons-lang3",
+      "category": "Apache Commons"
+    },
+    {
+      "name": "commons-beanutils",
+      "group": "commons-beanutils",
+      "artifact": "commons-beanutils",
+      "version": "1.11.0",
+      "versionRef": "commons-beanutils",
+      "category": "Apache Commons"
+    },
+    {
+      "name": "commons-collections4",
+      "group": "org.apache.commons",
+      "artifact": "commons-collections4",
+      "version": "4.4",
+      "versionRef": "commons-collections",
+      "category": "Apache Commons"
+    },
+    {
+      "name": "commons-compress",
+      "group": "org.apache.commons",
+      "artifact": "commons-compress",
+      "version": "1.28.0",
+      "versionRef": "commons-compress",
+      "category": "Apache Commons"
+    },
+    {
+      "name": "httpclient5",
+      "group": "org.apache.httpcomponents.client5",
+      "artifact": "httpclient5",
+      "version": "5.4.3",
+      "versionRef": "httpclient5",
+      "category": "HttpClient5"
+    },
+    {
+      "name": "bcprov-jdk18on",
+      "group": "org.bouncycastle",
+      "artifact": "bcprov-jdk18on",
+      "version": "1.84",
+      "versionRef": "bcprov",
+      "category": "Bouncy Castle"
+    },
+    {
+      "name": "commons-fileupload",
+      "group": "commons-fileupload",
+      "artifact": "commons-fileupload",
+      "version": "1.6.0",
+      "versionRef": "fileupload",
+      "category": "File Upload"
+    },
+    {
+      "name": "guava",
+      "group": "com.google.guava",
+      "artifact": "guava",
+      "version": "33.4.8-jre",
+      "versionRef": "guava",
+      "category": "Google Guava"
+    },
+    {
+      "name": "poi-ooxml",
+      "group": "org.apache.poi",
+      "artifact": "poi-ooxml",
+      "version": "5.4.1",
+      "versionRef": "poi",
+      "category": "POI"
+    }
+  ]
+}

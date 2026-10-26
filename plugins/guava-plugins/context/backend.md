@@ -49,4 +49,8 @@ mvn spotless:apply          # 若项目已配 spotless
 
 ## 生成后 hook
 
-`hooks/lint-fix.sh` 对 `.java`：`google-java-format -i` 或 `mvn spotless:apply`（见 `GUAVA_JAVA_FORMAT`）。
+`hooks/lint-fix.sh` 对 `.java` 走 **IDEA headless format**（按批执行）；细节见 `skills/code-backend/SKILL.md` Step 7 与 `${CLAUDE_PLUGIN_ROOT}/hooks/lint-fix.sh`。
+
+## guava-backend MCP
+
+写代码前必查（工具表、查询预算、**框架优先**原则）见 `skills/code-backend/SKILL.md` Step 0；快照由作者机 `node mcp/generate-backend.mjs` 刷新。

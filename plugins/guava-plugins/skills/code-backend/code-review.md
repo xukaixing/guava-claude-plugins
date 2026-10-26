@@ -15,9 +15,12 @@
 - [ ] 包路径、类名、方法名、`RequestMapping` 符合 conventions；与前端 `paths` 对齐
 - [ ] 类注解、`@Resource` 注入、HTTP 方法/参数/返回类型符合约定
 - [ ] 写操作有 `@MarkLog`；查询走 `MyUtil.getConditionsWhere` 标准模式
-- [ ] Javadoc 类头 + 方法注释（`@param:` / `@return:` / `@since:`）；覆盖保留原 `@since`
+- [ ] Javadoc 类头 + 方法注释（`<p>描述</p>` + 标准 `@param` / `@return` / `@since yyyy/M/d`）；覆盖保留原 `@since`；声明 `throws` 的方法必配 `@throws 中文说明`
 - [ ] 大括号换行、4 空格、`jakarta.annotation.Resource`；JDK/编译等级 ≥ 25
+- [ ] ServiceImpl 工具方法已 static import（`isNotEmpty` / `isEmpty` / `getConditionsWhere` / `getValue`），HashMap 用 `HashMap.newHashMap(16)`
+- [ ] 接口 `throws IOException` 的实现方法按实际收窄（无受检异常则不写 `throws`、无 `IOException` import）
 - [ ] 未重复生成已有端点；仅补充缺失方法
+- [ ] 工具/常量/翻译/校验等能力均复用 entity / component / platform 框架现成类（未自造等价实现）；用前已 `search_platform_classes` 核对签名
 
 ## 2. 代码安全
 

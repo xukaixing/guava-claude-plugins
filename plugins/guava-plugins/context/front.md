@@ -40,4 +40,4 @@ pnpm stylelint --fix <改动文件...>   # 仅改动样式文件（*.css/*.scss/
 - `--fix` 能自动修的全部修掉；无法自动修复的报错必须手动修复（**禁止** `--no-error-on-unmatched-pattern` 之类跳过检查）
 - 若报错来自本次未改动的历史文件，不要顺手大改，如实告知用户
 - 多文件时可并行执行；最后重新跑一次（`prettier --check` + `eslint` + `stylelint`）确认无剩余 error
-- 后端 `.java`：`mvn spotless:apply` / `google-java-format -i` + `mvn compile`（见 backend.md）
+- 后端 `.java`：IDEA headless format（hook 自动按批执行，见 backend.md）

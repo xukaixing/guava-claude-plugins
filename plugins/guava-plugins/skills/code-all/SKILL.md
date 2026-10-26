@@ -3,27 +3,36 @@ name: code-all
 description: >
   Full-stack from src/pages/*.md: Phase A code-frontend then Phase B code-backend.
   Invoke /guava-plugins:code-all. Read config-bridge.md + phase SKILLs.
+  由 guava-codegen 以两个独立 subagent 串行执行，勿与其他端 skill 混载。
 disable-model-invocation: true
 ---
 
-# code-all
+# code-all（编排）
 
-> [config-bridge.md](config-bridge.md) · Phase A [../code-frontend/SKILL.md](../code-frontend/SKILL.md) + [code-review](../code-frontend/code-review.md) · Phase B [../code-backend/SKILL.md](../code-backend/SKILL.md) + [code-review](../code-backend/code-review.md)
+> [config-bridge.md](config-bridge.md) · Phase A [../code-frontend/SKILL.md](../code-frontend/SKILL.md) · Phase B [../code-backend/SKILL.md](../code-backend/SKILL.md)
 
-**顺序固定**：先前端（ses-web）→ 再后端（`GUAVA_BACKEND_ROOT`）。**不做** git、不改路由。各 Phase 内部按对应 SKILL 并发 Write。
+**纯编排文档**：本 skill 自身不执行生成，由 `guava-codegen` agent 按上表拆成 **两个独立 subagent 串行执行**（先前端后后端），上下文互不加载，省 token 防串味。
 
-## 流程
+**顺序固定**：Phase A 前端（`${CLAUDE_PROJECT_DIR}`）→ Phase B 后端（`GUAVA_BACKEND_ROOT`）。**不做** git、不改路由。
 
-1. Read `src/pages/<config>.md` + [config-bridge.md](config-bridge.md) 推导前后端参数
-2. Read [../../context/front.md](../../context/front.md)（仅 Phase A 所需段落）
-3. **Phase A — code-frontend**：严格按 [../code-frontend/SKILL.md](../code-frontend/SKILL.md) Write 本仓库文件（Vue 前用插件 MCP 查 Gv*）
-4. **Phase A 代码检查**：按 [../code-frontend/SKILL.md](../code-frontend/SKILL.md) Step 7 速查（可疑才深读 [code-review.md](../code-frontend/code-review.md)）；Critical 修复后再进入 Phase B
-5. Read [../../context/backend.md](../../context/backend.md) + `GUAVA_BACKEND_ROOT`
-6. **Phase B — code-backend**：严格按 [../code-backend/SKILL.md](../code-backend/SKILL.md) Write 后端文件
-7. **Phase B 代码检查**：按 [../code-backend/SKILL.md](../code-backend/SKILL.md) Step 6 速查（可疑才深读 [code-review.md](../code-backend/code-review.md)）；Critical 须修复
-8. 对齐检查：`apiBase`/`paths`/`field` 与前端 API 一致（见 config-bridge）
-9. 汇总简报（前端三检 + 后端三检 + 对齐）· hooks lint 无报错（front eslint + prettier + back java format）
+## Phase A — 前端 subagent
 
-## 中断规则
+- prompt：按 [guava-codegen Step 3](../agents/guava-codegen.md) 前端模板，传入 md 路径
+- 返回：写入文件清单 + 三检简报 + **对齐参数**（`apiBase` / `paths.*` / 查询表 `field` / YAML `backend` 块或推导值）
 
-Phase A 未完成（含前端三检 Critical 未清）不进入 Phase B。Phase B 缺 `backend.module` 等必填项时 Interactive 确认，不猜测路径。
+## Phase B — 后端 subagent
+
+- 前置：按 [config-bridge.md](config-bridge.md) 用 Phase A 返回推导 `module` / `package` / `feature` / `entity`（Interactive 可覆写）；缺必填项**先问用户**
+- prompt：按 [guava-codegen Step 3](../agents/guava-codegen.md) 后端模板，带入 Phase A 对齐参数
+- 返回：写入文件清单（相对 `GUAVA_BACKEND_ROOT`）+ 三检简报
+
+## 编排规则（guava-codegen 执行）
+
+1. Phase A 未完成（含前端三检 Critical 未清）不进入 Phase B。
+2. Phase B 缺 `backend.module` 等必填项时 Interactive 确认，不猜测路径。
+3. 汇总：前端三检 + 后端三检 + 对齐核对（`apiBase`/`RequestMapping`、`paths`/端点、`field`/查询条件）。
+4. hooks lint 无报错（front eslint + prettier + back IDEA java format）。
+
+## 覆盖策略与桥接细节
+
+见 [config-bridge.md](config-bridge.md)（前后端参数推导、CRUD 对齐、输出清单）。

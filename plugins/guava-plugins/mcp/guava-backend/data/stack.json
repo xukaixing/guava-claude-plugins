@@ -1,0 +1,84 @@
+{
+  "generatedAt": "2026-10-26T01:45:59.314Z",
+  "source": {
+    "repo": "guava-pro",
+    "proRoot": "/Users/andyhsu/Workspace/guava/guava-pro"
+  },
+  "layers": [
+    {
+      "layer": 1,
+      "title": "BOM（依赖 + 版本）",
+      "modules": [
+        {
+          "name": "guava-parent-starter",
+          "group": "com.guava",
+          "version": "1.0.2-RELEASE",
+          "role": "BOM：全量依赖与版本管理（java-platform），下游所有 starter 的依赖基准",
+          "guavaDependencies": []
+        }
+      ]
+    },
+    {
+      "layer": 2,
+      "title": "基础组件层",
+      "modules": [
+        {
+          "name": "guava-component-starter",
+          "group": "com.guava",
+          "version": "1.0.4-RELEASE",
+          "role": "基础组件层：com.guava.component.*（BasePO / Map2ObjUtil / 常量 / 工具），BOM 引 parent-starter",
+          "guavaDependencies": []
+        }
+      ]
+    },
+    {
+      "layer": 3,
+      "title": "实体层",
+      "modules": [
+        {
+          "name": "guava-entity-starter",
+          "group": "com.guava",
+          "version": "1.1.5-RELEASE",
+          "role": "实体层：com.guava.entity.po / dto / vo，依赖 component-starter，BOM 引 parent-starter",
+          "guavaDependencies": [
+            "guava-parent-starter",
+            "guava-component-starter"
+          ]
+        }
+      ]
+    },
+    {
+      "layer": 4,
+      "title": "底层框架层",
+      "modules": [
+        {
+          "name": "guava-platform-starter",
+          "group": "com.guava",
+          "version": "1.1.7-RELEASE",
+          "role": "底层框架：com.guava.platform.*（注解 / 异常 / 工具 / 上下文 / 翻译 / Excel / Redis 客户端），依赖 entity-starter + component-starter，BOM 引 parent-starter",
+          "guavaDependencies": [
+            "guava-parent-starter",
+            "guava-component-starter"
+          ]
+        }
+      ]
+    },
+    {
+      "layer": 5,
+      "title": "业务工程",
+      "modules": [
+        {
+          "name": "guava-admin-starter",
+          "group": "com.guava",
+          "version": "1.0.0-RELEASE",
+          "role": "业务工程示例：controller / service / repository（生成的目标形态参考）",
+          "guavaDependencies": [
+            "guava-parent",
+            "guava-entity",
+            "guava-platform"
+          ]
+        }
+      ]
+    }
+  ]
+}

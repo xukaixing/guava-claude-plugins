@@ -102,38 +102,38 @@ public IPage<Map<String, Object>> findXxx(@RequestBody String params)
 
 ## Javadoc 规范
 
-对齐 `guava-gateway-starter`（类头 + 方法注释）。author / 时间取自 `git config` 与当前系统时间。
+对齐 `guava-admin-starter` 的 `SysUser*` 系列（IDEA 保存格式化产物）。author / 时间取自 `git config` 与当前系统时间。
 
-### 类头（Controller / Service / ServiceImpl）
+### 类头（Controller / Service / ServiceImpl / PO）
 
 ```java
 /**
- * {中文标题}
- * <p>{中文描述} </p>
+ * <p>系统用户控制器</p>
  *
- * @author {git user.name} <{git user.email}>
- * @since {M/d/yy}
+ * @author Andy Xu <xukaixing@hotmail.com>
+ * @since 2026/10/26
  */
 ```
 
-- `@since` 格式如 `7/17/26`；新建写入，覆盖时**保留**原 `@since`
-- 可多行 `@author`（与 gateway 一致）
+- 描述包 `<p>...</p>`；`@since` 格式 `yyyy/M/d`；新建写入，覆盖时**保留**原 `@since`
 
-### 方法注释（Controller / ServiceImpl 每个 public 方法）
+### 方法注释（Controller / Service / ServiceImpl 每个 public 方法，私有方法同样）
 
 ```java
 /**
- * 查询业务参数配置表信息
- * @param: params
- * @return: com.baomidou.mybatisplus.core.metadata.IPage<java.util.Map<java.lang.String, java.lang.Object>>
- * @since: 7/5/26
+ * <p>查询用户信息</p>
+ *
+ * @param params
+ * @return com.baomidou.mybatisplus.core.metadata.IPage<java.util.Map<java.lang.String,java.lang.Object>>
+ * @since 2026/10/26
  */
 ```
 
-- 首行纯中文描述，**不要**包 `<p>`
-- 使用 `@param:` / `@return:` / `@since:`（冒号后空格），**不要**用标准 `@param` / `@return`
-- `@since:` 格式如 `7/5/26`；覆盖已有方法时**保留**原 `@since:`
-- Service 接口方法可用简短首行描述，可省略 `@param:` / `@return:`
+- 首行 `<p>中文描述</p>`，后空一行
+- 使用标准 `@param` / `@return` / `@since`（**不要** `@param:` 冒号风格）
+- `@return` 写全限定类型，泛型内无空格（`java.lang.String,java.lang.Object`）
+- 方法签名声明了 `throws XxxException` 时，必配 `@throws XxxException 中文说明`（置于 `@return` 之后、`@since` 之前），如 `@throws IOException 写入响应流失败时抛出`
+- `@since` 格式 `yyyy/M/d`；覆盖已有方法时**保留**原 `@since`
 
 Swagger 方法注解：
 
@@ -143,14 +143,24 @@ Swagger 方法注解：
 
 ## 常用工具类
 
-| 类 | 用途 |
-|----|------|
-| `MyUtil.getConditionsWhere(params, page)` | 解析前端查询 JSON → SQL WHERE |
-| `MyUtil.getValue(obj)` | 安全取值转 String |
-| `Map2ObjUtil.toObject(param, XxxPO.class)` | Map → PO |
-| `AssertMyUtil.notNull / notEmpty / errMsg` | 参数校验、业务异常 |
-| `transResultService.transResult(data, transHash)` | 字典/日期/用户翻译 |
-| `ContextHolder.getDeptId()` | 当前登录用户部门 |
+**优先复用三层框架（entity / component / platform）已提供的能力，不自造等价实现。** 用前先 `guava-backend` MCP `search_platform_classes` 确认类与方法签名：
+
+| 层 | 类 | 用途 |
+|----|----|------|
+| platform | `MyUtil.getConditionsWhere(params, page)` | 解析前端查询 JSON → SQL WHERE |
+| platform | `MyUtil.getValue(obj)` | 安全取值转 String |
+| platform | `AssertMyUtil.notNull / notEmpty / errMsg` | 参数校验、业务异常 |
+| platform | `BizCode` | 业务错误码（禁止自定义异常码） |
+| platform | `MarkLog` | 操作日志注解 |
+| platform | `transResultService.transResult(data, transHash)` | 字典/日期/用户翻译 |
+| platform | `excelApiService` | 导出表头解析 + Excel 写出 |
+| platform | `ContextHolder.getDeptId()` | 当前登录用户部门 |
+| platform | `StrMyUtil` / `LangMyUtil` / `ArrayMyUtil` | 占位符 / i18n / 数组工具 |
+| platform | `RedisMyClient` | Redis 读写 |
+| component | `Map2ObjUtil.toObject(param, XxxPO.class)` | Map → PO |
+| component | `PasswordUtils` / `PasswordEncoder` | 密码盐值与加密 |
+| component | `DicConstant` / `FormatConstant` / `RedisConstant` | 字典值 / 日期格式 / Redis key 常量 |
+| entity | `BasePO` / `XxxPO.toMaps()` | PO 基类 / PO 转 Map |
 
 ## 环境 / 编译
 
@@ -159,11 +169,20 @@ Swagger 方法注解：
 
 ## 代码风格
 
-- 类名大括号换行：`public class XxxController\n{`
+对齐 `guava-admin-starter` 的 `SysUser*` 系列（IDEA 保存格式化产物）：
+
+- 类 / 方法大括号换行：`public class XxxController\n{`
 - 4 空格缩进
+- import 分组顺序：三方库（cn.hutool / com.baomidou / com.guava.* / io.swagger）→ jakarta → lombok → org.springframework → 空行 → java.*
 - 返回类型用 `Map<String, Object>`，列表用 `IPage<Map<String, Object>>`
 - import `jakarta.annotation.Resource`（非 javax）
+- Controller 内 service 字段不加 `private`（`SysUserService sysUserService;`）；ServiceImpl 内 mapper 字段加 `private`
+- 注入字段上方单行注释 `/** 系统用户mapper */`
 - PO 转 Map：`xxxPO.toMaps()`
+- **JDK 25 惯用法**：新建 HashMap 用 `HashMap.newHashMap(16)`，不用 `new HashMap<>()`；Map/POJO 判空用 `isEmpty(...)`（static import `com.baomidou.mybatisplus.core.toolkit.ObjectUtils.isEmpty`），字符串判空用 `isNotEmpty(...)`（static import `cn.hutool.core.text.CharSequenceUtil.isNotEmpty`）
+- ServiceImpl 高频工具方法 static import（置于 java.\* 分组之后）：
+  `cn.hutool.core.text.CharSequenceUtil.isNotEmpty`、`com.baomidou.mybatisplus.core.toolkit.ObjectUtils.isEmpty`、`com.guava.platform.utils.common.MyUtil.getConditionsWhere`、`com.guava.platform.utils.common.MyUtil.getValue`
+- **throws 收窄**：接口方法声明 `throws IOException` 时，实现方法只在确实抛出该异常时保留 `throws`；未保留时同时去掉 `java.io.IOException` import（参考 `exportUserData` 实现）
 
 ## API 复用规则
 

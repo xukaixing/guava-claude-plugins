@@ -9,8 +9,19 @@
 | `/guava-plugins:code-frontend` | 页面生成流程 |
 | MCP `guava-ui` | 目录 / el→Gv / page recipe |
 | MCP `gv-form` / `gv-table` / … | 单组件用法（`usage.json`）+ props（消费项目 `guava-ui`） |
+| `/guava-plugins:code-backend` | Java 生成流程（模板对齐 SysUser* 参考） |
+| MCP `guava-backend` | 模块分层 / BOM 依赖+版本 / 平台类索引（见 [guava-backend/README.md](guava-backend/README.md)） |
 
-Skill 要求：写 Vue template 前先调 MCP。
+Skill 要求：写 Vue template 前先调 MCP；写 Java 前先 `guava-backend` → `get_stack`，用工具类前 `search_platform_classes`。
+
+## 后端知识（guava-backend）
+
+数据源为 `guava-parent-starter`（依赖 + 版本）与 `guava-platform-starter`（底层框架，依赖 entity-starter / component-starter）的 vendored 快照（`guava-backend/data/*.json`）。作者机刷新：
+
+```bash
+cd plugins/guava-plugins
+node mcp/generate-backend.mjs /path/to/guava-pro   # 或 GUAVA_PRO_ROOT
+```
 
 ## MySQL 表结构（mysql-schema）
 

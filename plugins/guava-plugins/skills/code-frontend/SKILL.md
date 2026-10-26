@@ -4,6 +4,7 @@ description: >
   Frontend: Vue 3 + Guava UI. Config from custom path or src/pages/*.md.
   Prefer Gv* via plugin MCP (guava-ui / gv-form / gv-table…); use el-* only if no Gv* wrapper.
   Invoke /guava-plugins:code-frontend <path>. Read context/front.md + this SKILL. No routes/git.
+  由 guava-codegen 以独立 subagent 执行，勿与其他端 skill 混载。
 disable-model-invocation: true
 ---
 
