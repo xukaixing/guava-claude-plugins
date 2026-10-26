@@ -7,18 +7,14 @@
 
 ## 视觉稿格式（推荐）
 
-解析规则见 [config-parser.md](config-parser.md#1-视觉稿格式推荐)。要点：小节可带 `- 描述` 后缀、`---` 分隔线忽略、表格 7 列、操作列行内 `action:` 声明优先、编辑子区带（GvForm）/（GvDescriptions）注解、无 `api` 块默认 `frontendOnly: true`。
+解析规则见 [config-parser.md](config-parser.md#1-视觉稿格式推荐)。要点：小节可带 `- 描述` 后缀、`---` 分隔线忽略、表格不写分隔行且行尾空单元格可裁剪、操作列行内 `action:` 声明（设计器导出不再双写 `### 操作列` 小节）、编辑子区带（GvForm）/（GvDescriptions）注解、无 `api` 块默认 `frontendOnly: true`、frontmatter 默认值可省略（`layout: module` / `i18n: false` / `editPage: true` / `infoPage: false` / `frontendOnly: true`）。
 
 ```markdown
 ---
 feature: userMng1
 title: 用户管理
 view: sysMng/userMng
-layout: module
-i18n: false
-editPage: true
 infoPage: true
-frontendOnly: true        # 可省略；无 api 块时默认 true
 # pageType 可省略 → 按小节推导：有 ## 表格 = crud-module
 ---
 
@@ -26,32 +22,26 @@ frontendOnly: true        # 可省略；无 api 块时默认 true
 
 ### 布局                  # 可选；纯描述不生成代码；含「GvDrawer/GvDialog」指令时生效
 
-| 名称     | 字段     | 类型 | 校验  | 长度 | 扩展     |
-| -------- | -------- | ---- | ----- | ---- | -------- |
-| 用户姓名 | text_1   | text | isAny | 30   |          |
-| 用户状态 | select_2 | dic  | isDic | 6    | dic=yxzt |
+| 名称 | 字段 | 类型 | 校验 | 长度 | 扩展 |
+| 用户姓名 | text_1 | text | isAny | 30 |
+| 用户状态 | select_2 | dic | isDic | 6 | dic=yxzt |
 
 ## 表格 - 用户信息列表
 
-| 名称     | 字段   | 宽度 | 筛选 | 类型             | 固定 | 扩展                 |
-| -------- | ------ | ---- | ---- | ---------------- | ---- | -------------------- |
-| 操作     |        | 80   |      | action:编辑,编辑 | Y    |                      |
-| 用户姓名 | text_1 | 150  | Y    |                  | Y    |                      |
-| 状态     | text_3 |      | Y    | dic:xb           |      |                      |
-| 金额     | text_4 |      |      |                  |      | amount, align: right |
-| 部门     | text_5 | 200  |      |                  |      | type=tag             |
+| 名称 | 字段 | 宽度 | 筛选 | 类型 | 固定 | 扩展 |
+| 操作 | | 80 | | action:编辑,编辑 | Y |
+| 用户姓名 | text_1 | 150 | Y | | Y |
+| 状态 | text_3 | | Y | dic:xb |
+| 金额 | text_4 | | | | | amount, align: right |
+| 部门 | text_5 | 200 | | | | type=tag |
 
 ### 表格工具栏 - 用户信息列表    # 可选；顿号分隔 → Index 页工具栏按钮
 
 新增、导入、导出
 
-### 操作列 - 用户信息列表        # 可选；表格无 action: 行时生效
+### 操作列规则 - 用户信息列表    # 可选；`按钮名：行为描述` → 占位方法注释
 
-编辑、删除
-
-### 操作列规则 - 用户信息列表    # 可选；`**按钮**：行为描述` → 占位方法注释
-
-- **编辑**：点击后打开「用户信息表单」（Drawer）
+- 编辑：点击后打开「用户信息表单」（Drawer）
 
 ---
 
@@ -63,15 +53,13 @@ frontendOnly: true        # 可省略；无 api 块时默认 true
 
 ### 登录信息（GvDescriptions）    # 只读描述子区 → build<User>LoginInfoHeadList
 
-| 名称   | 字段   | 占用列 | 类型 | 扩展 |
-| ------ | ------ | ------ | ---- | ---- |
-| 文本项 | text_1 | 1      |      |      |
+| 名称 | 字段 | 占用列 | 类型 | 扩展 |
+| 文本项 | text_1 | 1 |
 
 ### 基本信息（GvForm）            # 可编辑子区 → create<User>BasicInfoList（注解省略默认 GvForm）
 
-| 名称     | 字段   | 类型   | 必填 | 校验     | 长度 | 只读 | 占用列 | 扩展                |
-| -------- | ------ | ------ | ---- | -------- | ---- | ---- | ------ | ------------------- |
-| 单行文本 | text_2 | text   | Y    | isAny    | 30   |      | 1      | placeholder: 请输入 |
+| 名称 | 字段 | 类型 | 必填 | 校验 | 长度 | 只读 | 占用列 | 扩展 |
+| 单行文本 | text_2 | text | Y | isAny | 30 | | 1 | placeholder: 请输入 |
 
 ### 按钮                         # Drawer footer；顿号分隔（保存=提交校验+save/update，取消=关闭）
 
@@ -363,7 +351,7 @@ api:
 | `dic:yxzt` | 字典列 |
 | `date:datetime` | 日期列 |
 | `amount` | 金额列（自动右对齐 + `amountFormat`） |
-| `action:编辑,删除` | 操作列（视觉稿格式行内声明，按钮名不去重；优先于 `## 操作列` 小节） |
+| `action:编辑,删除` | 操作列（视觉稿格式行内声明，按钮名不去重；优先于 `## 操作列` 小节，设计器导出不再双写该小节） |
 | `multiHeader`（组名写在「名称」列，字段留空） | 多级表头分组起始行，其后连续带字段行作子列（生成 `multiLabel` + `heads`，见 [helper.md §7.1](templates/helper.md#71-多级表头类型multiheader)）；兼容旧写法 `multi:<分组名>` |
 
 ### 表格「固定 / 扩展」列（视觉稿格式，可选）

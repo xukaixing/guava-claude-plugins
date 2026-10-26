@@ -123,7 +123,7 @@ fallback 查找顺序：
 
 ### Config File Mode
 
-1. 获取配置：**本会话刚 Write 过该 md → 直接用上下文内容，跳过 Read**；否则 Read 配置（YAML + 表）。然后 **格式识别**（视觉稿 / 精简 / 旧版，按小节标题特征与表格列数，[config-parser.md](config-parser.md)）→ `pageType` 省略时按小节推导 → 无 `api` 块（未标 frontendOnly）**默认 `frontendOnly: true`**；记下 YAML **`view`** 原文
+1. 获取配置：**本会话刚 Write 过该 md → 直接用上下文内容，跳过 Read**；否则 Read 配置（YAML + 表）。然后 **格式识别**（识别速查表在 [config-parser.md](config-parser.md) 开头）：视觉稿 → 继续本流程；**精简 / 旧版 → 读 [config-parser-legacy.md](config-parser-legacy.md) 对应章节后按其中规则解析**，其余流程相同 → `pageType` 省略时按小节推导 → 无 `api` 块（未标 frontendOnly）**默认 `frontendOnly: true`**；记下 YAML **`view`** 原文
 2. [config-parser.md](config-parser.md) 推导清单 — **所有 Vue / helper / types / data 路径 = `src/views/<view>/...`**，禁止用 `.md` 路径或 `feature` 当目录
 3. 展示清单时核对：例如 `view: sysMng/userMng2` → 必须出现 `src/views/sysMng/userMng2/`；`frontendOnly: true` → 有 `data.ts`、**无** `src/api`
 4. MCP：`get_page_recipe` + 相关 `gv-*` / `get_gv_component`
@@ -164,7 +164,7 @@ fallback 查找顺序：
 
 ## 3. 配置模板与示例
 
-配置模板（推荐视觉稿格式）：[config-template.md](config-template.md) · 解析规则：[config-parser.md](config-parser.md) · 示例：`src/pages/sysMng/userMng.md`
+配置模板（推荐视觉稿格式）：[config-template.md](config-template.md)（**仅供编写新配置时读，生成流程不读**）· 解析规则：[config-parser.md](config-parser.md)（+ 精简/旧版：[config-parser-legacy.md](config-parser-legacy.md)）· 示例：`src/pages/sysMng/userMng.md`
 
 ---
 

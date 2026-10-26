@@ -2,7 +2,17 @@
 
 读取 `.md` 配置 → 解析 → **自动推导** 路径/方法名/API 名 → 生成代码。
 
-支持：**视觉稿格式（推荐）** + 精简格式 + 旧版格式（兼容）。
+支持：**视觉稿格式（推荐，本文档 §1）** + 精简格式 + 旧版格式（兼容，[config-parser-legacy.md](config-parser-legacy.md)）。
+
+## 格式识别（先识别，再读对应文档）
+
+| 特征 | 格式 | 读哪 |
+| ---- | ---- | ---- |
+| 小节带 `- 描述` 后缀 / `### 布局` / 表格 7 列 / 操作列行内 `action:`；YAML 可省 `pageType` / `api` | 视觉稿 | 本文档 §1 |
+| YAML 含 `pageType` + `api` 块；表格 5 列；`## 操作列` / `## 扩展列` / `## 表格工具栏` 小节 | 精简 | config-parser-legacy.md |
+| YAML 字段为 `featureName` / `viewPath` / `apiModule` / `generateEditPage` | 旧版 | config-parser-legacy.md（字段映射后按精简解析） |
+
+识别出精简 / 旧版 → 停下读 [config-parser-legacy.md](config-parser-legacy.md)，本文档只需保留 §3 自动推导 / §5 校验 / §6 生成顺序。
 
 ---
 
@@ -34,12 +44,9 @@
 feature: userMng1          # 命名/i18n/方法前缀（非目录）
 title: 用户管理
 view: sysMng/userMng       # 唯一决定 src/views/<view>/
-layout: module             # module（默认）| flat
-i18n: false
-editPage: true             # 生成 <Base>Edit.vue
 infoPage: true             # 生成 <Base>Info.vue（## 详情 小节，见 info.md）
-frontendOnly: true         # 可省略：无 api 块时默认 true（1.9）
-# pageType 可省略 → 按小节推导（1.8）
+# 以下默认值可省略：layout: module / i18n: false / editPage: true / infoPage: false / frontendOnly: true
+# pageType 可省略 → 按小节推导（1.8）；无 api 块时默认 frontendOnly: true（1.9）
 ---
 ```
 
@@ -65,7 +72,9 @@ frontendOnly: true         # 可省略：无 api 块时默认 true（1.9）
 
 ### 1.4 表格 7 列
 
-`名称|字段|宽度|筛选|类型|固定|扩展`（后两列可缺省 → 兼容精简格式 5 列）
+`名称|字段|宽度|筛选|类型|固定|扩展`（后两列可缺省 → 兼容精简格式 5 列）。
+
+> 表格**不写 Markdown 分隔行**（`|------|`），行尾空单元格可裁剪 —— 列按表头名定位，与分隔行 / 补齐单元格无关；旧格式带分隔行同样兼容。
 
 | 列 | 取值 | 生成 |
 | ---- | ---- | ---- |
@@ -84,8 +93,8 @@ frontendOnly: true         # 可省略：无 api 块时默认 true（1.9）
 
 - 按钮名按顿号 / 逗号分隔，**原样写入 `content`，不去重**（「编辑、编辑」= 两个按钮）
 - `action` 回调映射：`编辑 → actions.edit<Feature>`、`删除 → actions.delete<Feature>`、`详情 / 查看 → actions.info<Feature>`；其余按钮生成同名占位方法
-- 表格无 `action:` 行 → 回落 `### 操作列` 小节（精简格式逻辑）；两处同时存在**以行内为准**，不校验一致性
-- `### 操作列规则` bullets（如 `**编辑**：点击后打开「用户信息表单」（Drawer）`）→ 非标准动作占位方法的方法体 / JSDoc 注释依据；标准动作用于校验既有行为，不重复生成
+- 表格无 `action:` 行 → 回落 `### 操作列` 小节（精简格式逻辑）；两处同时存在**以行内为准**，不校验一致性；GvAIDesigner 导出已不再双写 `### 操作列`
+- `### 操作列规则` bullets 两种写法等价（`**编辑**：…` 或省 token 的 `编辑：…`）→ 非标准动作占位方法的方法体 / JSDoc 注释依据；标准动作用于校验既有行为，不重复生成
 
 ### 1.6 `### 表格工具栏`
 
@@ -140,160 +149,6 @@ frontendOnly: true         # 可省略：无 api 块时默认 true（1.9）
 
 ---
 
-## 2. 精简格式（兼容）
-
-### 2.1 YAML 头
-
-```yaml
----
-feature: userMng
-title: 用户管理
-view: sysMng/userMng2
-pageType: crud-module
-layout: module
-i18n: false
-editPage: true
-api:
-  module: admin/user
-  base: /sysuser
-  operations:
-    list: /sysuser/findUsers
-    create: /sysuser/saveUser
-    update: /sysuser/updateUser/{id}
-    delete: /sysuser/deleteUser
----
-```
-
-| 字段 | 映射 |
-| ---- | ---- |
-| `feature` | 命名/i18n/方法前缀（**非目录**） |
-| `view` | **唯一**决定 `src/views/<view>/` |
-| `pageType` | `crud-module`（默认）\| `tabs` \| `form-only` \| `free` |
-| `i18n` | `false`（默认）= 仅中文 |
-| `api.operations` | 操作端点 |
-
-### 2.2 frontendOnly
-
-| 项 | 行为 |
-| ---- | ---- |
-| `api` 节点 | 省略 |
-| `src/api/**` | 不生成 |
-| `data.ts` | 必生成 |
-| 列表查询 | `getListResult` / `filterListRecords` |
-
-### 2.3 view = 目录
-
-**`src/views/` 目录 = YAML `view` 原文**。
-
-| 配置 | 正确 | 错误 |
-| ---- | ---- | ---- |
-| `view: sysMng/userMng2` | `src/views/sysMng/userMng2/` | `sysMng/userMng/` |
-
-### 2.4 配置表
-
-**查询** 6 列：`名称|字段|类型|校验|长度|扩展`（校验必填，字段带 `u@`）
-**表格** 5 列：`名称|字段|宽度|筛选|类型`（字段无 `u@`）
-**编辑** 9 列：`名称|字段|类型|必填|校验|长度|只读|占用列|扩展`
-
-### 2.5 表格级声明
-
-| 小节 | 必须 | 说明 |
-| ---- | ---- | ---- |
-| `## 操作列` | ✅ | 逗号分隔按钮名 |
-| `## 扩展列` | | `expand` 或完整配置 |
-| `## 表格工具栏` | | 按钮名 + `import,export` |
-
-### 2.6 扩展列配置
-
-```markdown
-## 扩展列
-expand                # 简写 = type: table
-# 或：
-expand:
-  type: table         # table | custom | both
-  columns:
-    - label: xxx
-      prop: xxx
-  template:           # custom/both 时
-    <div>{scope.row.xxx}</div>
-```
-
-| type | 生成内容 |
-| ---- | -------- |
-| `table` | 子表 `GvTable`（无 ElForm）+ 数据拉取 |
-| `custom` | 自定义 div |
-| `both` | 自定义 div + 子表 |
-
-### 2.7 多分区编辑
-
-`## 编辑` 下用 `###` 子标题拆分多个表单区域：
-
-```markdown
-## 编辑
-### 基本信息
-| 名称 | 字段 | 类型 | 必填 | 校验 | 长度 | 只读 | 占用列 | 扩展 |
-| 用户账号 | account | text | Y | isNumberLetter | 30 | N | 1 | disabledOnEdit |
-
-### 开票信息
-| 名称 | 字段 | 类型 | 必填 | 校验 | 长度 | 只读 | 占用列 | 扩展 |
-| 发票抬头 | invoiceTitle | text | Y | isAny | 100 | N | 1 | |
-```
-
-**解析规则**：每个 `###` 子标题 → 一个 `GvForm`（`:divider` = 子标题），工厂命名 / `formRefs` 校验 / `getFormModel` 合并见 [helper.md §10](templates/helper.md#10-多分区编辑variant-c--d)。
-
-### 2.8 明细展开（Detail Table）
-
-操作列自定义按钮 + 展开明细表格模式，用于关联数据异步拉取（如用户登录明细）。
-
-```markdown
-## 明细
-- name: loginLog
-  label: 用户登录明细
-  api: /sysuser/findUserLoginInfo
-  columns:
-    - label: 登录IP
-      prop: loginIp
-    - label: 登录时间
-      prop: loginTime
-```
-
-**解析规则**：
-- `name` → helper 函数名 `build<DetailName>HeadList`，Index 方法名 `show<DetailName>`
-- `label` → 操作列按钮文案
-- `api` → 自动推导 API 函数名 `find<DetailName>Api`，需追加到 `src/api/<module>.ts`
-- `columns` → 明细表格列配置（`TableHeadItem[]`）
-- 数据拉取：`crud.fetchTable(fetch, { <parent>Id: row.id })`
-- 渲染方式：返回 render 函数，`table-type="detail"`
-- 按钮追加到操作列末尾，icon 用 `gv-icon-daiban`
-
-### 2.9 多 Tab 页
-
-`## 编辑`（含多分区）基础上增加 `## 标签页` 小节。完整 YAML 示例见 [config-template.md](config-template.md#多分区编辑--多-tab-页)；字段速览：
-
-```markdown
-## 标签页
-- name: orderDtl          # type: table → GvTable + 工具栏按钮，crud.searchNoFm 按 masterId 拉取，v-show="masterId !== 0"
-  label: 订单明细
-  type: table             # table | form；form → GvForm + 保存按钮，始终显示
-  columns: [...]          # table: TableHeadItem[]
-  fields: [...]           # form: FormItem[]
-  buttons: 新增,删除
-  api: { list, save, delete }
-```
-
-**解析规则**：
-- `type: table` → `GvTable` + 工具栏按钮，数据用 `crud.searchNoFm` 按 masterId 拉取
-- `type: form` → `GvForm` + 保存按钮，数据用 `crud.setEditValue` / `crud.resetEditValue`
-- `table` 类型用 `v-show="masterId !== 0"` 控制显隐（新增时隐藏）
-- `form` 类型始终显示
-- Tab 列表 / 表单的 helper 工厂函数命名为 `create<Feature><TabName>TableHeadList` / `create<Feature><TabName>List`
-
-### 2.10 改进
-
-`## 改进` 小节支持布局/样式/交互微调。生成后逐条应用。
-
----
-
 ## 3. 自动推导
 
 ### 3.1 componentBaseName
@@ -344,17 +199,6 @@ src/locales/zh-CN.ts + en.ts
 | ------ | ---------------------- |
 | `module` | `src/views/<view>/module/` |
 | `flat` | `src/views/<view>/` |
-
----
-
-## 4. 旧版格式（兼容）
-
-| 旧字段 | 新字段 |
-| ------ | ------ |
-| `featureName` | `feature` |
-| `viewPath` | `view` |
-| `apiModule` | `api` |
-| `generateEditPage` | `editPage` |
 
 ---
 

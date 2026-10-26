@@ -51,7 +51,7 @@ description: >
 
 | 路由结果 | 动作 |
 | --- | --- |
-| `code-frontend` | 拉起 **1 个前端 subagent**（模板见下） |
+| `code-frontend` / `code-optimize(frontend)` | 拉起 **1 个前端 subagent**（模板见下） |
 | `code-backend` / `code-optimize(backend)` | 拉起 **1 个后端 subagent**（模板见下） |
 | `code-from-db` | 拉起 **1 个 DB 生成 subagent**（模板见下） |
 | `code-all`（全栈） | **串行 2 个 subagent**：先前端、后后端（后端 prompt 带入前端产出的对齐参数，见 [config-bridge](../skills/code-all/config-bridge.md)） |
@@ -61,33 +61,36 @@ description: >
 **前端 subagent**（general-purpose）：
 
 ```
-执行 Guava 前端代码生成。工作流文档（必须逐字读并严格遵守）：
-- ${CLAUDE_PLUGIN_ROOT}/skills/code-frontend/SKILL.md 及其链接的全部文件
+执行 Guava 前端代码生成。你是独立 subagent，无主会话上下文——md 配置由你自行 Read，不得假设已读过。
+工作流文档（必须逐字读并严格遵守）：
+- ${CLAUDE_PLUGIN_ROOT}/skills/code-frontend/SKILL.md 及其链接的文件
   （_shared.md、templates/、conventions.md、code-review.md、config-parser.md 等，按流程涉及范围）
 - ${CLAUDE_PLUGIN_ROOT}/context/front.md
 输入：$ARGUMENTS（md 路径或需求）
 要求：
 1. 严格按 SKILL.md 流程执行（Config File Mode / Interactive Mode、并发 Write、覆盖策略）
-2. 写 <template> 前必须查 MCP（guava-ui get_page_recipe / gv-* get_usage…），同轮复用
-3. 完成 SKILL.md Step 7 速查；可疑才深读 code-review.md
-4. 最终只返回：写入文件清单（相对路径）+ 三检简报 + apiBase/paths/查询 field 等后端对齐参数
+2. 文档按需加载：config-parser-legacy.md 仅当格式识别为精简/旧版时读；config-template.md 是编写模板，生成流程不读
+3. 写 <template> 前必须查 MCP（guava-ui get_page_recipe / gv-* get_usage…），同轮复用
+4. 完成 SKILL.md Step 7 速查；可疑才深读 code-review.md
+5. 最终只返回：写入文件清单（相对路径）+ 三检简报 + apiBase/paths/查询 field 等后端对齐参数
 不要读 code-backend / context/backend.md（与本任务无关，避免浪费 token）。不做路由、git。
 ```
 
 **后端 subagent**（general-purpose）：
 
 ```
-执行 Guava 后端代码生成。工作流文档（必须逐字读并严格遵守）：
+执行 Guava 后端代码生成。你是独立 subagent，无主会话上下文——md 配置 / 已有实现由你自行 Read/grep，不得假设已读过。
+工作流文档（必须逐字读并严格遵守）：
 - ${CLAUDE_PLUGIN_ROOT}/skills/code-backend/SKILL.md 及其链接的全部文件
   （_shared.md、conventions.md、code-review.md、search-conditions.md、templates/）
 - ${CLAUDE_PLUGIN_ROOT}/context/backend.md
 输入：$ARGUMENTS（md 路径 / 表名 / feature 描述）
 $ALIGN_PARAMS（全栈时由前端产出传入：apiBase / paths / 查询 field / entity / module / package）
 要求：
-1. 先用 guava-backend MCP：get_stack → 写代码前 search_platform_classes 确认工具类/注解签名
+1. 先用 guava-backend MCP：get_stack（整轮 1 次）→ 写代码前 search_platform_classes 确认工具类/注解签名（精确类名，≤ 3 次，结果当轮复用）
 2. 需要引入三方依赖时 search_dependencies 确认 BOM 托管版本
-3. 框架优先：工具/断言/错误码/常量/翻译/导出等一律复用 entity / component / platform 框架现成类（经 search_platform_classes 核对），不自造等价实现
-4. 严格按 SKILL.md 流程执行（并发 Write、PO 生成、Step 6 速查）
+3. 框架优先：工具/断言/错误码/常量/翻译/导出等一律复用 entity / component / platform 框架现成类，不自造等价实现
+4. 严格按 SKILL.md 流程执行（并发 Write、Step 4.5 先 grep PO 存在则不读 po.md、Step 0.1 grep 优先不整读大文件、Step 6 速查）
 5. Java 格式化由 hook 兜底（IDEA headless format），你只需保证模板风格正确
 6. 最终只返回：写入文件清单（相对 GUAVA_BACKEND_ROOT）+ 三检简报
 不要读 code-frontend / context/front.md。不做路由、git。
@@ -96,7 +99,8 @@ $ALIGN_PARAMS（全栈时由前端产出传入：apiBase / paths / 查询 field 
 **DB 生成 subagent**（general-purpose）：
 
 ```
-执行 Guava 从库生成。工作流文档（必须逐字读并严格遵守）：
+执行 Guava 从库生成。你是独立 subagent，无主会话上下文——输入与表结构由你自行获取，不得假设已读过。
+工作流文档（必须逐字读并严格遵守）：
 - ${CLAUDE_PLUGIN_ROOT}/skills/code-from-db/SKILL.md 及其链接的全部文件
   （type-mapping.md、field-rules.md、backend-entity.md）
 - 生成全栈时按需加载 ${CLAUDE_PLUGIN_ROOT}/skills/code-frontend/SKILL.md 或
