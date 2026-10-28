@@ -21,13 +21,30 @@ Step 0：**guava-backend MCP 必查**（同轮复用，禁止重复查询）：
 | 用到工具类 / 注解 / 平台服务时 | `search_platform_classes`（用精确类名，整轮 ≤ 3 次），结果当轮复用 |
 | 需要引入新三方依赖时 | `search_dependencies`（版本以 parent-starter BOM 为准） |
 
-**框架优先原则**：生成代码中凡工具方法、断言、常量、翻译、导出、加解密、上下文取值等能力，**必须优先复用 entity / component / platform 三层框架已提供**的 util / service / 注解 / 常量（经 `search_platform_classes` 确认类与签名后使用），**禁止自造等价实现**（不手写判空工具、不 new 翻译器、不自定义业务异常码）。框架能力不够时才允许扩展，并在待确认清单标注。
+**框架优先原则**：工具/断言/常量/翻译/导出/加解密等能力，**必须优先复用 entity / component / platform 三层框架已提供**的类（经 `search_platform_classes` 确认签名后使用），**禁止自造等价实现**。详见 [conventions.md §常用工具类](conventions.md)。
 
 Step 0.1：**grep 优先，不整读大文件**——`grep -rl "class {Entity}" $GUAVA_BACKEND_ROOT --include=*.java` 确认目标模块是否已有同类实现；仅在需要覆盖 / 端点对齐时 Read 具体文件的相关方法段，**不整读参考大文件**。
 
 Step 1：Module、package、Feature、Entity、RequestMapping、Swagger Tag（见 context/backend.md）。
 
+Step 1.0：**服务配置(backend) 小节消费**（设计器「后端配置」步骤产物，优先于推导）：
+
+解析 `## 服务配置(backend)` 小节（[search-conditions.md](search-conditions.md) §对齐表 + 下述扩展字段）：
+
+| 字段 | 小节位置 | 用途 |
+|------|----------|------|
+| 数据库 / 实体 / 工程 / 包路径 / 功能 / 请求上下文 | ### 基本信息 | 基础信息与路径推导 |
+| Swagger Tag | ### 基本信息 | `@Tag(name = "xxx")`，缺失默认 `admin-{module}` |
+| 操作 | ### 服务逻辑描述 | 仅生成勾选操作；`list` 必选 |
+| 状态更新 | ### 服务逻辑描述 | 出现「状态更新」标记 → 生成 `update{Entity}Status` 端点 |
+| 导出 | ### 服务逻辑描述 | 出现「导出」标记 → 生成 `export{Entity}Data` 端点（Excel） |
+| 逻辑描述 | ### 服务逻辑描述 | 业务逻辑备注（供 ServiceImpl 参考） |
+| 字典翻译 | ### 字典翻译 | 每行 `- field：dic\|xx` → `getTransHash()` 配置（详见 Step 5.1） |
+| 主表 / 关联 | ### 数据表描述 | 主表 + 多表 JOIN 配置 |
+
 Step 1.1：查询条件（必选，[search-conditions.md](search-conditions.md)，field 与前端一致）。
+
+Step 1.1a：**查询 SQL 规则**——单表走 `MyUtil.getConditionsWhere` 模式（context/backend.md §对齐表）；多表按 `backend.joins` 生成 JOIN 查询（SELECT 列带表别名，WHERE 条件同样走条件构造器，不拼用户原始入参）。设计器只存配置不生成 SQL，SQL 一律由本 skill 生成。
 
 Step 1.2：业务字段（add/edit 时）。
 
@@ -48,6 +65,8 @@ Step 4.5：PO 实体（ServiceImpl 引用 `{Entity}PO`，缺失则编译失败�
 3. MCP 不可用 / 表不存在 → 按 `.md` 的 Guava 类型映射兜底生成，`number`/`date` 歧义在待确认清单标注。
 
 Step 5：Mapper/SqlProvider、`getTransHash()`、`@MarkLog`、与前端 `paths` 对齐。
+
+Step 5.1：**`getTransHash()` 字典翻译**——从 `### 字典翻译` 小节逐条写入 `transHash.put(field, transValue)`。规则详见 [conventions.md §字典翻译](conventions.md)；无该小节时仅翻译 `createTime`。
 
 Step 6 — 本次生成代码检查（必做，速查优先）：
 

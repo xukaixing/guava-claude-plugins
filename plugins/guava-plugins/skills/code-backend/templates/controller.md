@@ -2,7 +2,7 @@
 
 > [\_shared.md](../_shared.md) · [conventions.md](../conventions.md)
 
-生成 `controller/{feature}/{Entity}Controller.java`。**仅生成 Step 1.3 选中的方法。**
+生成 `controller/{feature}/{Entity}Controller.java`。**仅生成 Step 1.3 选中的方法 + 扩展端点（状态更新 / 导出，按 `### 服务逻辑描述` 标记）。**
 
 风格对齐 `guava-admin-starter` 的 `SysUserController.java`（IDEA 保存格式化产物：4 空格缩进、Allman 大括号、import 分组顺序、Javadoc 带 `<p>`）。
 
@@ -41,7 +41,7 @@ import java.util.Map;
  * @author {git user.name} <{git user.email}>
  * @since {yyyy/M/d}
  */
-@Tag(name = "{swagger-tag}")
+@Tag(name = "{swagger-tag}")        // 来自「基本信息」Swagger Tag 字段，缺失默认 admin-{module}
 @RestController
 @RequestMapping("/{feature}/")
 @Slf4j
@@ -81,13 +81,7 @@ public class {Entity}Controller
 ### 新增
 
 ```java
-    /**
-     * <p>保存{中文名}信息</p>
-     *
-     * @param param
-     * @return java.util.Map<java.lang.String,java.lang.Object>
-     * @since {yyyy/M/d}
-     */
+    /** <p>保存{中文名}信息</p> @since {yyyy/M/d} */
     @Operation(summary = "保存->保存{中文名}", description = "插入{中文名}")
     @MarkLog(value = "新增{中文名}-[{0}]", param = "{logField}")
     @PostMapping(value = "/save{Entity}")
@@ -100,14 +94,7 @@ public class {Entity}Controller
 ### 更新
 
 ```java
-    /**
-     * <p>更新{中文名}信息</p>
-     *
-     * @param id
-     * @param param
-     * @return java.util.Map<java.lang.String,java.lang.Object>
-     * @since {yyyy/M/d}
-     */
+    /** <p>更新{中文名}信息</p> @since {yyyy/M/d} */
     @Operation(summary = "更新->更新{中文名}", description = "更新{中文名}")
     @MarkLog(value = "更新{中文名}-[{0}]", param = "{logField}")
     @PutMapping(value = "/update{Entity}/{id}")
@@ -120,13 +107,7 @@ public class {Entity}Controller
 ### 删除
 
 ```java
-    /**
-     * <p>删除{中文名}</p>
-     *
-     * @param id
-     * @return java.lang.Integer
-     * @since {yyyy/M/d}
-     */
+    /** <p>删除{中文名}</p> @since {yyyy/M/d} */
     @Operation(summary = "删除->删除{中文名}", description = "删除{中文名}")
     @MarkLog(value = "删除{中文名}")
     @PostMapping(value = "/remove{Entity}/{id}")
@@ -136,39 +117,10 @@ public class {Entity}Controller
     }
 ```
 
-### 状态变更
-
-```java
-    /**
-     * <p>更新{中文名}状态</p>
-     *
-     * @param params
-     * @return java.util.Map<java.lang.String,java.lang.Object>
-     * @since {yyyy/M/d}
-     */
-    @Operation(summary = "更新->{中文名}状态", description = "更新{中文名}状态")
-    @MarkLog(value = "更新{中文名}状态-[{0}]", param = "{logField}")
-    @PostMapping(value = "/update{Entity}Status")
-    public Map<String, Object> update{Entity}Status(@RequestBody Map<String, Object> params)
-    {
-        Long id = Long.parseLong(MyUtil.getValue(params.get("id")));
-        Integer status = Integer.parseInt(MyUtil.getValue(params.get("status")));
-        return {entity}Service.update{Entity}Status(id, status);
-    }
-```
-
 ### 导出
 
 ```java
-    /**
-     * <p>导出{中文名}</p>
-     *
-     * @param response
-     * @param param
-     * @return void
-     * @throws IOException 写入响应流失败时抛出
-     * @since {yyyy/M/d}
-     */
+    /** <p>导出{中文名}</p> @throws IOException 写入响应流失败时抛出 @since {yyyy/M/d} */
     @Operation(summary = "导出->导出{中文名}", description = "导出{中文名}")
     @PostMapping(value = "/export{Entity}Data")
     public void export{Entity}Data(HttpServletResponse response, @RequestBody Map<String, Object> param) throws IOException
@@ -179,17 +131,27 @@ public class {Entity}Controller
 ```
 
 > 导出用到 `HttpServletResponse` 时补 import `jakarta.servlet.http.HttpServletResponse`（放在 jakarta 分组）。
+> 仅在 `### 服务逻辑描述` 出现「导出」标记时生成导出方法。
+
+### 状态更新（按「服务逻辑描述」标记生成）
+
+```java
+    /** <p>更新{中文名}状态</p> @since {yyyy/M/d} */
+    @Operation(summary = "更新->更新{中文名}状态", description = "更新{中文名}状态")
+    @MarkLog(value = "更新{中文名}状态-[{0}]", param = "{logField}")
+    @PostMapping(value = "/update{Entity}Status")
+    public Map<String, Object> update{Entity}Status(@RequestBody Map<String, Object> params)
+    {
+        Long id = Long.parseLong(MyUtil.getValue(params.get("id")));
+        Integer status = Integer.parseInt(MyUtil.getValue(params.get("status")));
+        return {entity}Service.update{Entity}Status(id, status);
+    }
+```
 
 ### 详情（按需）
 
 ```java
-    /**
-     * <p>获取{中文名}详细信息</p>
-     *
-     * @param id
-     * @return java.util.Map<java.lang.String,java.lang.Object>
-     * @since {yyyy/M/d}
-     */
+    /** <p>获取{中文名}详细信息</p> @since {yyyy/M/d} */
     @Operation(summary = "查询->{中文名}详细信息", description = "获取{中文名}详细信息")
     @GetMapping(value = "/get{Entity}ById")
     public Map<String, Object> get{Entity}ById(@RequestParam String id)

@@ -2,15 +2,6 @@
 
 > 规范 [conventions.md](conventions.md) · 项目 [../../README.md](../../README.md) · 路径 [../../context/backend.md](../../context/backend.md)
 
-## 环境要求
-
-| 项 | 要求 |
-|----|------|
-| JDK | **>= 25** |
-| 编译等级 | **>= 25**（`maven.compiler.release` / `source`+`target`） |
-
-生成与编译均按上述版本；不得使用更低 JDK 或更低 `--release`。
-
 ## 覆盖策略
 
 | 文件 | 已存在时 |
@@ -28,4 +19,4 @@
 ## 生成后
 
 1. **本次生成代码检查（必做）**：按 [code-review.md](code-review.md) 做规范 / 安全 / 性能三检；Critical 修复后再结束。
-2. `hooks/lint-fix.sh` 对 Java 走 **IDEA headless format**（等价 IDE 保存格式化，4 空格 + Allman 大括号）；`Stop` 时校验。失败须修复后再结束。
+2. `hooks/lint-fix.sh` 对 Java 走 **IDEA headless format**；`Stop` 时校验。失败须修复后再结束（详见 [context/backend.md](../../context/backend.md)）。

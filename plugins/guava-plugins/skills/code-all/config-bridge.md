@@ -2,25 +2,41 @@
 
 同一 `src/pages/**/*.md` 驱动前后端。前端字段见 [../code-frontend/config-parser.md](../code-frontend/config-parser.md)。
 
-若 YAML **`frontendOnly: true`**：**不执行本桥接、不生成后端**（仅 front + `data.ts`）。
+旧字段 `frontendOnly: true/false` **已废弃**（设计器不再输出）：frontmatter 无 `backend:` 块 = 纯前端，**不执行本桥接、不生成后端**；有 `backend:` 块 = 全栈生成。存量文件按此兼容判读。
 
-## YAML 扩展（可选）
+## YAML 扩展（设计器「后端配置」步骤生成）
 
 ```yaml
+api:                                  # 由设计器按 backend 配置自动推导，无需手写
+  module: admin/userMng
+  base: /userMng
+  operations:
+    list: /userMng/findUsers          # 仅列勾选的操作
+    create: /userMng/saveUser
 backend:
   module: guava-admin-starter      # Maven 子模块
   package: com.guava.admin         # Java 包根
-  feature: sysuser                 # 目录/feature，通常与 apiBase 去 / 后一致
-  entity: SysUserPO                # 实体类名
-  swaggerTag: admin-sysuser        # 可选，默认 admin-{feature}
+  feature: userMng                 # 目录/feature
+  entity: SysUserPO                # 实体类名（PascalCase(表名)+PO）
+  database: guava_demo             # 来源数据库
+  tables:                          # 主表 + 关联表（去重）
+    - name: sys_user
+    - name: sys_dept
+  joins:                           # 多表关联（可选）
+    - table: sys_dept
+      type: left                   # left / inner / right
+      left: sys_user.dept_id       # 主表或前序已关联表.字段
+      right: sys_dept.id           # 本关联表.字段
+  operations: [list, save]         # 勾选操作；list 必选
 ```
 
-省略 `backend` 块时**推导**（Interactive 可覆写）：
+省略 `backend` 块（或手工简写）时**推导**（Interactive 可覆写）：
 
 | YAML | 推导 |
 |------|------|
-| `apiBase: /sysuser` | `feature: sysuser`，`@RequestMapping("/sysuser/")` |
-| `feature: userMng` | `entity: UserPO` 或按业务确认 |
+| `api.base: /sysuser` | `feature: sysuser`，`@RequestMapping("/sysuser/")` |
+| `backend.tables[0]` | `entity: SysUserPO`（全表名 PascalCase + `PO`） |
+| 表名 `sys_notice` | 端点动词 `Notice` → `findNotices` / `saveNotice` / `updateNotice/{id}` / `removeNotice/{id}`（去首段前缀 PascalCase，与 code-from-db Step 3 一致） |
 | `api: admin/user` | `module: guava-admin-starter`，`package: com.guava.admin` |
 
 ## CRUD 对齐

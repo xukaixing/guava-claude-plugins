@@ -67,11 +67,14 @@ public class {Entity}ServiceImpl implements {Entity}Service
     private HashMap<String, String> getTransHash()
     {
         HashMap<String, String> transHash = HashMap.newHashMap(16);
-        transHash.put("bizType", "dic|ywlx");     // ← 按确认表逐条添加
+        // ↓ 从 md 「### 字典翻译」小节逐条写入（field：transValue）
         transHash.put("status", "dic|yxzt");
         transHash.put("createTime", "date|" + FormatConstant.SIMPLE_DATE_TIME_FORMAT);
         return transHash;
     }
+```
+
+> `getTransHash()` 规则详见 [conventions.md §字典翻译](../conventions.md)；无 `### 字典翻译` 小节时仅保留 `createTime`。
 ```
 
 ## 方法实现（按选中操作生成）
@@ -79,14 +82,7 @@ public class {Entity}ServiceImpl implements {Entity}Service
 ### 查询
 
 ```java
-    /**
-     * <p>查询{中文名}信息</p>
-     *
-     * @param page
-     * @param conditions
-     * @return com.baomidou.mybatisplus.core.metadata.IPage<java.util.Map<java.lang.String,java.lang.Object>>
-     * @since {yyyy/M/d}
-     */
+    /** <p>查询{中文名}信息</p> @since {yyyy/M/d} */
     @Override
     public IPage<Map<String, Object>> find{Entity}(Page<Map<String, Object>> page, String conditions)
     {
@@ -105,13 +101,7 @@ public class {Entity}ServiceImpl implements {Entity}Service
 ### 新增
 
 ```java
-    /**
-     * <p>保存{中文名}信息</p>
-     *
-     * @param param
-     * @return java.util.Map<java.lang.String,java.lang.Object>
-     * @since {yyyy/M/d}
-     */
+    /** <p>保存{中文名}信息</p> @since {yyyy/M/d} */
     @Override
     public Map<String, Object> save{Entity}(Map<String, Object> param)
     {
@@ -129,14 +119,7 @@ public class {Entity}ServiceImpl implements {Entity}Service
 ### 更新
 
 ```java
-    /**
-     * <p>更新{中文名}信息</p>
-     *
-     * @param id
-     * @param param
-     * @return java.util.Map<java.lang.String,java.lang.Object>
-     * @since {yyyy/M/d}
-     */
+    /** <p>更新{中文名}信息</p> @since {yyyy/M/d} */
     @Override
     public Map<String, Object> update{Entity}(Long id, Map<String, Object> param)
     {
@@ -153,13 +136,7 @@ public class {Entity}ServiceImpl implements {Entity}Service
 ### 删除
 
 ```java
-    /**
-     * <p>删除{中文名}</p>
-     *
-     * @param id
-     * @return java.lang.Integer
-     * @since {yyyy/M/d}
-     */
+    /** <p>删除{中文名}</p> @since {yyyy/M/d} */
     @Override
     public Integer remove{Entity}(Long id)
     {
@@ -168,17 +145,10 @@ public class {Entity}ServiceImpl implements {Entity}Service
     }
 ```
 
-### 状态变更
+### 状态变更（按「服务逻辑描述」标记生成）
 
 ```java
-    /**
-     * <p>更新{中文名}状态</p>
-     *
-     * @param id
-     * @param status
-     * @return java.util.Map<java.lang.String,java.lang.Object>
-     * @since {yyyy/M/d}
-     */
+    /** <p>更新{中文名}状态</p> @since {yyyy/M/d} */
     @Override
     public Map<String, Object> update{Entity}Status(Long id, Integer status)
     {
@@ -191,20 +161,12 @@ public class {Entity}ServiceImpl implements {Entity}Service
     }
 ```
 
-### 导出
+### 导出（按「服务逻辑描述」标记生成）
 
 接口声明 `throws IOException`（见 service.md），实现**收窄 throws**——实现体内不抛出受检异常时不写 `throws`，也不需要 `java.io.IOException` import：
 
 ```java
-    /**
-     * <p>导出{中文名}信息</p>
-     *
-     * @param response
-     * @param fileName
-     * @param param
-     * @return void
-     * @since {yyyy/M/d}
-     */
+    /** <p>导出{中文名}信息</p> @since {yyyy/M/d} */
     @Override
     public void export(HttpServletResponse response, String fileName, Map<String, Object> param)
     {

@@ -24,80 +24,38 @@ import java.util.Map;
  */
 public interface {Entity}Service
 {
-    /**
-     * <p>查询{中文名}信息</p>
-     *
-     * @param page
-     * @param conditions
-     * @return com.baomidou.mybatisplus.core.metadata.IPage<java.util.Map<java.lang.String,java.lang.Object>>
-     * @since {yyyy/M/d}
-     */
+    /** <p>查询{中文名}信息</p> @since {yyyy/M/d} */
     IPage<Map<String, Object>> find{Entity}(Page<Map<String, Object>> page, String conditions);
 
-    /**
-     * <p>保存{中文名}信息</p>
-     *
-     * @param param
-     * @return java.util.Map<java.lang.String,java.lang.Object>
-     * @since {yyyy/M/d}
-     */
+    /** <p>保存{中文名}信息</p> @since {yyyy/M/d} */
     Map<String, Object> save{Entity}(Map<String, Object> param);
 
-    /**
-     * <p>更新{中文名}信息</p>
-     *
-     * @param id
-     * @param param
-     * @return java.util.Map<java.lang.String,java.lang.Object>
-     * @since {yyyy/M/d}
-     */
+    /** <p>更新{中文名}信息</p> @since {yyyy/M/d} */
     Map<String, Object> update{Entity}(Long id, Map<String, Object> param);
 
-    /**
-     * <p>删除{中文名}</p>
-     *
-     * @param id
-     * @return java.lang.Integer
-     * @since {yyyy/M/d}
-     */
+    /** <p>删除{中文名}</p> @since {yyyy/M/d} */
     Integer remove{Entity}(Long id);
 
-    /**
-     * <p>更新{中文名}状态</p>
-     *
-     * @param id
-     * @param status
-     * @return java.util.Map<java.lang.String,java.lang.Object>
-     * @since {yyyy/M/d}
-     */
+    /** <p>更新{中文名}状态</p> @since {yyyy/M/d} */
     Map<String, Object> update{Entity}Status(Long id, Integer status);
 
-    /**
-     * <p>导出{中文名}</p>
-     *
-     * @param response
-     * @param fileName
-     * @param params
-     * @return void
-     * @throws IOException 写入响应流失败时抛出
-     * @since {yyyy/M/d}
-     */
+    /** <p>导出{中文名}</p> @throws IOException 写入响应流失败时抛出 @since {yyyy/M/d} */
     void export(HttpServletResponse response, String fileName, Map<String, Object> params) throws IOException;
 }
 ```
 
-> 每个方法都补全 Javadoc（参考实现中部分历史方法缺注释，生成时统一补齐，不写裸方法）。
+> Javadoc 格式见 [conventions.md §Javadoc](../conventions.md)；方法签名仅列选中操作。
 
 ## 方法签名约定
 
-| 操作 | 签名                                                                                                        |
-| ---- | ----------------------------------------------------------------------------------------------------------- |
-| 查询 | `IPage<Map<String, Object>> findXxx(Page<Map<String, Object>> page, String conditions)`                     |
-| 新增 | `Map<String, Object> saveXxx(Map<String, Object> param)`                                                    |
-| 更新 | `Map<String, Object> updateXxx(Long id, Map<String, Object> param)`                                         |
-| 删除 | `Integer removeXxx(Long id)`                                                                                |
-| 状态 | `Map<String, Object> updateXxxStatus(Long id, Integer status)`                                              |
-| 导出 | `void export(HttpServletResponse response, String fileName, Map<String, Object> params) throws IOException` |
+| 操作 | 签名 | 触发条件 |
+| ---- | --- | -------- |
+| 查询 | `IPage<Map<String, Object>> findXxx(Page<Map<String, Object>> page, String conditions)` | 必选 |
+| 新增 | `Map<String, Object> saveXxx(Map<String, Object> param)` | operations.save |
+| 更新 | `Map<String, Object> updateXxx(Long id, Map<String, Object> param)` | operations.update |
+| 删除 | `Integer removeXxx(Long id)` | operations.delete |
+| 状态 | `Map<String, Object> updateXxxStatus(Long id, Integer status)` | 「服务逻辑描述」含「状态更新」 |
+| 导出 | `void exportXxxData(HttpServletResponse response, String fileName, Map<String, Object> params) throws IOException` | 「服务逻辑描述」含「导出」 |
 
 ## 关键规则
 

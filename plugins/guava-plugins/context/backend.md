@@ -24,15 +24,43 @@
 | `apiBase: /sysuser` | `@RequestMapping("/sysuser/")` 或 feature 段一致 |
 | `paths.find/save/...` | Controller 端点同名 |
 | 查询表 `field` | `MyUtil.getConditionsWhere` 字段一致（见 `search-conditions.md`） |
+| 表格列 `dicType` | `getTransHash()` 字典翻译自动收集 |
+| 扩展端点标记（状态更新/导出） | 对应 Controller/Service 方法 |
 
-可选 YAML（`code-all` / 全栈配置）：
+## 服务配置(backend) 格式（设计器导出）
 
-```yaml
-backend:
-  module: guava-admin-starter
-  package: com.guava.admin
-  feature: sysuser
-  entity: SysUserPO
+```markdown
+## 服务配置(backend)
+
+### 基本信息
+
+- 工程：/Users/.../guava-admin-starter
+- 包路径：com.guava.admin
+- 功能：sysuser
+- 请求上下文：/sysuser
+- Swagger Tag：admin-sysuser
+- 数据库：guava_demo
+- 实体：SysUserPO
+
+### 服务逻辑描述
+
+- 操作：查询、保存、更新
+- 状态更新：updateSysUserStatus（启用/停用）
+- 导出：exportSysUserData（Excel）
+- 逻辑描述：查询用户列表时左关联部门表获取部门名称
+
+### 字典翻译
+
+- status：dic|yxzt
+- sex：dic|xb
+- deptId：dept|o
+- createTime：date|yyyy-MM-dd HH:mm:ss
+
+### 数据表描述
+
+- 主表：sys_user（别名 u）
+- 关联：LEFT JOIN sys_dept（别名 d） ON u.dept_id = d.id
+- 表逻辑：用户表左关联部门表获取部门名称
 ```
 
 ## 环境

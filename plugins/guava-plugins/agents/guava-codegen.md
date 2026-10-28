@@ -85,14 +85,12 @@ description: >
   （_shared.md、conventions.md、code-review.md、search-conditions.md、templates/）
 - ${CLAUDE_PLUGIN_ROOT}/context/backend.md
 输入：$ARGUMENTS（md 路径 / 表名 / feature 描述）
-$ALIGN_PARAMS（全栈时由前端产出传入：apiBase / paths / 查询 field / entity / module / package）
+$ALIGN_PARAMS（全栈时由前端产出传入：apiBase / paths / 查询 field / entity / module / package / swaggerTag / transFields）
 要求：
-1. 先用 guava-backend MCP：get_stack（整轮 1 次）→ 写代码前 search_platform_classes 确认工具类/注解签名（精确类名，≤ 3 次，结果当轮复用）
-2. 需要引入三方依赖时 search_dependencies 确认 BOM 托管版本
-3. 框架优先：工具/断言/错误码/常量/翻译/导出等一律复用 entity / component / platform 框架现成类，不自造等价实现
-4. 严格按 SKILL.md 流程执行（并发 Write、Step 4.5 先 grep PO 存在则不读 po.md、Step 0.1 grep 优先不整读大文件、Step 6 速查）
-5. Java 格式化由 hook 兜底（IDEA headless format），你只需保证模板风格正确
-6. 最终只返回：写入文件清单（相对 GUAVA_BACKEND_ROOT）+ 三检简报
+1. 严格按 SKILL.md 流程执行（含 MCP 必查、框架优先、grep 优先、并发 Write、PO 先查后读、getTransHash 驱动、Step 6 速查）
+2. 扩展端点（状态更新 / 导出）按「服务逻辑描述」标记生成，不臆造
+3. Java 格式化由 hook 兜底，你只需保证模板风格正确
+4. 最终只返回：写入文件清单（相对 GUAVA_BACKEND_ROOT）+ 三检简报
 不要读 code-frontend / context/front.md。不做路由、git。
 ```
 

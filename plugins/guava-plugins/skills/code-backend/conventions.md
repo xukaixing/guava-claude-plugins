@@ -141,6 +141,35 @@ Swagger 方法注解：
 @Operation(summary = "查询->业务参数配置表信息", description = "查询业务参数配置表信息服务")
 ```
 
+## 扩展端点
+
+| 标记 | 触发条件 | 生成方法 |
+|------|----------|----------|
+| 「状态更新」 | `### 服务逻辑描述` 含「状态更新」 | `update{Entity}Status`（启用/停用） |
+| 「导出」 | `### 服务逻辑描述` 含「导出」 | `export{Entity}Data`（Excel，依赖 ExcelApiService） |
+
+## 字典翻译（getTransHash）
+
+`getTransHash()` 内容由 md `### 字典翻译` 小节逐条驱动：
+
+```
+- status：dic|yxzt
+- deptId：dept|o
+- createTime：date|yyyy-MM-dd HH:mm:ss
+```
+
+对应代码：
+
+```java
+transHash.put("status", "dic|yxzt");
+transHash.put("deptId", "dept|o");
+transHash.put("createTime", "date|" + FormatConstant.SIMPLE_DATE_TIME_FORMAT);
+```
+
+- 无 `### 字典翻译` 小节时仅保留 `createTime` 翻译
+- 字典类型来自前端表格列 `dicType` 自动收集，可在 md 中手动追加
+- `FormatConstant.SIMPLE_DATE_TIME_FORMAT` / `SIMPLE_DATE_FORMAT` 按日期精度选择
+
 ## 常用工具类
 
 **优先复用三层框架（entity / component / platform）已提供的能力，不自造等价实现。** 用前先 `guava-backend` MCP `search_platform_classes` 确认类与方法签名：
@@ -161,11 +190,6 @@ Swagger 方法注解：
 | component | `PasswordUtils` / `PasswordEncoder` | 密码盐值与加密 |
 | component | `DicConstant` / `FormatConstant` / `RedisConstant` | 字典值 / 日期格式 / Redis key 常量 |
 | entity | `BasePO` / `XxxPO.toMaps()` | PO 基类 / PO 转 Map |
-
-## 环境 / 编译
-
-- JDK **>= 25**
-- 编译等级 **>= 25**（`maven.compiler.release` 或等价 `source`/`target`）
 
 ## 代码风格
 
