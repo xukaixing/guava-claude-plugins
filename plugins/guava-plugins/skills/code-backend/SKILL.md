@@ -11,6 +11,8 @@ disable-model-invocation: true
 
 > [\_shared.md](_shared.md) · [conventions.md](conventions.md) · [code-review.md](code-review.md) · [../../context/backend.md](../../context/backend.md) · [MCP](../../mcp/guava-backend/README.md)
 
+**工作流文档一次性读取**（省 API 往返）：动手生成前，在**一条消息内**并行 Read 本任务涉及的全部工作流文档——`SKILL.md`、[_shared.md](_shared.md)、[conventions.md](conventions.md)、[search-conditions.md](search-conditions.md)、[templates/](templates/)（controller.md / service.md / service-impl.md；po.md 待 Step 4.5 确认 PO 不存在时再读）、[../../context/backend.md](../../context/backend.md)。生成过程中直接复用已读内容，**禁止二次 Read**（仅当上下文压缩导致内容丢失时才允许重读个别文件）。
+
 ## 流程
 
 Step 0：**guava-backend MCP 必查**（同轮复用，禁止重复查询）：
@@ -50,7 +52,7 @@ Step 1.2：业务字段（add/edit 时）。
 
 Step 1.3：CRUD（禁止默认全开，查询必选）。
 
-Step 2–4：**并发 Write** Controller / Service / ServiceImpl（一条消息内多个 Write 调用；覆盖策略 [_shared.md](_shared.md)）；模板按需读取——controller.md / service.md / service-impl.md 必读，**po.md 先查后读**（见 Step 4.5）：
+Step 2–4：**并发 Write** Controller / Service / ServiceImpl（一条消息内多个 Write 调用；覆盖策略 [_shared.md](_shared.md)）；模板已在上文一次性读取——controller.md / service.md / service-impl.md 直接复用，**po.md 先查后读**（见 Step 4.5）：
 
 | 文件 | 模板 |
 |------|------|

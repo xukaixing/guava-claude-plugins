@@ -55,6 +55,8 @@ backend:
 
 前端 ## 查询 表 → 后端 [search-conditions.md](../code-backend/search-conditions.md) 确认表，`field` **字符级一致**。
 
+**别名来源**：查询 field 的表别名双方各自从 md「服务配置(backend)」/「数据表描述」声明的主表别名读取（如 `主表：sys_user（别名 su）` → `su@字段`），**不依赖前端产物传参、不沿用文档示例的 `u@`**。md 未声明别名时查询 field 不带别名。任一端发现别名不一致时，以 md 声明为准生成本端代码并在返回中标注，禁止跨 subagent 发消息返工。
+
 ## 输出清单示例（crud-module）
 
 **Phase A（本仓库）**：见 code-frontend config-parser 文件清单。

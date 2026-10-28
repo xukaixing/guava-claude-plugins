@@ -62,17 +62,19 @@ description: >
 
 ```
 执行 Guava 前端代码生成。你是独立 subagent，无主会话上下文——md 配置由你自行 Read，不得假设已读过。
-工作流文档（必须逐字读并严格遵守）：
+工作流文档（必须逐字读并严格遵守，按 SKILL.md Step 0 一次性并行读取，禁止二次 Read）：
 - ${CLAUDE_PLUGIN_ROOT}/skills/code-frontend/SKILL.md 及其链接的文件
-  （_shared.md、templates/、conventions.md、code-review.md、config-parser.md 等，按流程涉及范围）
+  （_shared.md、templates/、conventions.md、code-review.md、config-parser.md 等）
 - ${CLAUDE_PLUGIN_ROOT}/context/front.md
 输入：$ARGUMENTS（md 路径或需求）
 要求：
 1. 严格按 SKILL.md 流程执行（Config File Mode / Interactive Mode、并发 Write、覆盖策略）
-2. 文档按需加载：config-parser-legacy.md 仅当格式识别为精简/旧版时读；config-template.md 是编写模板，生成流程不读
-3. 写 <template> 前必须查 MCP（guava-ui get_page_recipe / gv-* get_usage…），同轮复用
-4. 完成 SKILL.md Step 7 速查；可疑才深读 code-review.md
-5. 最终只返回：写入文件清单（相对路径）+ 三检简报 + apiBase/paths/查询 field 等后端对齐参数
+2. 文档一次性读取：动手前在一条消息内并行 Read 全部工作流文档（SKILL.md、_shared.md、config-parser.md、conventions.md、search-conditions.md、templates/_common.md 及本任务 pageType 涉及的 templates/、context/front.md），生成过程中禁止二次 Read（上下文压缩丢失除外）
+3. 查询 field 别名必须取 md「服务配置(backend)」/「数据表描述」声明的主表别名（如 别名 su → `su@字段`），禁止沿用文档示例的 `u@`；md 未声明别名时查询 field 不带别名
+4. 文档按需加载：config-parser-legacy.md 仅当格式识别为精简/旧版时读；config-template.md 是编写模板，生成流程不读
+5. 写 <template> 前必须查 MCP（guava-ui get_page_recipe / gv-* get_usage…），同轮复用
+6. 完成 SKILL.md Step 7 速查；可疑才深读 code-review.md
+7. 最终只返回：写入文件清单（相对路径）+ 三检简报 + apiBase/paths/查询 field（含主表别名）等后端对齐参数
 不要读 code-backend / context/backend.md（与本任务无关，避免浪费 token）。不做路由、git。
 ```
 
@@ -80,7 +82,7 @@ description: >
 
 ```
 执行 Guava 后端代码生成。你是独立 subagent，无主会话上下文——md 配置 / 已有实现由你自行 Read/grep，不得假设已读过。
-工作流文档（必须逐字读并严格遵守）：
+工作流文档（必须逐字读并严格遵守，一次性并行读取，禁止二次 Read）：
 - ${CLAUDE_PLUGIN_ROOT}/skills/code-backend/SKILL.md 及其链接的全部文件
   （_shared.md、conventions.md、code-review.md、search-conditions.md、templates/）
 - ${CLAUDE_PLUGIN_ROOT}/context/backend.md
@@ -88,9 +90,10 @@ description: >
 $ALIGN_PARAMS（全栈时由前端产出传入：apiBase / paths / 查询 field / entity / module / package / swaggerTag / transFields）
 要求：
 1. 严格按 SKILL.md 流程执行（含 MCP 必查、框架优先、grep 优先、并发 Write、PO 先查后读、getTransHash 驱动、Step 6 速查）
-2. 扩展端点（状态更新 / 导出）按「服务逻辑描述」标记生成，不臆造
-3. Java 格式化由 hook 兜底，你只需保证模板风格正确
-4. 最终只返回：写入文件清单（相对 GUAVA_BACKEND_ROOT）+ 三检简报
+2. 查询 field 的表别名以 md「服务配置(backend)」/「数据表描述」声明的主表别名为准（与前端各自从 md 读取）；若与 $ALIGN_PARAMS 中前端产出的 field 不一致，按 md 别名生成本端代码并在返回中标注差异，**禁止 SendMessage 联系前端 subagent**（避免串行等待返工）
+3. 扩展端点（状态更新 / 导出）按「服务逻辑描述」标记生成，不臆造
+4. Java 格式化由 hook 兜底，你只需保证模板风格正确
+5. 最终只返回：写入文件清单（相对 GUAVA_BACKEND_ROOT）+ 三检简报
 不要读 code-frontend / context/front.md。不做路由、git。
 ```
 
