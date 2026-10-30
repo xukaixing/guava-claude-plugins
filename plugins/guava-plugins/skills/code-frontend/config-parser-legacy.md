@@ -111,7 +111,7 @@ expand:
 | 发票抬头 | invoiceTitle | text | Y | isAny | 100 | N | 1 | |
 ```
 
-**解析规则**：每个 `###` 子标题 → 一个 `GvForm`（`:divider` = 子标题），工厂命名 / `formRefs` 校验 / `getFormModel` 合并见 [helper.md §10](templates/helper.md#10-多分区编辑variant-c--d)。
+**解析规则**：每个 `###` 子标题 → 一个 `GvForm`（`:divider` = 子标题），工厂命名见 [helper.md §10](templates/helper.md#10-多分区编辑variant-c--d)；保存逻辑见 [edit.md §5](templates/edit.md#5-variant-c多分区表单--基座--增量)。
 
 ### 1.8 明细展开（Detail Table）
 

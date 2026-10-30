@@ -33,16 +33,16 @@
 
 | 配置按钮 | 生成内容 |
 | -------- | -------- |
-| `保存` | `<GvButton type="primary" confirm="false" @click="<feature>Save">保存</GvButton>` |
+| `保存` | `<GvButton type="primary" confirm="false" @click="save<Feature>">保存</GvButton>` |
 | `取消` | `<GvButton @click="isShow = false">取消</GvButton>` |
-| 自定义（如 `发布`） | `<GvButton type="primary" confirm="false" @click="<feature>Publish">发布</GvButton>` |
+| 自定义（如 `发布`） | `<GvButton type="primary" confirm="false" @click="publish<Feature>">发布</GvButton>` |
 
 ### 生成逻辑
 
 - `## 按钮` 省略时，默认生成 `保存`
 - 多个按钮用逗号分隔，按声明顺序从左到右排列
 - `取消` 按钮：仅生成 `isShow = false` 逻辑，**不**生成对应方法
-- 自定义按钮：需在 `@methods` 区生成对应 `<feature><ButtonName>` 方法（PascalCase 方法名）
+- 自定义按钮：需在 `@methods` 区生成对应 `<verb><Feature>` 方法（**动词在前** PascalCase，如 `publish<Feature>`）
 - 所有按钮放在 `<template #footer>` 内
 
 ### 示例
@@ -56,9 +56,9 @@
 生成 template：
 ```vue
 <template #footer>
-  <GvButton type="primary" confirm="false" @click="<feature>Save">保存</GvButton>
+  <GvButton type="primary" confirm="false" @click="save<Feature>">保存</GvButton>
   <GvButton @click="isShow = false">取消</GvButton>
-  <GvButton type="primary" confirm="false" @click="<feature>Publish">发布</GvButton>
+  <GvButton type="primary" confirm="false" @click="publish<Feature>">发布</GvButton>
 </template>
 ```
 
@@ -155,14 +155,14 @@ defineOptions({ name: '<Base>Edit' });
 const props = defineProps({ visible: propTypes.bool.def(false), rowData: propTypes.object, operateType: propTypes.string, title: propTypes.string });
 const emit = defineEmits(['update:visible', 'saved']);
 const { message } = useNotify();
-const { getFormModel } = useUtil();
+// getFormModel 仅在 frontendOnly（§1）与 Variant C 多分区（§5）save 体内用到时解构：const { getFormModel } = useUtil();
 
 const <feature>EditFm = ref<FormInstance>();
 const <feature>EditList = ref<FormItem[]>([]);
 const formKey = computed(() => (!props.visible ? 'closed' : (props.rowData?.id ?? `add-${props.operateType}`)));
 const isShow = computed({ get: () => props.visible, set: (v) => emit('update:visible', v) });
 
-const <feature>Save = async () => {
+const save<Feature> = async () => {
   const fm = <feature>EditFm.value;
   if (!fm) return;
   try {
@@ -184,7 +184,7 @@ watch(() => ({ visible: props.visible, rowId: props.rowData?.id, operateType: pr
     <GvDrawer :title="props.title || (props.rowData?.id ? '编辑' : '新增')" v-model:visible="isShow" size="50%">
       <GvForm :key="formKey" ref="<feature>EditFm" ref-form="<feature>EditFm" :divider="'编辑信息'" :form-list="<feature>EditList" />
       <template #footer>
-        <GvButton type="primary" confirm="false" @click="<feature>Save">保存</GvButton>
+        <GvButton type="primary" confirm="false" @click="save<Feature>">保存</GvButton>
       </template>
     </GvDrawer>
   </div>
@@ -202,7 +202,7 @@ watch(() => ({ visible: props.visible, rowId: props.rowData?.id, operateType: pr
 | import 追加 | `find/save/delete<Feature>DtlApi`、`nextTick`、`create<Feature>EditTableHeadList` |
 | @data 追加 | `<feature>DtlTableList`（TableInstance）、`<feature>DtlTableHeadList`、`search<Feature>DtlData`、`masterId = ref<number>(0)` |
 | @methods 追加 | Dtl 四方法（见下，B / D 共用） |
-| `<feature>Save` 修改 | insert 分支成功后追加 `masterId.value = d.id` |
+| `save<Feature>` 修改 | insert 分支成功后追加 `masterId.value = d.id` |
 | init 修改 | 编辑分支：`masterId.value = row.id` + `nextTick(() => find<Feature>Dtl())`；新增分支：`masterId.value = 0`、`search<Feature>DtlData.value = {}` |
 | @bizData 追加 | `<feature>DtlTableHeadList.value = create<Feature>EditTableHeadList({ save<Feature>Dtl, delete<Feature>Dtl }).value` |
 | template | `size="80%"`；GvForm 后插入子表块（见下） |
@@ -230,34 +230,34 @@ template 增量（插在 GvForm 与 footer 之间）：
 
 ## 5. Variant C：多分区表单 = 基座 + 增量
 
-`## 编辑` 下含多个 `###` 子标题时启用。每个子标题生成一对 `Fm` / `List` 与一个 `:divider` = 子标题文本的 `GvForm`。
+`## 编辑` 下含 **≥2 个 `（GvForm）` 子区**时启用。`（GvDescriptions）` 子区为只读块（§2.1），**不计入**子区数——1 个 GvForm + 1 个 GvDescriptions 仍走 Variant A 基座 + §2.1 增量。每个 GvForm 子区生成一对 `Fm` / `List` 与一个 `:divider` = 子标题文本的 `GvForm`。
 
 | 增量点 | 内容 |
 | --- | --- |
 | import | `create<Feature>EditList` 换成 `create<Feature><Section1>List, create<Feature><Section2>List, …` |
 | @data | 单个 `<feature>EditFm` / `<feature>EditList` 换成每子区一对 `<feature><Section>Fm` / `<feature><Section>List` |
-| @computed 追加 | `const formRefs = computed(() => [<feature><S1>Fm.value, <feature><S2>Fm.value, ...].filter(Boolean))` |
-| `<feature>Save` 主体替换 | 多分区版（见下，C / D 共用） |
+| `save<Feature>` 主体替换 | 多分区版（见下，C / D 共用） |
 | init 修改 | 每子区 `crud.setEditValue(<feature><Section>List.value, row)` / `crud.resetEditValue(...)` |
 | @bizData | 每子区工厂独立赋值（各收 `(actions, props.operateType)`） |
 | template | GvForm ×N：首区 `:key="formKey"`，其余 `:key="`${formKey}-<section>`"`，`:divider` = 各子标题文本 |
 
-`<feature>Save` 多分区版（C / D 共用）：
+`save<Feature>` 多分区版（C / D 共用）：
 
 ```typescript
-const <feature>Save = async () => {
-  const fmNodes = formRefs.value;
-  if (!fmNodes.length) return;
+const save<Feature> = async () => {
+  const fm1 = <feature><S1>Fm.value;
+  const fm2 = <feature><S2>Fm.value;
+  if (!fm1 || !fm2) return;
   try {
-    const ok = await crud.checkForms(fmNodes);
-    if (!ok) return;
-    let model = {};
-    fmNodes.forEach((fm) => { model = { ...model, ...getFormModel(fm) }; });
-    if (props.rowData?.id) { const d = await crud.update(fmNodes[0], props.rowData.id, update<Feature>Api, model); if (d) emit('saved', { type: 'update', data: { ...props.rowData, ...d }, rownums: props.rowData?.rownums }); }
-    else { const d = await crud.save(fmNodes[0], save<Feature>Api, true, model); if (d) emit('saved', { type: 'insert', data: d }); }
+    await Promise.all([fm1.validate(), fm2.validate()]);
+    const model = { ...getFormModel(fm1), ...getFormModel(fm2) };
+    if (props.rowData?.id) { const d = await crud.submit((datas) => update<Feature>Api(props.rowData.id, datas), model); if (d) emit('saved', { type: 'update', data: { ...props.rowData, ...d }, rownums: props.rowData?.rownums }); }
+    else { const d = await crud.submit(save<Feature>Api, model); if (d) emit('saved', { type: 'insert', data: d }); }
   } catch (e) { message(e, 'error'); }
 };
 ```
+
+> 多分区**不**用 `crud.checkForms` / `formRefs`：逐子区 `fm.validate()` 校验，`getFormModel` 合并模型后 `crud.submit` 提交（`crud.save / crud.update` 只读取单个表单内部 model，无法合并多分区）。
 
 ---
 
@@ -269,7 +269,7 @@ const <feature>Save = async () => {
 | --- | --- |
 | import 追加 | Tab 相关 API（`find/save/delete<Feature><TabName>Api` 按需）+ `create<Feature><TabName>TableHeadList` / `create<Feature><TabName>List` |
 | @data 追加 | `activeTab = ref('<第一个 tab 的 name>')`；table tab：`<feature><Tab>TableList` / `...TableHeadList` / `search<Feature><Tab>Data`；form tab：`<feature><Tab>Fm` / `...List`；`masterId = ref<number>(0)` |
-| `<feature>Save` 修改 | insert 分支成功后追加 `masterId.value = d.id` |
+| `save<Feature>` 修改 | insert 分支成功后追加 `masterId.value = d.id` |
 | @methods 追加 | table tab：§4「Dtl 四方法」换 `<TabName>` 复用；form tab：`save<Feature><TabName>`（见下）；`handleTabClick` |
 | init 修改 | 编辑分支：`masterId.value = row.id` + 各 form tab `setEditValue` + `nextTick` 拉各 table tab；新增分支：`masterId = 0`、清空 table tab 数据、各 form tab `resetEditValue` |
 | @bizData 追加 | Tab 工厂赋值（table 收 actions、form 收 `{ dictCB, dictClearCB }`） |

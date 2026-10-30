@@ -212,7 +212,7 @@ src/views/<view>/
 | `crud.insertResult(data, row)` | 列表插入行 |
 | `crud.updateResult(data, row, rownums)` | 列表更新行 |
 | `crud.removeResult(data, index)` | 列表删除行 |
-| `crud.checkForms(fmNodes)` | 多表单校验 |
+| 多分区保存 | 逐子区 `fm.validate()` + `getFormModel` 合并 + `crud.submit`（edit.md §5） |
 
 **导入**：`import { crud } from 'guava-ui'` 或 `import { crud } from '@/hook/service/useCrud'`
 

@@ -74,10 +74,10 @@ const delete<Feature> = (row, index) => {
 
 ### 4.2 编辑页保存（edit）
 
-保存不调 API，向父组件抛 `saved`：
+保存不调 API，向父组件抛 `saved`（方法名动词在前：`save<Feature>`；本片段用到 `getFormModel`，需在 @hook 区追加 `const { getFormModel } = useUtil();`）：
 
 ```typescript
-const <feature>Save = async () => {
+const save<Feature> = async () => {
   const fm = <feature>EditFm.value;
   if (!fm) return;
   try {

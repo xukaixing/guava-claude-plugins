@@ -193,6 +193,6 @@
 - `@hook`：`useI18n` + `useNotify`（`i18n: false` 时省略，见 [\_common.md §2](_common.md#2-i18n-开关)）
 - 无 add/edit：省略 dialog state 和 Edit 组件
 - TableInstance：有 `checkAllEdit()` / `createEditRow()` 时用 `TableInstanceExp`
-- 多分区编辑：`crud.checkForms(fmNodes)` 校验 + `getFormModel` 合并
+- 多分区编辑：逐子区 `fm.validate()` 校验 + `getFormModel` 合并 + `crud.submit` 提交（edit.md §5）
 - 多 Tab：`table` 类型用 `v-show="masterId !== 0"` 控制显隐，`form` 类型始终显示
 - 明细展开：见 [detail.md](detail.md)，本节不重复

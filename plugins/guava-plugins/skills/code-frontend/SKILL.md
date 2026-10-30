@@ -86,7 +86,7 @@ fallback 查找顺序：
 
 **工作流文档一次性读取**（省 API 往返）：动手生成前，在**一条消息内**并行 Read 本任务涉及的全部工作流文档——`SKILL.md`、[_shared.md](_shared.md)、[config-parser.md](config-parser.md)、[conventions.md](conventions.md)、[search-conditions.md](search-conditions.md)、[templates/_common.md](templates/_common.md) 及本任务 pageType 涉及的 [templates/](templates/) 文件、[../../context/front.md](../../context/front.md)。生成过程中直接复用已读内容，**禁止二次 Read**（仅当上下文压缩导致内容丢失时才允许重读个别文件）。
 
-**用法以文档为准**：Gv* / crud / 工具函数（`amountFormat`、`checkForms` 等）的用法以上述已读模板与约定文档为权威，**禁止为确认用法去 grep / 阅读工程源码或 node_modules**（conventions §10 的 API 复用检查和 lint 验证除外）。
+**用法以文档为准**：Gv* / crud / 工具函数（`amountFormat`、`getFormModel` 等）的用法以上述已读模板与约定文档为权威，**禁止为确认用法去 grep / 阅读工程源码或 node_modules**（conventions §10 的 API 复用检查和 lint 验证除外）。
 
 ### 配置文件路径
 

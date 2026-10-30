@@ -114,7 +114,7 @@ infoPage: true             # 生成 <Base>Info.vue（## 详情 小节，见 info
 
 | 按钮 | 行为 |
 | ---- | ---- |
-| 保存 | `crud.checkForms` 校验 + `crud.save / crud.update` 提交 |
+| 保存 | 单表单：`crud.save / crud.update`（内部校验）；多 GvForm 子区：逐子区 `fm.validate()` + `getFormModel` 合并 + `crud.submit` |
 | 取消 | 关闭 Drawer |
 | 其他 | 同名占位方法 |
 
