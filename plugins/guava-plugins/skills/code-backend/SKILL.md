@@ -20,10 +20,11 @@ Step 0：**guava-backend MCP 必查**（同轮复用，禁止重复查询）：
 | 时机 | 工具 |
 |------|------|
 | 写任何后端代码前 | `get_stack`（模块分层 / 版本 / 职责），整轮 1 次 |
-| 用到工具类 / 注解 / 平台服务时 | `search_platform_classes`（用精确类名，整轮 ≤ 3 次），结果当轮复用 |
+| 写任何工具逻辑前（日期 / 加密 / 字符串 / JSON / 文件 / IP…） | `list_utils` 或 `search_utils`（按用途关键字）→ 命中后 `get_util` 确认签名，整轮 ≤ 3 次 |
+| 用到注解 / 平台服务 / 组件类时 | `search_platform_classes`（用精确类名，整轮 ≤ 3 次），结果当轮复用；utils 类不在其中，走上一行 |
 | 需要引入新三方依赖时 | `search_dependencies`（版本以 parent-starter BOM 为准） |
 
-**框架优先原则**：工具/断言/常量/翻译/导出/加解密等能力，**必须优先复用 entity / component / platform 三层框架已提供**的类（经 `search_platform_classes` 确认签名后使用），**禁止自造等价实现**。详见 [conventions.md §常用工具类](conventions.md)。
+**框架优先原则**：工具/断言/常量/翻译/导出/加解密等能力，**必须优先复用 entity / component / platform 三层框架已提供**的类（utils 工具逻辑先经 `list_utils` / `search_utils` / `get_util`，其余经 `search_platform_classes` 确认签名后使用），**禁止自造等价实现**。详见 [conventions.md §常用工具类](conventions.md)。
 
 Step 0.1：**grep 优先，不整读大文件**——`grep -rl "class {Entity}" $GUAVA_BACKEND_ROOT --include=*.java` 确认目标模块是否已有同类实现；仅在需要覆盖 / 端点对齐时 Read 具体文件的相关方法段，**不整读参考大文件**。
 

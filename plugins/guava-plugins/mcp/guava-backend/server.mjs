@@ -109,7 +109,7 @@ const TOOLS = [
   },
   {
     name: 'list_platform_classes',
-    description: 'List platform / component / entity classes (MyUtil, AssertMyUtil, BizCode, BasePO, Map2ObjUtil, TransResultService…). Call before using a utility/annotation/service in generated code.',
+    description: 'List platform / component / entity classes (BizCode, MarkLog, BasePO, Map2ObjUtil, TransResultService…; utils are NOT here — use list_utils). Call before using a utility/annotation/service in generated code.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -132,11 +132,45 @@ const TOOLS = [
     description: 'Get one class detail: package, summary, public method signatures.',
     inputSchema: {
       type: 'object',
-      properties: { name: { type: 'string', description: 'Simple class name, e.g. AssertMyUtil' } },
+      properties: { name: { type: 'string', description: 'Simple class name, e.g. BizCode / MarkLog / BasePO' } },
+      required: ['name'],
+    },
+  },
+  {
+    name: 'list_utils',
+    description: 'List guava-platform-starter utils classes (com.guava.platform.utils.*: 字符串/日期/加解密/JSON/断言/文件/HTTP/Token…). Call BEFORE writing any utility logic in generated Java — prefer these helpers over reinventing.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        category: { type: 'string', description: 'Optional filter: common | file | http | iassert | json | reactive | resource | token' },
+      },
+    },
+  },
+  {
+    name: 'search_utils',
+    description: 'Search utils classes AND their methods by keyword (name / package / summary / method summary). Use when looking for an existing helper for a concrete task (e.g. "日期", "加密", "判空").',
+    inputSchema: {
+      type: 'object',
+      properties: { query: { type: 'string', description: 'Search keyword (Chinese or English)' } },
+      required: ['query'],
+    },
+  },
+  {
+    name: 'get_util',
+    description: 'Get one utils class detail: package, category, summary, public methods with per-method Javadoc summaries. Pass `method` to fetch only the overloads you need. Confirm the exact signature here before using it in generated code.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        name: { type: 'string', description: 'Simple class name, e.g. StrMyUtil / MyUtil / AssertMyUtil' },
+        method: { type: 'string', description: 'Optional method name (or substring) — returns only matching overloads, much smaller response' },
+      },
       required: ['name'],
     },
   },
 ];
+
+// utils live in their own richer index (utils.json); steer callers there
+const UTILS_REDIRECT = 'com.guava.platform.utils.* 工具类在 utils 专用索引（list_utils / search_utils / get_util，带方法用途说明），本索引不含；查工具逻辑请用它们。';
 
 function callTool(name, args = {}) {
   switch (name) {
@@ -148,7 +182,7 @@ function callTool(name, args = {}) {
     case 'list_dependencies': {
       const dep = loadJson('dependencies.json');
       if (!dep) return { error: 'dependencies.json missing — run mcp/generate-backend.mjs on the author machine' };
-      let list = withLiveVersions(dep.dependencies);
+      let list = withLiveVersions(dep.dependencies).map(({ versionRef, ...rest }) => rest);
       if (args.category) {
         const cat = String(args.category).toLowerCase();
         list = list.filter((d) => d.category.toLowerCase().includes(cat));
@@ -191,6 +225,7 @@ function callTool(name, args = {}) {
         ...freshness(),
         count: list.length,
         classes: list.map((c) => ({ name: c.name, kind: c.kind, package: c.package, module: c.module, summary: c.summary, methodCount: c.methods.length })),
+        note: UTILS_REDIRECT,
       };
     }
     case 'search_platform_classes': {
@@ -206,13 +241,79 @@ function callTool(name, args = {}) {
         truncated: hits.length > SEARCH_MAX,
         classes: hits.slice(0, SEARCH_MAX).map((c) => ({ name: c.name, kind: c.kind, package: c.package, module: c.module, summary: c.summary })),
         hint: hits.length > SEARCH_MAX ? `命中 ${hits.length} 条，仅返回前 ${SEARCH_MAX} 条，请用更精确的类名/包名重查` : undefined,
+        note: UTILS_REDIRECT,
       };
     }
     case 'get_platform_class': {
       const cls = loadJson('platform-classes.json');
       const hits = cls ? cls.classes.filter((c) => c.name === args.name) : [];
-      if (!hits.length) return { error: `Class not found: ${args.name}`, hint: 'Try search_platform_classes' };
+      if (!hits.length) return { error: `Class not found: ${args.name}`, hint: 'Try search_platform_classes; 若是 utils 工具类用 search_utils / get_util' };
       return { ...freshness(), matches: hits.length, class: hits[0], sameNameInOtherModules: hits.slice(1).map((c) => `${c.package}.${c.name} (${c.module})`) };
+    }
+    case 'list_utils': {
+      const u = loadJson('utils.json');
+      if (!u) return { error: 'utils.json missing — run mcp/generate-backend.mjs on the author machine' };
+      let list = u.classes;
+      if (args.category) {
+        const cat = String(args.category).toLowerCase();
+        list = list.filter((c) => c.category === cat || (c.categoryLabel || '').toLowerCase().includes(cat));
+      }
+      return {
+        ...freshness(),
+        rule: u.rule,
+        count: list.length,
+        categories: [...new Set(u.classes.map((c) => c.category))],
+        classes: list.map((c) => ({ name: c.name, package: c.package, category: c.category, categoryLabel: c.categoryLabel, summary: c.summary, methodCount: c.methods.length })),
+      };
+    }
+    case 'search_utils': {
+      const u = loadJson('utils.json');
+      if (!u) return { error: 'utils.json missing' };
+      const q = String(args.query || '').toLowerCase();
+      const hits = [];
+      for (const c of u.classes) {
+        const classHit =
+          c.name.toLowerCase().includes(q) ||
+          c.package.toLowerCase().includes(q) ||
+          (c.summary || '').toLowerCase().includes(q) ||
+          (c.categoryLabel || '').toLowerCase().includes(q);
+        const matchedMethods = c.methods.filter(
+          (m) => m.name.toLowerCase().includes(q) || (m.summary || '').toLowerCase().includes(q)
+        );
+        if (classHit || matchedMethods.length) {
+          hits.push({ class: c, matchedMethods: classHit ? c.methods.length : matchedMethods.length });
+        }
+      }
+      const brief = (c) => ({
+        name: c.name,
+        package: c.package,
+        category: c.category,
+        summary: c.summary,
+        matchedMethods: hits.find((h) => h.class === c)?.matchedMethods ?? 0,
+      });
+      return {
+        ...freshness(),
+        rule: u.rule,
+        count: hits.length,
+        truncated: hits.length > SEARCH_MAX,
+        classes: hits.slice(0, SEARCH_MAX).map((h) => brief(h.class)),
+        hint: hits.length > SEARCH_MAX ? `命中 ${hits.length} 条，仅返回前 ${SEARCH_MAX} 条，请用更精确的关键字重查` : undefined,
+      };
+    }
+    case 'get_util': {
+      const u = loadJson('utils.json');
+      const hits = u ? u.classes.filter((c) => c.name === args.name) : [];
+      if (!hits.length) return { error: `Utils class not found: ${args.name}`, hint: 'Try search_utils / list_utils' };
+      const cls = hits[0];
+      if (args.method) {
+        const q = String(args.method).toLowerCase();
+        const matched = cls.methods.filter((m) => m.name.toLowerCase() === q || m.name.toLowerCase().includes(q));
+        if (!matched.length) return { ...freshness(), error: `Method not found: ${args.method} in ${args.name}`, hint: `Methods: ${cls.methods.map((m) => m.name).slice(0, 20).join(', ')}${cls.methods.length > 20 ? '…' : ''}` };
+        return { ...freshness(), rule: u.rule, class: { ...cls, methods: matched }, methodFilter: args.method };
+      }
+      // documented methods first — undocumented overloads rarely decide codegen
+      const methods = [...cls.methods].sort((a, b) => Number(!a.summary) - Number(!b.summary));
+      return { ...freshness(), rule: u.rule, class: { ...cls, methods } };
     }
     default:
       throw new Error(`Unknown tool: ${name}`);
@@ -221,7 +322,7 @@ function callTool(name, args = {}) {
 
 // Disk cache keyed on the snapshot files (regenerating invalidates automatically)
 const cachedCallTool = withDiskCache(SERVER_INFO.name, callTool, () =>
-  ['stack.json', 'dependencies.json', 'platform-classes.json'].map((f) => path.join(DATA_DIR, f))
+  ['stack.json', 'dependencies.json', 'platform-classes.json', 'utils.json'].map((f) => path.join(DATA_DIR, f))
 );
 
 createStdioServer({ ...SERVER_INFO, tools: TOOLS, callTool: cachedCallTool });

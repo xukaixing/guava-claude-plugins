@@ -20,7 +20,7 @@
 - [ ] ServiceImpl 工具方法已 static import（`isNotEmpty` / `isEmpty` / `getConditionsWhere` / `getValue`），HashMap 用 `HashMap.newHashMap(16)`
 - [ ] 接口 `throws IOException` 的实现方法按实际收窄（无受检异常则不写 `throws`、无 `IOException` import）
 - [ ] 未重复生成已有端点；仅补充缺失方法
-- [ ] 工具/常量/翻译/校验等能力均复用 entity / component / platform 框架现成类（未自造等价实现）；用前已 `search_platform_classes` 核对签名
+- [ ] 工具/常量/翻译/校验等能力均复用 entity / component / platform 框架现成类（未自造等价实现）；utils 工具逻辑用前已 `list_utils` / `search_utils` / `get_util` 核对，其余已 `search_platform_classes` 核对签名
 
 ## 2. 代码安全
 

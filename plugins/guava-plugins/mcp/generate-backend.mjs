@@ -7,6 +7,7 @@
  *   mcp/guava-backend/data/stack.json           module layering + versions
  *   mcp/guava-backend/data/dependencies.json    parent-starter BOM catalog
  *   mcp/guava-backend/data/platform-classes.json platform/component/entity class index
+ *   mcp/guava-backend/data/utils.json           utils class index (per-method Javadoc summaries)
  *
  * Usage (from anywhere):
  *   node plugins/guava-plugins/mcp/generate-backend.mjs [/path/to/guava-pro]
@@ -173,6 +174,8 @@ function indexJavaSources(srcRoot, moduleName) {
         const pkg = text.match(/^\s*package\s+([\w.]+)\s*;/m);
         const type = text.match(/\bpublic\s+(?:final\s+|abstract\s+)?(class|interface|enum|record|@interface)\s+(\w+)/);
         if (!pkg || !type) continue;
+        // utils has its own richer index (utils.json) — keep it out of this one
+        if (moduleName === 'guava-platform-starter' && pkg[1].startsWith('com.guava.platform.utils')) continue;
         const kind = type[1] === '@interface' ? 'annotation' : type[1];
         const typePos = text.indexOf(type[0]);
         classes.push({
@@ -288,7 +291,126 @@ for (const mod of classModules) {
 classesJson.count = classCount;
 fs.writeFileSync(path.join(dataDir, 'platform-classes.json'), JSON.stringify(classesJson, null, 2));
 
+// ---- utils index (guava-platform-starter com.guava.platform.utils.*) --------
+// Richer than platform-classes.json: one entry per public method, each with the
+// <p> summary of its own Javadoc, so codegen can pick the right helper by
+// purpose instead of guessing from a bare signature.
+
+const UTIL_CATEGORIES = {
+  common: '通用（字符串 / 日期 / 数字 / 集合 / 数组 / 加解密 / Spring 上下文）',
+  file: '文件（读写 / 上传下载）',
+  http: 'HTTP / 网络（IP 解析 / Web 上下文）',
+  iassert: '断言 / 参数校验（业务异常）',
+  json: 'JSON（Jackson 序列化 / 转换器）',
+  reactive: '响应式 / 反射',
+  resource: '资源配置（yml / properties）',
+  token: '令牌 / JWT',
+};
+
+const METHOD_DOC_MAX = 100;
+
+/** `<p>` first sentence of the Javadoc block immediately preceding `pos` (else ''). */
+function methodSummary(javaText, pos) {
+  const before = javaText.slice(Math.max(0, pos - 4000), pos);
+  const docEnd = before.lastIndexOf('*/');
+  if (docEnd < 0) return '';
+  // accept the doc when only annotations (@Override / @SuppressWarnings …) sit between it and the method
+  if (!/^(@[\w.]+(\([^)]*\))?\s*)*$/.test(before.slice(docEnd + 2).trim())) return '';
+  const docStart = before.lastIndexOf('/**', docEnd);
+  if (docStart < 0) return '';
+  const lines = [];
+  for (const raw of before.slice(docStart + 3, docEnd).split('\n')) {
+    const l = raw.replace(/^\s*\*\s?/, '').trim();
+    if (!l || l.startsWith('@')) continue;
+    if (/^Modification History/.test(l)) break; // drop the change-log table that follows
+    lines.push(l);
+  }
+  const text = lines
+    .join(' ')
+    .replace(/<\/?p>/g, '')
+    .trim();
+  if (!text) return '';
+  // first sentence / clause is enough for an index
+  const cut = text.search(/[。！？!?]|(?<=[^.A-Za-z0-9])\./);
+  const short = cut > 0 ? text.slice(0, cut + 1) : text;
+  return short.length > METHOD_DOC_MAX ? short.slice(0, METHOD_DOC_MAX) + '…' : short;
+}
+
+/**
+ * public methods of a utils class: [{ name, signature, summary }].
+ * Line-anchored declarations with a strict two-identifier type+name pattern —
+ * nested control flow ("if (…)") and constructor calls ("new Thread(") either
+ * fail the pattern or are filtered by name / leading keyword, so indentation
+ * style (2-space Allman vs 4-space) does not matter.
+ */
+function utilMethods(javaText, className) {
+  const methods = [];
+  const declRe = /^\s+(?=\S)(?:public\s+)?(?:static\s+|final\s+|abstract\s+)*(?:<[^>\n]+>\s+)?[\w.$]+(?:<[^;{}()]*>)?(?:\[\])?\s+(\w+)\s*\(/gm;
+  let m;
+  while ((m = declRe.exec(javaText)) && methods.length < METHODS_PER_CLASS_MAX) {
+    const name = m[1];
+    if (/^(if|for|while|switch|catch|return|throw|else|do|try|synchronized|new)$/.test(name)) continue;
+    if (name === className) continue; // constructor
+    // full signature: declaration start → first { or ; (body / end), whitespace collapsed
+    const head = javaText.slice(m.index, m.index + SIGNATURE_MAX + 200);
+    const cut = head.search(/[{;]/);
+    if (cut < 0) continue;
+    let sig = head.slice(0, cut).replace(/\s+/g, ' ').trim();
+    if (/^new\s/.test(sig)) continue; // constructor call misread as a declaration
+    if (/^(return|throw)\s/.test(sig)) continue; // nested call/throw misread as a declaration
+    if (sig.length > SIGNATURE_MAX) sig = sig.slice(0, SIGNATURE_MAX) + '…';
+    methods.push({ name, signature: sig, summary: methodSummary(javaText, m.index) });
+  }
+  return methods;
+}
+
+function indexUtils(utilsRoot, moduleName) {
+  const classes = [];
+  if (!fs.existsSync(utilsRoot)) return classes;
+  const stack = [utilsRoot];
+  while (stack.length) {
+    const dir = stack.pop();
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) stack.push(full);
+      else if (entry.name.endsWith('.java')) {
+        const text = fs.readFileSync(full, 'utf8');
+        const pkg = text.match(/^\s*package\s+([\w.]+)\s*;/m);
+        const type = text.match(/\bpublic\s+(?:final\s+|abstract\s+)?(class|interface|enum|record|@interface)\s+(\w+)/);
+        if (!pkg || !type) continue;
+        const rel = path.relative(utilsRoot, dir);
+        const category = rel.split(path.sep)[0] || 'common';
+        const typePos = text.indexOf(type[0]);
+        classes.push({
+          module: moduleName,
+          name: type[2],
+          kind: type[1] === '@interface' ? 'annotation' : type[1],
+          package: pkg[1],
+          category,
+          categoryLabel: UTIL_CATEGORIES[category] || category,
+          summary: javadocSummary(text, typePos),
+          methods: utilMethods(text, type[2]),
+        });
+      }
+    }
+  }
+  return classes.sort((a, b) => a.category.localeCompare(b.category) || a.name.localeCompare(b.name));
+}
+
+const platformModule = 'guava-platform-starter';
+const utilsRoot = path.join(proRoot, platformModule, 'src', 'main', 'java', 'com', 'guava', 'platform', 'utils');
+const utilsList = indexUtils(utilsRoot, platformModule);
+const utilsJson = {
+  generatedAt: new Date().toISOString(),
+  source: { repo: 'guava-pro', module: platformModule, root: 'src/main/java/com/guava/platform/utils' },
+  rule: '生成 Java 代码时优先复用这些 utils 工具类（经 get_util 确认签名后使用），禁止自造等价实现。',
+  count: utilsList.length,
+  classes: utilsList,
+};
+fs.writeFileSync(path.join(dataDir, 'utils.json'), JSON.stringify(utilsJson, null, 2));
+
 console.log(`[generate-backend] dependencies: ${bom.length} (categories: ${dependenciesJson.categories.join(', ')})`);
 console.log(`[generate-backend] stack layers:  ${stackJson.layers.map((l) => `${l.modules.length}@${l.title}`).join(' | ')}`);
 console.log(`[generate-backend] classes:       ${classCount}`);
+console.log(`[generate-backend] utils:         ${utilsList.length} (${[...new Set(utilsList.map((u) => u.category))].join(', ')})`);
 console.log('[generate-backend] done.');

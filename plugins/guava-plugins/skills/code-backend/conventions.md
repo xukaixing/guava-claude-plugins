@@ -172,7 +172,11 @@ transHash.put("createTime", "date|" + FormatConstant.SIMPLE_DATE_TIME_FORMAT);
 
 ## 常用工具类
 
-**优先复用三层框架（entity / component / platform）已提供的能力，不自造等价实现。** 用前先 `guava-backend` MCP `search_platform_classes` 确认类与方法签名：
+**优先复用三层框架（entity / component / platform）已提供的能力，不自造等价实现。** 用前先 `guava-backend` MCP 确认类与方法签名：
+
+- **写任何工具逻辑前（字符串处理 / 日期格式化 / 加解密 / JSON 转换 / 文件 / IP / 随机数 / 反射…）**：先 `list_utils` 或 `search_utils`（按用途关键字，如 `日期`、`加密`、`判空`），命中后 `get_util` 确认签名再用——`com.guava.platform.utils.*` 已全部入库（含每个 public 方法的用途说明）
+- 工具类 / 注解 / 平台服务（`BizCode` / `MarkLog` / `TransResultService` / `ExcelApiService` / `BasePO` / `Map2ObjUtil`…）：`search_platform_classes`（用精确类名）
+- 禁止：自造与 utils 等价的实现、引入 BOM 未托管的三方工具库
 
 | 层 | 类 | 用途 |
 |----|----|------|
@@ -190,6 +194,15 @@ transHash.put("createTime", "date|" + FormatConstant.SIMPLE_DATE_TIME_FORMAT);
 | component | `PasswordUtils` / `PasswordEncoder` | 密码盐值与加密 |
 | component | `DicConstant` / `FormatConstant` / `RedisConstant` | 字典值 / 日期格式 / Redis key 常量 |
 | entity | `BasePO` / `XxxPO.toMaps()` | PO 基类 / PO 转 Map |
+
+utils 类目速览（全量与每个方法的用途以 `list_utils` / `get_util` 为准，随快照更新）：
+
+| 类目 | 覆盖 |
+|------|------|
+| common | 字符串 / 日期 / 随机数 / 集合 / 数组 / AES / RSA / Spring 上下文 / 异常 / Web（MVC·Flux·Servlet） |
+| iassert | 断言与参数校验（`AssertMyUtil`） |
+| json | Jackson 序列化、请求参数转换器 |
+| file · http · reactive · resource · token | 文件 / IP 与 Web 上下文 / 反射 / yml·properties 配置 / JWT |
 
 ## 代码风格
 

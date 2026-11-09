@@ -5,10 +5,11 @@
 ## 数据源
 
 - **guava-parent-starter**（BOM）：`gradle/libs.versions.toml` + `build.gradle.kts` → 全量依赖 + 版本（`dependencies.json`）
-- **guava-platform-starter**（底层框架，依赖 entity-starter / component-starter）：`src/main/java` 类索引（`platform-classes.json`）
+- **guava-platform-starter**（底层框架，依赖 entity-starter / component-starter）：`src/main/java` 类索引（`platform-classes.json`，**不含** `com.guava.platform.utils.*`——后者在 utils.json 有专属富索引）
+- **guava-platform-starter utils**：`com.guava.platform.utils.*` 工具类索引（`utils.json`，比 platform-classes 多每个 public 方法的 Javadoc 用途说明）
 - **模块分层**：`stack.json`（BOM → component → entity → platform → 业务工程）
 
-三个文件由**作者机**脚本 `mcp/generate-backend.mjs` 从 guava-pro checkout 生成（vendored 快照，勿手改）：
+四个文件由**作者机**脚本 `mcp/generate-backend.mjs` 从 guava-pro checkout 生成（vendored 快照，勿手改）：
 
 ```bash
 node mcp/generate-backend.mjs [/path/to/guava-pro]   # 或 GUAVA_PRO_ROOT
@@ -22,9 +23,12 @@ node mcp/generate-backend.mjs [/path/to/guava-pro]   # 或 GUAVA_PRO_ROOT
 | `list_dependencies` | parent-starter BOM 全量依赖（可 `category` 过滤） |
 | `search_dependencies` | 按关键字查依赖拿托管版本（引入三方库前必查） |
 | `get_dependency` | 单依赖详情 |
-| `list_platform_classes` | 平台类索引（可 `module` / `kind` 过滤） |
+| `list_platform_classes` | 平台类索引（可 `module` / `kind` 过滤；utils 类不在其中） |
 | `search_platform_classes` | 按关键字查平台类 |
 | `get_platform_class` | 单类详情（包 / 用途 / public 方法签名） |
+| `list_utils` | utils 工具类全量清单（可 `category` 过滤：common / file / http / iassert / json / reactive / resource / token） |
+| `search_utils` | 按用途关键字查 utils 类与方法（中/英文，如 `日期`、`加密`、`判空`） |
+| `get_util` | 单工具类详情（包 / 类目 / 每个 public 方法的签名 + Javadoc 用途说明） |
 
 ## 新鲜度
 
@@ -34,4 +38,4 @@ node mcp/generate-backend.mjs [/path/to/guava-pro]   # 或 GUAVA_PRO_ROOT
 
 ## 使用约定（code-backend SKILL 强制）
 
-写 Controller / Service / ServiceImpl / PO 前：先 `get_stack`；用到工具类 / 注解 / 平台服务（`MyUtil` / `AssertMyUtil` / `BizCode` / `MarkLog` / `TransResultService` / `ExcelApiService` / `BasePO` / `Map2ObjUtil`…）时 `search_platform_classes` 确认包路径与签名；需要新三方依赖时 `search_dependencies` 确认 BOM 是否已托管。同轮复用，禁止重复查询。
+写 Controller / Service / ServiceImpl / PO 前：先 `get_stack`；**写任何工具逻辑前（日期 / 加密 / 字符串 / JSON / 文件 / IP…）先 `list_utils` / `search_utils`，命中后 `get_util` 确认签名**（只关心单个方法时给 `get_util` 传 `method` 参数，响应更小）；用到注解 / 平台服务 / 组件类（`BizCode` / `MarkLog` / `TransResultService` / `ExcelApiService` / `BasePO` / `Map2ObjUtil`…）时 `search_platform_classes` 确认包路径与签名；需要新三方依赖时 `search_dependencies` 确认 BOM 是否已托管。同轮复用，禁止重复查询。

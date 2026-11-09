@@ -1,0 +1,1656 @@
+{
+  "generatedAt": "2026-11-09T06:42:18.089Z",
+  "source": {
+    "repo": "guava-pro",
+    "module": "guava-platform-starter",
+    "root": "src/main/java/com/guava/platform/utils"
+  },
+  "rule": "生成 Java 代码时优先复用这些 utils 工具类（经 get_util 确认签名后使用），禁止自造等价实现。",
+  "count": 30,
+  "classes": [
+    {
+      "module": "guava-platform-starter",
+      "name": "AESMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.common",
+      "category": "common",
+      "categoryLabel": "通用（字符串 / 日期 / 数字 / 集合 / 数组 / 加解密 / Spring 上下文）",
+      "summary": "",
+      "methods": [
+        {
+          "name": "aesDecrypt",
+          "signature": "public static String aesDecrypt(String encrypt)",
+          "summary": "aes解密"
+        },
+        {
+          "name": "aesEncrypt",
+          "signature": "public static String aesEncrypt(String content)",
+          "summary": "aes加密"
+        },
+        {
+          "name": "binary",
+          "signature": "public static String binary(byte[] bytes, int radix)",
+          "summary": "将byte[]转为各种进制的字符串"
+        },
+        {
+          "name": "base64Encode",
+          "signature": "public static String base64Encode(byte[] bytes)",
+          "summary": "base 64 encode"
+        },
+        {
+          "name": "base64Decode",
+          "signature": "public static byte[] base64Decode(String base64Code) throws IOException",
+          "summary": "base 64 decode"
+        },
+        {
+          "name": "aesEncryptToBytes",
+          "signature": "public static byte[] aesEncryptToBytes(String content, String encryptKey) throws Exception",
+          "summary": "AES加密"
+        },
+        {
+          "name": "aesEncrypt",
+          "signature": "public static String aesEncrypt(String content, String encryptKey) throws Exception",
+          "summary": "AES加密为base 64 code"
+        },
+        {
+          "name": "aesDecryptByBytes",
+          "signature": "public static String aesDecryptByBytes(byte[] encryptBytes, String decryptKey) throws Exception",
+          "summary": "AES解密"
+        },
+        {
+          "name": "aesDecrypt",
+          "signature": "public static String aesDecrypt(String encryptStr, String decryptKey) throws Exception",
+          "summary": "将base 64 code AES解密"
+        },
+        {
+          "name": "decryptParam",
+          "signature": "public static String decryptParam(String aes, String params)",
+          "summary": ""
+        },
+        {
+          "name": "main",
+          "signature": "public static void main(String[] args) throws Exception",
+          "summary": "测试"
+        }
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ArrayMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.common",
+      "category": "common",
+      "categoryLabel": "通用（字符串 / 日期 / 数字 / 集合 / 数组 / 加解密 / Spring 上下文）",
+      "summary": "数组的工具类",
+      "methods": [
+        {
+          "name": "toObjectArray",
+          "signature": "public static Byte[] toObjectArray(byte[] array)",
+          "summary": "将原始类型数组转换成对象类型数组"
+        },
+        {
+          "name": "toObjectArray",
+          "signature": "public static Short[] toObjectArray(short[] array)",
+          "summary": "将原始类型数组转换成对象类型数组"
+        },
+        {
+          "name": "toObjectArray",
+          "signature": "public static Integer[] toObjectArray(int[] array)",
+          "summary": "将原始类型数组转换成对象类型数组"
+        },
+        {
+          "name": "toObjectArray",
+          "signature": "public static Long[] toObjectArray(long[] array)",
+          "summary": "将原始类型数组转换成对象类型数组"
+        },
+        {
+          "name": "toObjectArray",
+          "signature": "public static Float[] toObjectArray(float[] array)",
+          "summary": "将原始类型数组转换成对象类型数组"
+        },
+        {
+          "name": "toObjectArray",
+          "signature": "public static Double[] toObjectArray(double[] array)",
+          "summary": "将原始类型数组转换成对象类型数组"
+        },
+        {
+          "name": "toObjectArray",
+          "signature": "public static Character[] toObjectArray(char[] array)",
+          "summary": "将原始类型数组转换成对象类型数组"
+        },
+        {
+          "name": "toObjectArray",
+          "signature": "public static Boolean[] toObjectArray(boolean[] array)",
+          "summary": "将原始类型数组转换成对象类型数组"
+        },
+        {
+          "name": "toPrimitiveArray",
+          "signature": "public static byte[] toPrimitiveArray(Byte[] array)",
+          "summary": "将对象类型数组转换成原始类型数组"
+        },
+        {
+          "name": "toPrimitiveArray",
+          "signature": "public static short[] toPrimitiveArray(Short[] array)",
+          "summary": "将对象类型数组转换成原始类型数组"
+        },
+        {
+          "name": "toPrimitiveArray",
+          "signature": "public static int[] toPrimitiveArray(Integer[] array)",
+          "summary": "将对象类型数组转换成原始类型数组"
+        },
+        {
+          "name": "toPrimitiveArray",
+          "signature": "public static long[] toPrimitiveArray(Long[] array)",
+          "summary": "将对象类型数组转换成原始类型数组"
+        },
+        {
+          "name": "toPrimitiveArray",
+          "signature": "public static float[] toPrimitiveArray(Float[] array)",
+          "summary": "将对象类型数组转换成原始类型数组"
+        },
+        {
+          "name": "toPrimitiveArray",
+          "signature": "public static double[] toPrimitiveArray(Double[] array)",
+          "summary": "将对象类型数组转换成原始类型数组"
+        },
+        {
+          "name": "toPrimitiveArray",
+          "signature": "public static char[] toPrimitiveArray(Character[] array)",
+          "summary": "将对象类型数组转换成原始类型数组"
+        },
+        {
+          "name": "toPrimitiveArray",
+          "signature": "public static boolean[] toPrimitiveArray(Boolean[] array)",
+          "summary": "将对象类型数组转换成原始类型数组"
+        },
+        {
+          "name": "getLength",
+          "signature": "public static int getLength(Object array)",
+          "summary": "Null-safe 获取数组长度"
+        },
+        {
+          "name": "containsNull",
+          "signature": "public static boolean containsNull(Object[] array)",
+          "summary": "判断对象数组中是否含有null元素"
+        },
+        {
+          "name": "filterNull",
+          "signature": "public static Object[] filterNull(Object[] array)",
+          "summary": "过滤对象数组中null元素"
+        },
+        {
+          "name": "join",
+          "signature": "public static String join(String[] array)",
+          "summary": "将字符串array转换为字符串"
+        }
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "CollectionMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.common",
+      "category": "common",
+      "categoryLabel": "通用（字符串 / 日期 / 数字 / 集合 / 数组 / 加解密 / Spring 上下文）",
+      "summary": "集合类型的工具类",
+      "methods": [
+        {
+          "name": "isEmpty",
+          "signature": "public static boolean isEmpty(Collection<?> collection)",
+          "summary": "判断Collection<?"
+        },
+        {
+          "name": "isEmpty",
+          "signature": "public static boolean isEmpty(Map<?, ?> map)",
+          "summary": "判断Map<?"
+        },
+        {
+          "name": "containsNull",
+          "signature": "public static boolean containsNull(Collection<?> collection)",
+          "summary": "判断Collection<?"
+        },
+        {
+          "name": "filterNull",
+          "signature": "public static void filterNull(Collection<?> collection)",
+          "summary": "过滤Collection<?"
+        },
+        {
+          "name": "defaultIfEmpty",
+          "signature": "public static <T> Collection<T> defaultIfEmpty(Collection<T> collection, Collection<T> defaultValue)",
+          "summary": "如果collection为null/empty则返回defaultValue否则原值返回"
+        },
+        {
+          "name": "defaultIfEmpty",
+          "signature": "public static <T> List<T> defaultIfEmpty(List<T> collection, List<T> defaultValue)",
+          "summary": "如果collection为null/empty则返回defaultValue否则原值返回"
+        },
+        {
+          "name": "defaultIfEmpty",
+          "signature": "public static <T> Set<T> defaultIfEmpty(Set<T> collection, Set<T> defaultValue)",
+          "summary": "如果collection为null/empty则返回defaultValue否则原值返回"
+        },
+        {
+          "name": "defaultIfEmpty",
+          "signature": "public static <K, V> Map<K, V> defaultIfEmpty(Map<K, V> map, Map<K, V> defaultValue)",
+          "summary": "如果map为null/empty则返回defaultValue否则原值返回"
+        }
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "DateMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.common",
+      "category": "common",
+      "categoryLabel": "通用（字符串 / 日期 / 数字 / 集合 / 数组 / 加解密 / Spring 上下文）",
+      "summary": "日期工具类",
+      "methods": [
+        {
+          "name": "getTimeStamp",
+          "signature": "public static Long getTimeStamp(LocalDateTime localDateTime)",
+          "summary": "LocalDateTime 转时间戳"
+        },
+        {
+          "name": "fromTimeStamp",
+          "signature": "public static LocalDateTime fromTimeStamp(Long timeStamp)",
+          "summary": "时间戳转LocalDateTime"
+        },
+        {
+          "name": "toDate",
+          "signature": "public static Date toDate(LocalDateTime localDateTime)",
+          "summary": "LocalDateTime 转 Date Jdk8 后 不推荐使用 {@link Date} Date"
+        },
+        {
+          "name": "toDate",
+          "signature": "public static Date toDate(LocalDate localDate)",
+          "summary": "LocalDate 转 Date Jdk8 后 不推荐使用 {@link Date} Date"
+        },
+        {
+          "name": "toLocalDateTime",
+          "signature": "public static LocalDateTime toLocalDateTime(Date date)",
+          "summary": "Date转 LocalDateTime Jdk8 后 不推荐使用 {@link Date} Date"
+        },
+        {
+          "name": "localDateTimeFormat",
+          "signature": "public static String localDateTimeFormat(LocalDateTime localDateTime, String patten)",
+          "summary": "日期 格式化"
+        },
+        {
+          "name": "localDateFormat",
+          "signature": "public static String localDateFormat(LocalDate localDate, String patten)",
+          "summary": ""
+        },
+        {
+          "name": "localDateTimeFormat",
+          "signature": "public static String localDateTimeFormat(LocalDateTime localDateTime, DateTimeFormatter df)",
+          "summary": "日期 格式化"
+        },
+        {
+          "name": "localDateTimeFormatyMdHms",
+          "signature": "public static String localDateTimeFormatyMdHms(LocalDateTime localDateTime)",
+          "summary": "日期格式化 yyyy-MM-dd HH:mm:ss"
+        },
+        {
+          "name": "localDateTimeFormatyMd",
+          "signature": "public String localDateTimeFormatyMd(LocalDateTime localDateTime)",
+          "summary": "日期格式化 yyyy-MM-dd"
+        },
+        {
+          "name": "parseLocalDateTimeFormat",
+          "signature": "public static LocalDateTime parseLocalDateTimeFormat(String localDateTime, String pattern)",
+          "summary": "字符串转 LocalDateTime ，字符串格式 yyyy-MM-dd"
+        },
+        {
+          "name": "parseLocalDateTimeFormat",
+          "signature": "public static LocalDateTime parseLocalDateTimeFormat(String localDateTime, DateTimeFormatter dateTimeFormatter)",
+          "summary": "字符串转 LocalDateTime ，字符串格式 yyyy-MM-dd"
+        },
+        {
+          "name": "parseLocalDateTimeFormatyMdHms",
+          "signature": "public static LocalDateTime parseLocalDateTimeFormatyMdHms(String localDateTime)",
+          "summary": "字符串转 LocalDateTime ，字符串格式 yyyy-MM-dd HH:mm:ss"
+        },
+        {
+          "name": "parseLocalDateFormat",
+          "signature": "public static LocalDate parseLocalDateFormat(String localDateTime)",
+          "summary": ""
+        },
+        {
+          "name": "parseLocalDateFormat",
+          "signature": "public static LocalDate parseLocalDateFormat(String localDateTime, String pattern)",
+          "summary": ""
+        },
+        {
+          "name": "getSecondsNextEarlyMorning",
+          "signature": "public static Long getSecondsNextEarlyMorning()",
+          "summary": "判断当前时间距离第二天凌晨的毫秒数"
+        },
+        {
+          "name": "main",
+          "signature": "public static void main(String[] args)",
+          "summary": ""
+        }
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "LangMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.common",
+      "category": "common",
+      "categoryLabel": "通用（字符串 / 日期 / 数字 / 集合 / 数组 / 加解密 / Spring 上下文）",
+      "summary": "多语言翻译工具",
+      "methods": [
+        {
+          "name": "get",
+          "signature": "public static String get(String code, Object... args)",
+          "summary": "根据消息键和参数 获取消息 委托给spring messageSource"
+        }
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "MenuComparator",
+      "kind": "class",
+      "package": "com.guava.platform.utils.common",
+      "category": "common",
+      "categoryLabel": "通用（字符串 / 日期 / 数字 / 集合 / 数组 / 加解密 / Spring 上下文）",
+      "summary": "菜单对象比较类",
+      "methods": [
+        {
+          "name": "compare",
+          "signature": "public int compare(Object o1, Object o2)",
+          "summary": ""
+        }
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "MyPropsConfig",
+      "kind": "class",
+      "package": "com.guava.platform.utils",
+      "category": "common",
+      "categoryLabel": "通用（字符串 / 日期 / 数字 / 集合 / 数组 / 加解密 / Spring 上下文）",
+      "summary": "读取application.yml自定义属性类",
+      "methods": [
+        {
+          "name": "getExectime",
+          "signature": "public Map<String, Long> getExectime()",
+          "summary": ""
+        },
+        {
+          "name": "setExectime",
+          "signature": "public void setExectime(Map<String, Long> exectime)",
+          "summary": ""
+        }
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "MyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.common",
+      "category": "common",
+      "categoryLabel": "通用（字符串 / 日期 / 数字 / 集合 / 数组 / 加解密 / Spring 上下文）",
+      "summary": "公共类",
+      "methods": [
+        {
+          "name": "getValue",
+          "signature": "public static String getValue(HttpServletRequest request, String para)",
+          "summary": "request的getParameter方法判断null"
+        },
+        {
+          "name": "getValue",
+          "signature": "public static String getValue(Object o)",
+          "summary": "转换object判断value"
+        },
+        {
+          "name": "getHeaderValue",
+          "signature": "public static String getHeaderValue(HttpServletRequest request, String para)",
+          "summary": "获取请求头中参数"
+        },
+        {
+          "name": "isempty",
+          "signature": "public static boolean isempty(String s)",
+          "summary": "判断字符串是否是空"
+        },
+        {
+          "name": "getRequestParameter",
+          "signature": "public static String getRequestParameter(RequestWrapper wrapperRequest)",
+          "summary": "获取请求参数包括form表单和json参数"
+        },
+        {
+          "name": "getConditions",
+          "signature": "public static HashMap<String, QcBean> getConditions(String params, Page pm)",
+          "summary": "解析查询条件为map对象"
+        },
+        {
+          "name": "getConditionsWhere",
+          "signature": "public static String getConditionsWhere(String params, Page pm)",
+          "summary": "解析查询条件为带where过滤条件"
+        },
+        {
+          "name": "getCurrentDate",
+          "signature": "public static java.util.Date getCurrentDate()",
+          "summary": "获取当前时间"
+        },
+        {
+          "name": "getDate",
+          "signature": "public static String getDate(String s)",
+          "summary": "获取指定格式时间"
+        },
+        {
+          "name": "getDate",
+          "signature": "public static String getDate(String exp, java.util.Date date)",
+          "summary": ""
+        },
+        {
+          "name": "getBrowser",
+          "signature": "public static String getBrowser(HttpServletRequest request)",
+          "summary": "获取浏览器信息"
+        },
+        {
+          "name": "getMethodParams",
+          "signature": "public static String getMethodParams(Method method, Object[] args)",
+          "summary": "根据方法和传入的参数获取请求参数"
+        }
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "RandomMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.common",
+      "category": "common",
+      "categoryLabel": "通用（字符串 / 日期 / 数字 / 集合 / 数组 / 加解密 / Spring 上下文）",
+      "summary": "生成随机数工具类",
+      "methods": [
+        {
+          "name": "randomString",
+          "signature": "public static String randomString(int length)",
+          "summary": ""
+        },
+        {
+          "name": "randomNumberString",
+          "signature": "public static String randomNumberString(int length)",
+          "summary": ""
+        },
+        {
+          "name": "randomColor",
+          "signature": "public static Color randomColor(int fc, int bc)",
+          "summary": ""
+        },
+        {
+          "name": "nextInt",
+          "signature": "public static int nextInt(int bound)",
+          "summary": ""
+        }
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "RsaMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.common",
+      "category": "common",
+      "categoryLabel": "通用（字符串 / 日期 / 数字 / 集合 / 数组 / 加解密 / Spring 上下文）",
+      "summary": "Rsa 工具类，公钥私钥生成，加解密 https://www.cnblogs.com/nihaorz/p/10690643.html",
+      "methods": [
+        {
+          "name": "main",
+          "signature": "public static void main(String[] args) throws Exception",
+          "summary": ""
+        },
+        {
+          "name": "decryptByPublicKey",
+          "signature": "public static String decryptByPublicKey(String publicKeyText, String text) throws Exception",
+          "summary": "公钥解密"
+        },
+        {
+          "name": "encryptByPrivateKey",
+          "signature": "public static String encryptByPrivateKey(String privateKeyText, String text) throws Exception",
+          "summary": "私钥加密"
+        },
+        {
+          "name": "decryptByPrivateKey",
+          "signature": "public static String decryptByPrivateKey(String privateKeyText, String text) throws Exception",
+          "summary": "私钥解密"
+        },
+        {
+          "name": "encryptByPublicKey",
+          "signature": "public static String encryptByPublicKey(String publicKeyText, String text) throws Exception",
+          "summary": "公钥加密"
+        },
+        {
+          "name": "generateKeyPair",
+          "signature": "public static RsaKeyPair generateKeyPair() throws NoSuchAlgorithmException",
+          "summary": "构建RSA密钥对"
+        },
+        {
+          "name": "RsaKeyPair",
+          "signature": "public RsaKeyPair(String publicKey, String privateKey)",
+          "summary": ""
+        },
+        {
+          "name": "getPublicKey",
+          "signature": "public String getPublicKey()",
+          "summary": ""
+        },
+        {
+          "name": "getPrivateKey",
+          "signature": "public String getPrivateKey()",
+          "summary": ""
+        }
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ServletWebMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.common",
+      "category": "common",
+      "categoryLabel": "通用（字符串 / 日期 / 数字 / 集合 / 数组 / 加解密 / Spring 上下文）",
+      "summary": "有关HTTP请求的工具类",
+      "methods": [
+        {
+          "name": "getRequestHeaders",
+          "signature": "public static HttpHeaders getRequestHeaders(HttpServletRequest request)",
+          "summary": "获取所有请求头"
+        },
+        {
+          "name": "getHttpDomainUrl",
+          "signature": "public static String getHttpDomainUrl(ServletRequest request)",
+          "summary": "获取请求的域名URL 例如请求URL为：http://127.0.0.1:8080/flexedgex-upms-web/index.html，则返回：http://127.0.0.1:8080"
+        },
+        {
+          "name": "getRequestBody",
+          "signature": "public static String getRequestBody(HttpServletRequest request)",
+          "summary": "从请求中读取请求体"
+        },
+        {
+          "name": "getRequestBody",
+          "signature": "public static String getRequestBody(HttpServletRequest request, String charset)",
+          "summary": "从请求中读取请求体"
+        },
+        {
+          "name": "getRequestURL",
+          "signature": "public static String getRequestURL(HttpServletRequest request, boolean includeQueryString)",
+          "summary": "获取请求的完整URL"
+        },
+        {
+          "name": "getRequestURI",
+          "signature": "public static String getRequestURI(HttpServletRequest request, boolean includeQueryString)",
+          "summary": "获取请求的相对路径(包括contextPath)"
+        },
+        {
+          "name": "getRequestPath",
+          "signature": "public static String getRequestPath(HttpServletRequest request, boolean includeQueryString)",
+          "summary": "获取请求的相对路径(不包括contextPath)"
+        },
+        {
+          "name": "isAjaxRequest",
+          "signature": "public static boolean isAjaxRequest(HttpServletRequest request)",
+          "summary": "判断来的请求是否是ajax异步请求"
+        },
+        {
+          "name": "getContentType",
+          "signature": "public static MediaType getContentType(String contentType)",
+          "summary": "根据字符串类型的contentType来获取content-type的枚举对象org.springframework.http.MediaType"
+        },
+        {
+          "name": "getContentCachingRequestWrapper",
+          "signature": "public static ContentCachingRequestWrapper getContentCachingRequestWrapper(ServletRequest request)",
+          "summary": "获取ContentCachingRequestWrapper (考虑到Wrapper是可以重复的,故需要递归获取)"
+        },
+        {
+          "name": "getContentCachingResponseWrapper",
+          "signature": "public static ContentCachingResponseWrapper getContentCachingResponseWrapper(ServletResponse response)",
+          "summary": "获取ContentCachingResponseWrapper (考虑到Wrapper是可以重复的,故需要递归获取)"
+        },
+        {
+          "name": "isContentCachingRequest",
+          "signature": "public static boolean isContentCachingRequest(ServletRequest request)",
+          "summary": "判断指定request是否被ContentCachingRequestWrapper所包裹"
+        },
+        {
+          "name": "isContentCachingResponse",
+          "signature": "public static boolean isContentCachingResponse(ServletResponse response)",
+          "summary": "判断指定request是否被ContentCachingResponseWrapper所包裹"
+        },
+        {
+          "name": "getCharacterEncoding",
+          "signature": "public static String getCharacterEncoding(HttpServletRequest request, String defaultCharset)",
+          "summary": "获取请求的CharacterEncoding"
+        },
+        {
+          "name": "getCharacterEncoding",
+          "signature": "public static String getCharacterEncoding(HttpServletResponse response, String defaultCharset)",
+          "summary": "获取响应的CharacterEncoding"
+        }
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "SpringBeanMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.common",
+      "category": "common",
+      "categoryLabel": "通用（字符串 / 日期 / 数字 / 集合 / 数组 / 加解密 / Spring 上下文）",
+      "summary": "Spring Bean工具类",
+      "methods": [
+        {
+          "name": "getEnvProperty",
+          "signature": "public <T> T getEnvProperty(String name, Class<T> constType)",
+          "summary": "获取Spring环境变量"
+        },
+        {
+          "name": "getEnvProperty",
+          "signature": "public <T> T getEnvProperty(String name, Class<T> constType, T defaultValue)",
+          "summary": "获取Spring环境变量"
+        },
+        {
+          "name": "getBean",
+          "signature": "public static <T> T getBean(Class<T> requiredType)",
+          "summary": ""
+        },
+        {
+          "name": "getBeanQuietly",
+          "signature": "public <T> T getBeanQuietly(Class<T> requiredType)",
+          "summary": ""
+        },
+        {
+          "name": "getBean",
+          "signature": "public static <T> T getBean(String name, Class<T> requiredType)",
+          "summary": ""
+        },
+        {
+          "name": "getBeanQuietly",
+          "signature": "public <T> T getBeanQuietly(String name, Class<T> requiredType)",
+          "summary": ""
+        },
+        {
+          "name": "getBean",
+          "signature": "public static <T> T getBean(String name)",
+          "summary": ""
+        },
+        {
+          "name": "getBeanQuietly",
+          "signature": "public <T> T getBeanQuietly(String name)",
+          "summary": ""
+        },
+        {
+          "name": "getBeansOfType",
+          "signature": "public <T> Map<String, T> getBeansOfType(Class<T> type)",
+          "summary": ""
+        },
+        {
+          "name": "getBeansWithAnnotation",
+          "signature": "public Map<String, Object> getBeansWithAnnotation(Class<? extends Annotation> annotationType)",
+          "summary": ""
+        },
+        {
+          "name": "getApplicationContext",
+          "signature": "public static ApplicationContext getApplicationContext()",
+          "summary": ""
+        },
+        {
+          "name": "setApplicationContext",
+          "signature": "public void setApplicationContext(ApplicationContext applicationContext) throws BeansException",
+          "summary": ""
+        },
+        {
+          "name": "getEnvironment",
+          "signature": "public static Environment getEnvironment()",
+          "summary": ""
+        },
+        {
+          "name": "setEnvironment",
+          "signature": "public void setEnvironment(Environment environment)",
+          "summary": ""
+        },
+        {
+          "name": "getRootApplicationContext",
+          "signature": "public ApplicationContext getRootApplicationContext(ApplicationContext applicationContext)",
+          "summary": ""
+        },
+        {
+          "name": "createDefaultBeanName",
+          "signature": "public String createDefaultBeanName(ApplicationContext applicationContext, Class beanClass)",
+          "summary": "创建默认的beanName"
+        },
+        {
+          "name": "createDefaultBeanName",
+          "signature": "public String createDefaultBeanName(Class beanClass)",
+          "summary": "创建默认的beanName"
+        },
+        {
+          "name": "registerBean",
+          "signature": "public <T> void registerBean(ApplicationContext applicationContext, String beanName, Class<T> beanClass, boolean singleton, Consumer<BeanDefinitionBuilder> beanCustomizer)",
+          "summary": "手动向Spring容器注册一个Bean"
+        },
+        {
+          "name": "registerBean",
+          "signature": "public <T> void registerBean(String beanName, Class<T> beanClass, boolean singleton, Consumer<BeanDefinitionBuilder> beanCustomizer)",
+          "summary": "手动向Spring容器注册一个Bean"
+        },
+        {
+          "name": "destroyBean",
+          "signature": "public <T> boolean destroyBean(ApplicationContext applicationContext, String beanName, Object beanInstance)",
+          "summary": "根据beanName销毁一个已存在的bean"
+        },
+        {
+          "name": "destroyBean",
+          "signature": "public <T> boolean destroyBean(String beanName, Object beanInstance)",
+          "summary": "根据beanName销毁一个已存在的bean"
+        },
+        {
+          "name": "setBeanProperty",
+          "signature": "public void setBeanProperty(Object bean, Map<String, Object> properties, ConversionService conversionService)",
+          "summary": "将properties中的值填充到指定bean中去"
+        },
+        {
+          "name": "setBeanProperty",
+          "signature": "public void setBeanProperty(Object bean, Map<String, Object> properties)",
+          "summary": "将properties中的值填充到指定bean中去"
+        },
+        {
+          "name": "setBeanProperty",
+          "signature": "public void setBeanProperty(List<Object> beans, Map<String, Object> properties, ConversionService conversionService)",
+          "summary": "将properties中的值填充到指定bean中去"
+        },
+        {
+          "name": "setBeanProperty",
+          "signature": "public void setBeanProperty(List<Object> beans, Map<String, Object> properties)",
+          "summary": "将properties中的值填充到指定bean中去"
+        }
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "SpringWebFluxMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.common",
+      "category": "common",
+      "categoryLabel": "通用（字符串 / 日期 / 数字 / 集合 / 数组 / 加解密 / Spring 上下文）",
+      "summary": "Spring WebFlux工具类",
+      "methods": [
+        {
+          "name": "getCurrentServerWebExchange",
+          "signature": "public static Mono<ServerWebExchange> getCurrentServerWebExchange()",
+          "summary": "获取当前ServerWebExchange"
+        },
+        {
+          "name": "writeHttpMessage",
+          "signature": "public static Mono<Void> writeHttpMessage(ServerWebExchange exchange, Object responseBody, MediaType responseMediaType)",
+          "summary": "通过SpringWebFlux的HttpMessageWriter来输出响应"
+        },
+        {
+          "name": "isAsyncRequest",
+          "signature": "public static boolean isAsyncRequest(ServerRequest request)",
+          "summary": "判断请求是否是异步请求"
+        },
+        {
+          "name": "CustomServerResponseContext",
+          "signature": "public CustomServerResponseContext(ServerCodecConfigurer serverCodecConfigurer)",
+          "summary": ""
+        },
+        {
+          "name": "messageWriters",
+          "signature": "public List<HttpMessageWriter<?>> messageWriters()",
+          "summary": ""
+        },
+        {
+          "name": "viewResolvers",
+          "signature": "public List<ViewResolver> viewResolvers()",
+          "summary": ""
+        }
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "SpringWebMvcMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.common",
+      "category": "common",
+      "categoryLabel": "通用（字符串 / 日期 / 数字 / 集合 / 数组 / 加解密 / Spring 上下文）",
+      "summary": "SpringMVC的工具类",
+      "methods": [
+        {
+          "name": "getCurrentHttpServletRequest",
+          "signature": "public static HttpServletRequest getCurrentHttpServletRequest()",
+          "summary": "获取绑定在当前线程上下文下的HttpServletRequest对象 (通过{@link org.springframework.web.context.request.RequestContextL…"
+        },
+        {
+          "name": "getCurrentHttpServletResponse",
+          "signature": "public static HttpServletResponse getCurrentHttpServletResponse()",
+          "summary": "获取绑定在当前线程上下文下的HttpServletRequest对象 (通过{@link org.springframework.web.context.request.RequestContextL…"
+        },
+        {
+          "name": "getCurrentHttpSession",
+          "signature": "public static HttpSession getCurrentHttpSession()",
+          "summary": "获取当前线程上下文下的HttpSession对象"
+        },
+        {
+          "name": "isAsyncRequest",
+          "signature": "public static boolean isAsyncRequest(HttpServletRequest request, Object handler)",
+          "summary": "判断请求是否是异步请求"
+        },
+        {
+          "name": "writeHttpMessage",
+          "signature": "public static void writeHttpMessage(HttpServletRequest request, HttpServletResponse response, Object responseBody, MediaType... responseMediaTypes) throws IOException",
+          "summary": "通过SpringMVC的HttpMessageConverter来输出响应"
+        }
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "StrMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.common",
+      "category": "common",
+      "categoryLabel": "通用（字符串 / 日期 / 数字 / 集合 / 数组 / 加解密 / Spring 上下文）",
+      "summary": "字符串工具类",
+      "methods": [
+        {
+          "name": "firChar2Lower",
+          "signature": "public static String firChar2Lower(String str)",
+          "summary": "将首字母转换为小写"
+        },
+        {
+          "name": "firChar2Upper",
+          "signature": "public static String firChar2Upper(String str)",
+          "summary": "将首字母转换为大写"
+        },
+        {
+          "name": "placeHolder",
+          "signature": "public static String placeHolder(String template, Object... params)",
+          "summary": "将占位符 {} 按照顺序替换为参数:format(\"this is {} for {}\", \"a\", \"b\") =》 this is a for b"
+        },
+        {
+          "name": "toline",
+          "signature": "public static String toline(String underlineString)",
+          "summary": "将驼峰格式字符串转换为下划线格式字符串"
+        },
+        {
+          "name": "toHump",
+          "signature": "public static String toHump(String inputString)",
+          "summary": "将下划线格式字符串转换为驼峰格式字符串"
+        },
+        {
+          "name": "toHump",
+          "signature": "public static String toHump(String inputString, boolean firstCharacterUppercase)",
+          "summary": "将下划线格式字符串转换为驼峰格式字符串"
+        },
+        {
+          "name": "getValidPropsName",
+          "signature": "public static String getValidPropsName(String inputString)",
+          "summary": "获取javaBean标准属性名称"
+        },
+        {
+          "name": "getSetterMethodName",
+          "signature": "public static String getSetterMethodName(String property)",
+          "summary": "通过属性名返回javabean的setter方法名字符串"
+        },
+        {
+          "name": "getGetterMethodName",
+          "signature": "public static String getGetterMethodName(String property)",
+          "summary": "通过属性名返回javabean的getter方法名字符串"
+        }
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ThrowableUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.common",
+      "category": "common",
+      "categoryLabel": "通用（字符串 / 日期 / 数字 / 集合 / 数组 / 加解密 / Spring 上下文）",
+      "summary": "",
+      "methods": [
+        {
+          "name": "getStackTrace",
+          "signature": "public static String getStackTrace(Throwable throwable)",
+          "summary": "获取堆栈信息"
+        }
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "FileMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.file",
+      "category": "file",
+      "categoryLabel": "文件（读写 / 上传下载）",
+      "summary": "文件相关操作",
+      "methods": [
+        {
+          "name": "downloadFile",
+          "signature": "public static void downloadFile(HttpServletResponse response, File file, String newFileName)",
+          "summary": "下载文件"
+        },
+        {
+          "name": "readFile",
+          "signature": "public static String readFile(String file)",
+          "summary": "读取txt文件的内容"
+        },
+        {
+          "name": "readFile",
+          "signature": "public static String readFile(File file)",
+          "summary": "读取txt文件的内容"
+        },
+        {
+          "name": "deleteFile",
+          "signature": "public static void deleteFile(File file)",
+          "summary": "递归删除文件"
+        },
+        {
+          "name": "getProjectPath",
+          "signature": "public static String getProjectPath()",
+          "summary": "获取项目根路径"
+        },
+        {
+          "name": "getClassPath",
+          "signature": "public static String getClassPath()",
+          "summary": "获取类路径"
+        }
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "HttpContextHandler",
+      "kind": "class",
+      "package": "com.guava.platform.utils.http",
+      "category": "http",
+      "categoryLabel": "HTTP / 网络（IP 解析 / Web 上下文）",
+      "summary": "HttpContext工具类",
+      "methods": [
+        {
+          "name": "getHttpServletRequest",
+          "signature": "public static HttpServletRequest getHttpServletRequest()",
+          "summary": "获取threadlocal的request"
+        },
+        {
+          "name": "getHttpServletResponse",
+          "signature": "public static HttpServletResponse getHttpServletResponse()",
+          "summary": ""
+        }
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "IPMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.http",
+      "category": "http",
+      "categoryLabel": "HTTP / 网络（IP 解析 / Web 上下文）",
+      "summary": "获取ip地址工具类",
+      "methods": [
+        {
+          "name": "getIpAddr",
+          "signature": "public static String getIpAddr(HttpServletRequest request)",
+          "summary": "获取ip地址"
+        },
+        {
+          "name": "getCityInfo",
+          "signature": "public static String getCityInfo(String ip)",
+          "summary": ""
+        },
+        {
+          "name": "getLocalCityInfo",
+          "signature": "public static String getLocalCityInfo(String ip)",
+          "summary": "获取所在城市信息"
+        },
+        {
+          "name": "getLocalIp",
+          "signature": "public static String getLocalIp()",
+          "summary": "获取本机ip"
+        }
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "AssertMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.iassert",
+      "category": "iassert",
+      "categoryLabel": "断言 / 参数校验（业务异常）",
+      "summary": "自定义断言类",
+      "methods": [
+        {
+          "name": "isNull",
+          "signature": "public static void isNull(Object object, BizCode bizCode) throws IllegalArgumentException",
+          "summary": "断言对象是否为null，如果不为null,抛出异常"
+        },
+        {
+          "name": "isNull",
+          "signature": "public static void isNull(Object object, BizCode bizCode, Object... params) throws IllegalArgumentException",
+          "summary": "断言对象是否为null，如果不为null,抛出异常"
+        },
+        {
+          "name": "notNull",
+          "signature": "public static <T> T notNull(T object, BizCode bizCode) throws BizException",
+          "summary": "断言对象是否不为null ，如果为null 抛出异常"
+        },
+        {
+          "name": "notNull",
+          "signature": "public static <T> T notNull(T object, BizCode bizCode, Object... params) throws BizException",
+          "summary": ""
+        },
+        {
+          "name": "notEmpty",
+          "signature": "public static <T extends CharSequence> T notEmpty(T text, BizCode bizCode, Object... params) throws BizException",
+          "summary": "检查给定字符串是否不为空，为空 抛出异常（为空是指 null 或 \"\"）"
+        },
+        {
+          "name": "notEmpty",
+          "signature": "public static <T extends CharSequence> T notEmpty(T text, BizCode bizCode) throws BizException",
+          "summary": ""
+        },
+        {
+          "name": "errMsg",
+          "signature": "public static <T> T errMsg(BizCode bizCode, Object... params) throws BizException",
+          "summary": "通用的error message报错信息"
+        },
+        {
+          "name": "errMsg",
+          "signature": "public static <T> T errMsg(BizCode bizCode) throws BizException",
+          "summary": ""
+        },
+        {
+          "name": "errMsg",
+          "signature": "public static <T> T errMsg(String msg) throws BizException",
+          "summary": ""
+        },
+        {
+          "name": "errMsg",
+          "signature": "public static <T> T errMsg(int code, String msg) throws BizException",
+          "summary": ""
+        }
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "CustomObjectMapper",
+      "kind": "class",
+      "package": "com.guava.platform.utils.json",
+      "category": "json",
+      "categoryLabel": "JSON（Jackson 序列化 / 转换器）",
+      "summary": "定制的ObjectMapper  用来解决启用@JsonRootName注解配合SerializationFeature.WRAP_ROOT_VALUE及DeserializationFeature.UNWRAP_ROOT_VALUE特性时…",
+      "methods": [
+        {
+          "name": "readValues",
+          "signature": "public <T> MappingIterator<T> readValues(JsonParser p, JavaType valueType) throws IOException, JsonProcessingException",
+          "summary": ""
+        },
+        {
+          "name": "writeValue",
+          "signature": "public void writeValue(JsonGenerator g, Object value) throws IOException, JsonGenerationException, JsonMappingException",
+          "summary": ""
+        },
+        {
+          "name": "writeTree",
+          "signature": "public void writeTree(JsonGenerator jgen, TreeNode rootNode) throws IOException, JsonProcessingException",
+          "summary": ""
+        },
+        {
+          "name": "writeTree",
+          "signature": "public void writeTree(JsonGenerator jgen, JsonNode rootNode) throws IOException, JsonProcessingException",
+          "summary": ""
+        },
+        {
+          "name": "writeValue",
+          "signature": "public void writeValue(File resultFile, Object value) throws IOException, JsonGenerationException, JsonMappingException",
+          "summary": ""
+        },
+        {
+          "name": "writeValue",
+          "signature": "public void writeValue(OutputStream out, Object value) throws IOException, JsonGenerationException, JsonMappingException",
+          "summary": ""
+        },
+        {
+          "name": "writeValue",
+          "signature": "public void writeValue(DataOutput out, Object value) throws IOException",
+          "summary": ""
+        },
+        {
+          "name": "writeValue",
+          "signature": "public void writeValue(Writer w, Object value) throws IOException, JsonGenerationException, JsonMappingException",
+          "summary": ""
+        },
+        {
+          "name": "writeValueAsString",
+          "signature": "public String writeValueAsString(Object value) throws JsonProcessingException",
+          "summary": ""
+        },
+        {
+          "name": "writeValueAsBytes",
+          "signature": "public byte[] writeValueAsBytes(Object value) throws JsonProcessingException",
+          "summary": ""
+        }
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "JacksonJsonException",
+      "kind": "class",
+      "package": "com.guava.platform.utils.json",
+      "category": "json",
+      "categoryLabel": "JSON（Jackson 序列化 / 转换器）",
+      "summary": "json转换异常封装类",
+      "methods": []
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "JacksonMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.json",
+      "category": "json",
+      "categoryLabel": "JSON（Jackson 序列化 / 转换器）",
+      "summary": "封装了Jackson的json工具类，用于代替JSONObject",
+      "methods": [
+        {
+          "name": "object2Json",
+          "signature": "public static <T> String object2Json(T object)",
+          "summary": ""
+        },
+        {
+          "name": "object2Json",
+          "signature": "public static String object2Json(ObjectMapper objectMapper, Object object)",
+          "summary": "Java对象转JSON字符串"
+        },
+        {
+          "name": "object2JsonWithPretty",
+          "signature": "public static String object2JsonWithPretty(Object object)",
+          "summary": "Java对象转JSON字符串 - 美化输出"
+        },
+        {
+          "name": "object2Bytes",
+          "signature": "public static byte[] object2Bytes(Object object)",
+          "summary": "Java对象转byte数组"
+        },
+        {
+          "name": "json2Object",
+          "signature": "public static <T> T json2Object(String json, Class<T> clazz)",
+          "summary": ""
+        },
+        {
+          "name": "json2Object",
+          "signature": "public static <T> T json2Object(ObjectMapper objectMapper, String json, Class<T> clazz)",
+          "summary": "json字符串转普通javabean对象(pojo)"
+        },
+        {
+          "name": "json2Object",
+          "signature": "public static <T> T json2Object(String json, TypeReference<T> typeReference)",
+          "summary": "json字符串转泛型类对象 示例： List<User> userList = json2Object(\"[{\"username\":\"jack\",\"accounts\":[{\"accountId\":\"\"…"
+        },
+        {
+          "name": "json2Object",
+          "signature": "public static <T> T json2Object(String json, Json2ObjectConverter<T> converter)",
+          "summary": "json字符串转泛型类对象"
+        },
+        {
+          "name": "json2Object",
+          "signature": "public static <T> T json2Object(ObjectMapper objectMapper, String json, TypeReference<T> typeReference)",
+          "summary": "json字符串转泛型类对象 示例： List<User> userList = json2Object(\"[{\"username\":\"jack\",\"accounts\":[{\"accountId\":\"\"…"
+        },
+        {
+          "name": "json2Str",
+          "signature": "public static String json2Str(Object obj)",
+          "summary": "json对象转String字符串"
+        },
+        {
+          "name": "parseList",
+          "signature": "public static <T> List<T> parseList(String json, Class<T>... elementClasses)",
+          "summary": "JSON字符串转List集合"
+        },
+        {
+          "name": "parseSet",
+          "signature": "public static <T> Set<T> parseSet(String json, Class<T>... elementClasses)",
+          "summary": "JSON字符串转Set集合"
+        },
+        {
+          "name": "parseCollection",
+          "signature": "public static <T> Collection<T> parseCollection(String json, Class<T>... elementClasses)",
+          "summary": "JSON字符串转Collection集合"
+        },
+        {
+          "name": "getCollectionType",
+          "signature": "public static JavaType getCollectionType(ObjectMapper mapper, Class<?> collectionClass, Class<?>... elementClasses)",
+          "summary": "获取泛型的Collection Type"
+        },
+        {
+          "name": "createDefaultObjectMapper",
+          "signature": "public static ObjectMapper createDefaultObjectMapper()",
+          "summary": "创建默认配置的ObjectMapper"
+        },
+        {
+          "name": "createRootJsonNode",
+          "signature": "public static JsonNode createRootJsonNode(String json)",
+          "summary": "创建根JsonNode"
+        },
+        {
+          "name": "createRootJsonNode",
+          "signature": "public static JsonNode createRootJsonNode(ObjectMapper objectMapper, String json)",
+          "summary": "创建根JsonNode"
+        },
+        {
+          "name": "isJsonObject",
+          "signature": "public static boolean isJsonObject(String json)",
+          "summary": "判断json字符串是否是JSON对象"
+        },
+        {
+          "name": "isJsonArray",
+          "signature": "public static boolean isJsonArray(String json)",
+          "summary": "判断json字符串是否是JSON数组"
+        },
+        {
+          "name": "isJsonObjectArray",
+          "signature": "public static boolean isJsonObjectArray(String json)",
+          "summary": "判断json字符串是否是JSON Object数组"
+        },
+        {
+          "name": "toString",
+          "signature": "public static String toString(JsonNode parentNode, String fieldName)",
+          "summary": ""
+        },
+        {
+          "name": "getString",
+          "signature": "public static String getString(JsonNode parentNode, String fieldName)",
+          "summary": ""
+        },
+        {
+          "name": "getString",
+          "signature": "public static String getString(JsonNode parentNode, String fieldName, String defaultValue)",
+          "summary": ""
+        },
+        {
+          "name": "getBoolean",
+          "signature": "public static Boolean getBoolean(JsonNode parentNode, String fieldName)",
+          "summary": ""
+        },
+        {
+          "name": "getBoolean",
+          "signature": "public static Boolean getBoolean(JsonNode parentNode, String fieldName, Byte defaultValue)",
+          "summary": ""
+        },
+        {
+          "name": "getByte",
+          "signature": "public static Byte getByte(JsonNode parentNode, String fieldName)",
+          "summary": ""
+        },
+        {
+          "name": "getByte",
+          "signature": "public static Byte getByte(JsonNode parentNode, String fieldName, Byte defaultValue)",
+          "summary": ""
+        },
+        {
+          "name": "getShort",
+          "signature": "public static Short getShort(JsonNode parentNode, String fieldName)",
+          "summary": ""
+        },
+        {
+          "name": "getShort",
+          "signature": "public static Short getShort(JsonNode parentNode, String fieldName, Short defaultValue)",
+          "summary": ""
+        },
+        {
+          "name": "getInteger",
+          "signature": "public static Integer getInteger(JsonNode parentNode, String fieldName)",
+          "summary": ""
+        },
+        {
+          "name": "getInteger",
+          "signature": "public static Integer getInteger(JsonNode parentNode, String fieldName, Integer defaultValue)",
+          "summary": ""
+        },
+        {
+          "name": "getFloat",
+          "signature": "public static Float getFloat(JsonNode parentNode, String fieldName)",
+          "summary": ""
+        },
+        {
+          "name": "getFloat",
+          "signature": "public static Float getFloat(JsonNode parentNode, String fieldName, Float defaultValue)",
+          "summary": ""
+        },
+        {
+          "name": "getDouble",
+          "signature": "public static Double getDouble(JsonNode parentNode, String fieldName)",
+          "summary": ""
+        },
+        {
+          "name": "getDouble",
+          "signature": "public static Double getDouble(JsonNode parentNode, String fieldName, Double defaultValue)",
+          "summary": ""
+        },
+        {
+          "name": "getLong",
+          "signature": "public static Long getLong(JsonNode parentNode, String fieldName)",
+          "summary": ""
+        },
+        {
+          "name": "getLong",
+          "signature": "public static Long getLong(JsonNode parentNode, String fieldName, Long defaultValue)",
+          "summary": ""
+        },
+        {
+          "name": "getDefaultObjectMapper",
+          "signature": "public static ObjectMapper getDefaultObjectMapper()",
+          "summary": ""
+        },
+        {
+          "name": "convert",
+          "signature": "T convert(ObjectMapper objectMapper, JsonNode rootNode) throws Exception",
+          "summary": ""
+        }
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ObjectRequestParam2StringConverter",
+      "kind": "class",
+      "package": "com.guava.platform.utils.json",
+      "category": "json",
+      "categoryLabel": "JSON（Jackson 序列化 / 转换器）",
+      "summary": "feign-client在解析@RequestParam注解的复杂对象时，feign-client发起请求时将对象序列化为String的转换器  示例： public Object searchList(@RequestParam Cond…",
+      "methods": [
+        {
+          "name": "getConvertibleTypes",
+          "signature": "public Set<ConvertiblePair> getConvertibleTypes()",
+          "summary": ""
+        },
+        {
+          "name": "convert",
+          "signature": "public Object convert(Object source, TypeDescriptor sourceType, TypeDescriptor targetType)",
+          "summary": ""
+        },
+        {
+          "name": "matches",
+          "signature": "public boolean matches(TypeDescriptor sourceType, TypeDescriptor targetType)",
+          "summary": ""
+        }
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "String2ObjectRequestParamConverter",
+      "kind": "class",
+      "package": "com.guava.platform.utils.json",
+      "category": "json",
+      "categoryLabel": "JSON（Jackson 序列化 / 转换器）",
+      "summary": "feign-client在解析@RequestParam注解的复杂对象时，在spring-mvc收到请求时将String反序列化为对象的转换器 示例：spring-mvc收到请求时的url: http://ip:port/search?co…",
+      "methods": [
+        {
+          "name": "getConvertibleTypes",
+          "signature": "public Set<ConvertiblePair> getConvertibleTypes()",
+          "summary": ""
+        },
+        {
+          "name": "convert",
+          "signature": "public Object convert(Object source, TypeDescriptor sourceType, TypeDescriptor targetType)",
+          "summary": ""
+        },
+        {
+          "name": "matches",
+          "signature": "public boolean matches(TypeDescriptor sourceType, TypeDescriptor targetType)",
+          "summary": ""
+        }
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ReactiveWebUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.reactive",
+      "category": "reactive",
+      "categoryLabel": "响应式 / 反射",
+      "summary": "基于Reactive的web应用工具类",
+      "methods": [
+        {
+          "name": "isAjaxRequest",
+          "signature": "public static boolean isAjaxRequest(ServerRequest request)",
+          "summary": "判断来的请求是否是ajax异步请求"
+        }
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "ReflectionUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.reactive",
+      "category": "reactive",
+      "categoryLabel": "响应式 / 反射",
+      "summary": "反射工具类",
+      "methods": [
+        {
+          "name": "getClassGenricType",
+          "signature": "public static Class<?> getClassGenricType(final Class clazz)",
+          "summary": "获得超类的参数类型，取第一个参数类型"
+        },
+        {
+          "name": "getClassGenricType",
+          "signature": "public static Class getClassGenricType(final Class clazz, final int index)",
+          "summary": "根据索引获得超类的参数类型"
+        },
+        {
+          "name": "getFieldGenricType",
+          "signature": "public static Class<?> getFieldGenricType(final Field field)",
+          "summary": ""
+        },
+        {
+          "name": "getFieldGenricType",
+          "signature": "public static Class getFieldGenricType(final Field field, final int index)",
+          "summary": ""
+        },
+        {
+          "name": "getAllFields",
+          "signature": "public static Set<Field> getAllFields(Class<?> targetClass)",
+          "summary": "返回指定类的所有字段(包括public|protected|private|default)，包括父类的"
+        },
+        {
+          "name": "findField",
+          "signature": "public static Field findField(Class<?> targetClass, String fieldName)",
+          "summary": "根据属性字段名称获取@{code java.lang.reflect.Field}"
+        },
+        {
+          "name": "setFieldValue",
+          "signature": "public static void setFieldValue(Field field, Object target, Object value)",
+          "summary": "在目标对象上设置属性字段的值(包括修改final字段的值)"
+        },
+        {
+          "name": "setFinalConstsValue",
+          "signature": "public static void setFinalConstsValue(Class<?> constsClass, String fieldName, Object value)",
+          "summary": "设置常量值"
+        },
+        {
+          "name": "setFinalFieldValue",
+          "signature": "public static void setFinalFieldValue(Object target, String fieldName, Object value)",
+          "summary": "修改final字段的值"
+        },
+        {
+          "name": "setFinalFieldValue",
+          "signature": "public static void setFinalFieldValue(Object target, Field field, Object value)",
+          "summary": "修改final字段的值"
+        },
+        {
+          "name": "getFieldValue",
+          "signature": "public static <T> T getFieldValue(Field field, Object target)",
+          "summary": "在目标对象上获取属性字段的值"
+        },
+        {
+          "name": "getFieldValue",
+          "signature": "public static <T> T getFieldValue(Object target, String fieldName)",
+          "summary": "在目标对象上获取属性字段的值"
+        },
+        {
+          "name": "findMethod",
+          "signature": "public static Method findMethod(Class<?> targetClass, String methodName, Class<?>... paramTypes)",
+          "summary": "根据方法名字及入参在类中查找方法"
+        },
+        {
+          "name": "findMethod",
+          "signature": "public static Method findMethod(Class<?> targetClass, String methodName)",
+          "summary": "根据方法名字在类中查找其无参方法"
+        },
+        {
+          "name": "isGetClassMethod",
+          "signature": "public static boolean isGetClassMethod(@Nullable Method method)",
+          "summary": "Determine whether the given method is a \"getClass\" method."
+        },
+        {
+          "name": "isCloneMethod",
+          "signature": "public static boolean isCloneMethod(@Nullable Method method)",
+          "summary": "Determine whether the given method is a \"clone\" method."
+        },
+        {
+          "name": "isNotifyMethod",
+          "signature": "public static boolean isNotifyMethod(@Nullable Method method)",
+          "summary": "Determine whether the given method is a \"notify\" method."
+        },
+        {
+          "name": "isNotifyAllMethod",
+          "signature": "public static boolean isNotifyAllMethod(@Nullable Method method)",
+          "summary": "Determine whether the given method is a \"notifyAll\" method."
+        },
+        {
+          "name": "isWaitMethod",
+          "signature": "public static boolean isWaitMethod(@Nullable Method method)",
+          "summary": "Determine whether the given method is a \"wait\" method."
+        },
+        {
+          "name": "isFinalizeMethod",
+          "signature": "public static boolean isFinalizeMethod(@Nullable Method method)",
+          "summary": "Determine whether the given method is a \"finalize\" method."
+        },
+        {
+          "name": "ReflectionException",
+          "signature": "public ReflectionException(String message, Throwable cause)",
+          "summary": ""
+        },
+        {
+          "name": "ReflectionException",
+          "signature": "public ReflectionException(String message)",
+          "summary": ""
+        },
+        {
+          "name": "ReflectionException",
+          "signature": "public ReflectionException(Throwable cause)",
+          "summary": ""
+        }
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "PropertiesMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.resource",
+      "category": "resource",
+      "categoryLabel": "资源配置（yml / properties）",
+      "summary": "property文件工具类",
+      "methods": [
+        {
+          "name": "loadPropertiesFromFile",
+          "signature": "public static Properties loadPropertiesFromFile(Class<?> clazz, String filePath)",
+          "summary": "从文件加载配置文件"
+        },
+        {
+          "name": "loadPropertiesFromInputStream",
+          "signature": "public static Properties loadPropertiesFromInputStream(InputStream inputStream)",
+          "summary": "从输入流加载配置文件"
+        },
+        {
+          "name": "loadPropertiesFromSystem",
+          "signature": "public static Properties loadPropertiesFromSystem()",
+          "summary": ""
+        },
+        {
+          "name": "getProperties",
+          "signature": "public static Properties getProperties(String propertiesSource)",
+          "summary": "读取property文件内容"
+        }
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "YmlMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.resource",
+      "category": "resource",
+      "categoryLabel": "资源配置（yml / properties）",
+      "summary": "yml读取工具类",
+      "methods": [
+        {
+          "name": "yaml2Map",
+          "signature": "public static Map<String, Object> yaml2Map(String ymlSource)",
+          "summary": "解析yml文件为map类型对象"
+        },
+        {
+          "name": "yaml2Properties",
+          "signature": "public static Properties yaml2Properties(String yamlSource)",
+          "summary": "解析yml文件为Properties类型对象"
+        }
+      ]
+    },
+    {
+      "module": "guava-platform-starter",
+      "name": "JwtTokenMyUtil",
+      "kind": "class",
+      "package": "com.guava.platform.utils.token",
+      "category": "token",
+      "categoryLabel": "令牌 / JWT",
+      "summary": "token工具类 一个完整的JwtToken由三部分组成：头部+负载信息+签名 header 存放JwtToken签名的算法 | token的类型：{\"alg\": \"HS512\",\"typ\": \"JWT\"} payload 主要存放用户名、…",
+      "methods": [
+        {
+          "name": "getToken",
+          "signature": "public String getToken(HttpServletRequest request)",
+          "summary": "从请求中拿到token"
+        },
+        {
+          "name": "getUserAccountFromToken",
+          "signature": "public String getUserAccountFromToken(String token)",
+          "summary": "从token中获取用户账号"
+        },
+        {
+          "name": "getSubjectFromToken",
+          "signature": "public String getSubjectFromToken(String token)",
+          "summary": "从token中获取主题"
+        },
+        {
+          "name": "decryptToken",
+          "signature": "public Map decryptToken(String token)",
+          "summary": "token负载部分解密"
+        },
+        {
+          "name": "checkToken",
+          "signature": "public boolean checkToken(String token, String publicKey) throws NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, InvalidKeyException",
+          "summary": "验证token是否还有效"
+        },
+        {
+          "name": "checkSign",
+          "signature": "public boolean checkSign(String preSignStr, String sign, String publicKey) throws InvalidKeySpecException, NoSuchAlgorithmException, InvalidKeyException, SignatureException",
+          "summary": ""
+        },
+        {
+          "name": "verifyScope",
+          "signature": "public Boolean verifyScope(String scope, String scopeList)",
+          "summary": ""
+        },
+        {
+          "name": "verifyTokenByRsa",
+          "signature": "public Boolean verifyTokenByRsa(String token, String publicKey)",
+          "summary": ""
+        },
+        {
+          "name": "verifyTokenByScope",
+          "signature": "public Boolean verifyTokenByScope(String token, String publicKey, String scope)",
+          "summary": ""
+        },
+        {
+          "name": "verifyToken",
+          "signature": "public Map<String, Object> verifyToken(String token, String audience)",
+          "summary": ""
+        }
+      ]
+    }
+  ]
+}

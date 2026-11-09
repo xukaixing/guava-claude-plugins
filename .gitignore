@@ -48,3 +48,6 @@ plugins/guava-plugins/mcp/mysql-schema/db.yml
 db.yml
 # guava-mcp disk cache (consumer projects + this repo when used as CLAUDE_PROJECT_DIR)
 .claude/cache/
+
+# guava-mcp disk cache (self-test artifacts)
+plugins/guava-plugins/.claude/cache/
