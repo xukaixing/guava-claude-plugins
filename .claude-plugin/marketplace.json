@@ -9,7 +9,7 @@
     {
       "name": "guava-plugins",
       "source": "./plugins/guava-plugins",
-      "description": "Guava 全栈生成 + Gv* MCP：/guava-plugins:code-frontend|code-backend|code-all|code-from-db|code-optimize，agent guava-codegen 按 md 自动调度",
+      "description": "Guava 全栈生成 + Gv* MCP: /guava-plugins:code-frontend|code-backend|code-all|code-from-db|code-optimize，agent guava-codegen 按 md 自动调度",
       "version": "1.4.6",
       "keywords": [
         "guava",
