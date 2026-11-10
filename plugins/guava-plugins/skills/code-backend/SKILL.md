@@ -30,24 +30,60 @@ Step 0.1：**grep 优先，不整读大文件**——`grep -rl "class {Entity}" 
 
 Step 1：Module、package、Feature、Entity、RequestMapping、Swagger Tag（见 context/backend.md）。
 
-Step 1.0：**服务配置(backend) 小节消费**（设计器「后端配置」步骤产物，优先于推导）：
+Step 1.0：**服务配置(backend) 小节消费**（设计器「后端配置」步骤产物，**优先级最高**：覆盖 GUAVA_BACKEND_ROOT 推导与 Interactive 确认）：
 
-解析 `## 服务配置(backend)` 小节（[search-conditions.md](search-conditions.md) §对齐表 + 下述扩展字段）：
+解析 `## 服务配置(backend)` 小节（完整格式见 [context/backend.md §服务配置(backend) 格式](../../context/backend.md)）。各小节消费规则：
 
-| 字段 | 小节位置 | 用途 |
-|------|----------|------|
-| 数据库 / 实体 / 工程 / 包路径 / 功能 / 请求上下文 | ### 基本信息 | 基础信息与路径推导 |
-| Swagger Tag | ### 基本信息 | `@Tag(name = "xxx")`，缺失默认 `admin-{module}` |
-| 操作 | ### 服务逻辑描述 | 仅生成勾选操作；`list` 必选 |
-| 状态更新 | ### 服务逻辑描述 | 出现「状态更新」标记 → 生成 `update{Entity}Status` 端点 |
-| 导出 | ### 服务逻辑描述 | 出现「导出」标记 → 生成 `export{Entity}Data` 端点（Excel） |
-| 逻辑描述 | ### 服务逻辑描述 | 业务逻辑备注（供 ServiceImpl 参考） |
-| 字典翻译 | ### 字典翻译 | 每行 `- field：dic\|xx` → `getTransHash()` 配置（详见 Step 5.1） |
-| 主表 / 关联 | ### 数据表描述 | 主表 + 多表 JOIN 配置 |
+**### 基本信息**（逐项消费）：
+
+| 字段 | 用途 |
+|------|------|
+| 工程 | 生成文件的磁盘绝对位置（Maven 子模块根，如 `/.../guava-admin-starter`）→ **直接作为输出根**，覆盖 `GUAVA_BACKEND_ROOT` 推导 |
+| 包路径 | Java 主包根（如 `com.guava.admin`），文件写入 `{工程}/src/main/java/{包路径}/` |
+| 功能 | controller/service 目录名（如 `usermng1`）→ `controller/{功能}/`、`service/{功能}/` |
+| 数据库实例 | mysql-schema 连库依据：PO 生成、表存在校验（Step 4.5） |
+| 请求上下文 | Controller `@RequestMapping("/sysuser1/")` |
+| Swagger Tag | `@Tag(name = "admin-usermng1")`，缺失默认 `admin-{功能}` |
+| 实体 | PO 类名（`model/po/{实体}.java`），并决定 Controller/Service/ServiceImpl/Mapper/SqlProvider 命名 |
+
+**### 服务逻辑描述**（仅生成勾选操作，「查询」必选）：
+
+| 标记 | 生成 |
+|------|------|
+| 操作：查询 | `find{Entity}` 端点 |
+| 操作：保存 | `save{Entity}` 端点 |
+| 操作：更新 | `update{Entity}` 端点 |
+| 状态更新 | 额外生成 `update{Entity}Status` 端点 |
+| 导出 | 额外生成 `export{Entity}Data` 端点（Excel） |
+| 逻辑描述 | 业务逻辑备注（供 ServiceImpl 参考） |
+
+**### 字典翻译**：每行 `- field：dic\|xx` → `getTransHash()` 配置（详见 Step 5.1）。
+
+**### 列表数据表**（设计器「列表画布」产物，**每行 = 一个列表 = 一套独立查询方法与 SQL**）：
+
+```markdown
+- 用户信息列表（主画布）：数据库 guava_sys；表 sys_user（别名 su）
+  - 查询列：userName、account、status、text_4、deptId、text_10
+- 登录日志列表：数据库 guava_sys；表 sys_login_log（别名 sl）
+  - 查询列：userName、loginTime、ip
+```
+
+| 项 | 用途 |
+|----|------|
+| 列表名（主画布） | 与 `## 表格 - <描述>` 同名列表对应；`（主画布）` 标记 = 页面主列表 |
+| 数据库 + 表（别名） | 该列表 SqlProvider `FROM {表} {别名}`；查询 field 表别名来源（`su@字段`，见 Step 1.1）；Step 4.5 PO 生成的表名 / 库名来源（主画布列表） |
+| 查询列 | 该列表 SqlProvider SELECT 列（`db_column camelAlias`，驼峰别名与前端表格 prop 对齐） |
+
+**多列表生成规则**：每个列表各生成一套 `find{Xxx}` 方法（Controller + Service + ServiceImpl + SqlProvider SQL），方法名与 SQL 互不共用——
+- 主画布列表：方法名取 frontmatter `api.operations.list` 末段（如 `findUsers`）
+- 其余列表：按列表名去「列表」后缀转 PascalCase 推导（如 `登录日志列表` → `findLoginLog`），全栈时与前端对齐参数核对
+- 每套 SQL 的 FROM 表 / 别名 / SELECT 列严格按该行声明，不跨列表合并、不共用 SqlProvider 方法
+
+md 另有 `### 数据表描述`（旧版/手写，主表 + 关联 JOIN）时用于多表 JOIN 配置；两处表名冲突以 `### 列表数据表` 为准。
 
 Step 1.1：查询条件（必选，[search-conditions.md](search-conditions.md)，field 与前端一致）。
 
-Step 1.1a：**查询 SQL 规则**——单表走 `MyUtil.getConditionsWhere` 模式（context/backend.md §对齐表）；多表按 `backend.joins` 生成 JOIN 查询（SELECT 列带表别名，WHERE 条件同样走条件构造器，不拼用户原始入参）。设计器只存配置不生成 SQL，SQL 一律由本 skill 生成。
+Step 1.1a：**查询 SQL 规则**——单表走 `MyUtil.getConditionsWhere` 模式（context/backend.md §对齐表），FROM 表与 SELECT 列按 `### 列表数据表` 生成；多表按 `### 数据表描述` 的 JOIN 配置生成 JOIN 查询（SELECT 列带表别名，WHERE 条件同样走条件构造器，不拼用户原始入参）。设计器只存配置不生成 SQL，SQL 一律由本 skill 生成。
 
 Step 1.2：业务字段（add/edit 时）。
 
@@ -64,7 +100,7 @@ Step 2–4：**并发 Write** Controller / Service / ServiceImpl（一条消息�
 Step 4.5：PO 实体（ServiceImpl 引用 `{Entity}PO`，缺失则编译失败，**必做**）：
 
 1. 先 `grep -r "class {Entity}PO" $GUAVA_BACKEND_ROOT --include=*.java` → **已存在则直接引用，不读 [po.md](templates/po.md)，跳过生成**。
-2. 没有 → **连库读表生成**：mysql-schema `list_tables` 确认表存在（表名 = `{Entity}` PascalCase → snake_case，如 `SysNotice` → `sys_notice`，或按 `backend.feature`），`get_table_columns` 拿精确 `DATA_TYPE` 生成 `{Entity}PO.java`。
+2. 没有 → **连库读表生成**：表名 / 数据库实例**优先取 `### 列表数据表` 声明**（`表 sys_user` / `数据库 guava_sys`）；未声明时按 `{Entity}` PascalCase → snake_case 推导（如 `SysNotice` → `sys_notice`）。mysql-schema `list_tables` 确认表存在后，`get_table_columns` 拿精确 `DATA_TYPE` 生成 `{Entity}PO.java`。
 3. MCP 不可用 / 表不存在 → 按 `.md` 的 Guava 类型映射兜底生成，`number`/`date` 歧义在待确认清单标注。
 
 Step 5：Mapper/SqlProvider、`getTransHash()`、`@MarkLog`、与前端 `paths` 对齐。

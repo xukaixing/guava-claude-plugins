@@ -37,7 +37,7 @@ description: >
 
 判断依据（按优先级）：
 
-1. md 中既有 Vue/页面/表单/表格相关配置，又有 Controller/Service/接口/模块相关配置 → `code-all`。
+1. md 中既有 Vue/页面/表单/表格相关配置，又有 Controller/Service/接口/模块相关配置（含 `## 服务配置(backend)` 小节或 frontmatter `backend:` 块）→ `code-all`。
 2. 只有其中一类 → 对应单端 skill。
 3. 无法确定时**先问用户**，不要猜。
 
@@ -70,7 +70,7 @@ description: >
 要求：
 1. 严格按 SKILL.md 流程执行（Config File Mode / Interactive Mode、并发 Write、覆盖策略）
 2. 文档一次性读取：动手前在一条消息内并行 Read 全部工作流文档（SKILL.md、_shared.md、config-parser.md、conventions.md、search-conditions.md、templates/_common.md 及本任务 pageType 涉及的 templates/、context/front.md），生成过程中禁止二次 Read（上下文压缩丢失除外）
-3. 查询 field 别名必须取 md「服务配置(backend)」/「数据表描述」声明的主表别名（如 别名 su → `su@字段`），禁止沿用文档示例的 `u@`；md 未声明别名时查询 field 不带别名
+3. 查询 field 别名必须取 md「服务配置(backend)」的「列表数据表」（`表 sys_user（别名 su）`）/「数据表描述」声明的主表别名（→ `su@字段`），禁止沿用文档示例的 `u@`；md 未声明别名时查询 field 不带别名
 4. 文档按需加载：config-parser-legacy.md 仅当格式识别为精简/旧版时读；config-template.md 是编写模板，生成流程不读
 5. 写 <template> 前必须查 MCP（guava-ui get_page_recipe / gv-* get_usage…），同轮复用
 6. 完成 SKILL.md Step 7 速查；可疑才深读 code-review.md
@@ -90,10 +90,10 @@ description: >
 $ALIGN_PARAMS（全栈时由前端产出传入：apiBase / paths / 查询 field / entity / module / package / swaggerTag / transFields）
 要求：
 1. 严格按 SKILL.md 流程执行（含 MCP 必查、框架优先、grep 优先、并发 Write、PO 先查后读、getTransHash 驱动、Step 6 速查）
-2. 查询 field 的表别名以 md「服务配置(backend)」/「数据表描述」声明的主表别名为准（与前端各自从 md 读取）；若与 $ALIGN_PARAMS 中前端产出的 field 不一致，按 md 别名生成本端代码并在返回中标注差异，**禁止 SendMessage 联系前端 subagent**（避免串行等待返工）
+2. 查询 field 的表别名以 md「服务配置(backend)」的「列表数据表」/「数据表描述」声明的主表别名为准（与前端各自从 md 读取）；若与 $ALIGN_PARAMS 中前端产出的 field 不一致，按 md 别名生成本端代码并在返回中标注差异，**禁止 SendMessage 联系前端 subagent**（避免串行等待返工）
 3. 扩展端点（状态更新 / 导出）按「服务逻辑描述」标记生成，不臆造
 4. Java 格式化由 hook 兜底，你只需保证模板风格正确
-5. 最终只返回：写入文件清单（相对 GUAVA_BACKEND_ROOT）+ 三检简报
+5. 最终只返回：写入文件清单（相对工程根——md 服务配置「工程」字段或 GUAVA_BACKEND_ROOT）+ 三检简报
 不要读 code-frontend / context/front.md。不做路由、git。
 ```
 

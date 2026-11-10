@@ -7,7 +7,7 @@
 
 ## 视觉稿格式（推荐）
 
-解析规则见 [config-parser.md](config-parser.md#1-视觉稿格式推荐)。要点：小节可带 `- 描述` 后缀、`---` 分隔线忽略、表格不写分隔行且行尾空单元格可裁剪、操作列行内 `action:` 声明（设计器导出不再双写 `### 操作列` 小节）、编辑子区带（GvForm）/（GvDescriptions）注解、frontmatter 默认值可省略（`layout: module` / `i18n: false` / `editPage: true` / `infoPage: false`）；`frontendOnly` 已废弃——有 `backend:` 块 = 全栈（`api:` 块由设计器按 backend 配置自动推导），无 = 纯前端。
+解析规则见 [config-parser.md](config-parser.md#1-视觉稿格式推荐)。要点：小节可带 `- 描述` 后缀、`---` 分隔线忽略、表格不写分隔行且行尾空单元格可裁剪、操作列行内 `action:` 声明（设计器导出不再双写 `### 操作列` 小节）、编辑子区带（GvForm）/（GvDescriptions）注解、frontmatter 默认值可省略（`layout: module` / `i18n: false` / `editPage: true` / `infoPage: false`）；`frontendOnly` 已废弃——正文含 `## 服务配置(backend)` 小节（设计器「后端配置」导出）或 frontmatter 有 `backend:` 块 = 全栈（`api:` 块由设计器按后端配置自动推导），皆无 = 纯前端。
 
 ```markdown
 ---

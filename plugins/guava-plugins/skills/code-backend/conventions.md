@@ -30,6 +30,7 @@ guava-{module}-starter/src/main/java/com/guava/{module}/
 | SqlProvider | `{Entity}SqlProvider` | `SysBizConfSqlProvider` |
 | PO 实体 | `{Entity}PO` | `SysBizConfPO` |
 | 查询方法 | `find{Entity}` / `find{Entity}List` | `findBizConf` |
+| 列表查询方法（多列表） | 每画布列表一套 `find{Xxx}`，不共用 | 主画布 `findUsers`（取 `api.operations.list`）；`登录日志列表` → `findLoginLog` |
 | 新增方法 | `save{Entity}` | `saveBizConf` |
 | 更新方法 | `update{Entity}` | `updateBizConf` |
 | 删除方法 | `remove{Entity}` | `removeBizConf` |

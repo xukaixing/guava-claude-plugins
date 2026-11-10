@@ -46,8 +46,8 @@ title: 用户管理
 view: sysMng/userMng       # 唯一决定 src/views/<view>/
 infoPage: true             # 生成 <Base>Info.vue（## 详情 小节，见 info.md）
 # 以下默认值可省略：layout: module / i18n: false / editPage: true / infoPage: false
-# frontendOnly 已废弃（设计器不再输出）：有 backend: 块 = 全栈，无 = 纯前端（1.9）
-# pageType 可省略 → 按小节推导（1.8）；api: 块由设计器按 backend: 配置自动推导（1.9）
+# frontendOnly 已废弃（设计器不再输出）：正文含 ## 服务配置(backend) 小节 或 有 backend: 块 = 全栈，皆无 = 纯前端（1.9）
+# pageType 可省略 → 按小节推导（1.8）；api: 块由设计器按后端配置自动推导（1.9）
 ---
 ```
 
@@ -142,9 +142,8 @@ infoPage: true             # 生成 <Base>Info.vue（## 详情 小节，见 info
 ### 1.9 api 推导
 
 旧字段 `frontendOnly` 已废弃（设计器不再输出），按块判读（存量文件兼容旧值）：
-
-- frontmatter **无 `backend:` 块**（或旧文件 `frontendOnly: true`）→ 纯前端：`src/api/**` 不生成，`data.ts` 必生成（`getListResult` / `filterListRecords`）。
-- frontmatter **有 `backend:` 块**（或旧文件 `frontendOnly: false`）→ 全栈：按 `api:` 块生成 `src/api/*.ts`；设计器导出的文件 `api:` 块已由 `backend:` 配置自动推导（module/base/operations），直接消费即可，缺 `api:` 块时按 code-all/config-bridge.md 推导表补齐。
+- 正文含 `## 服务配置(backend)` 小节（设计器「后端配置」导出，**最高优先级**）或 frontmatter **有 `backend:` 块**（或旧文件 `frontendOnly: false`）→ 全栈：按 `api:` 块生成 `src/api/*.ts`；设计器导出的文件 `api:` 块已由后端配置自动推导（module/base/operations），直接消费即可，缺 `api:` 块时按 code-all/config-bridge.md 推导表补齐。
+- 两者皆无（或旧文件 `frontendOnly: true`）→ 纯前端：`src/api/**` 不生成，`data.ts` 必生成（`getListResult` / `filterListRecords`）。
 
 ### 1.10 占位字段与 `u@`
 

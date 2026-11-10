@@ -2,7 +2,7 @@
 
 同一 `src/pages/**/*.md` 驱动前后端。前端字段见 [../code-frontend/config-parser.md](../code-frontend/config-parser.md)。
 
-旧字段 `frontendOnly: true/false` **已废弃**（设计器不再输出）：frontmatter 无 `backend:` 块 = 纯前端，**不执行本桥接、不生成后端**；有 `backend:` 块 = 全栈生成。存量文件按此兼容判读。
+旧字段 `frontendOnly: true/false` **已废弃**（设计器不再输出），按块判读（存量文件兼容旧值）：md 含 `## 服务配置(backend)` 正文小节（设计器「后端配置」导出，**最高优先级**）或 frontmatter 有 `backend:` 块 = **全栈生成**；两者皆无 = 纯前端，**不执行本桥接、不生成后端**。
 
 ## YAML 扩展（设计器「后端配置」步骤生成）
 
@@ -55,7 +55,7 @@ backend:
 
 前端 ## 查询 表 → 后端 [search-conditions.md](../code-backend/search-conditions.md) 确认表，`field` **字符级一致**。
 
-**别名来源**：查询 field 的表别名双方各自从 md「服务配置(backend)」/「数据表描述」声明的主表别名读取（如 `主表：sys_user（别名 su）` → `su@字段`），**不依赖前端产物传参、不沿用文档示例的 `u@`**。md 未声明别名时查询 field 不带别名。任一端发现别名不一致时，以 md 声明为准生成本端代码并在返回中标注，禁止跨 subagent 发消息返工。
+**别名来源**：查询 field 的表别名双方各自从 md「服务配置(backend)」的「列表数据表」（`表 sys_user（别名 su）`）/「数据表描述」（`主表：sys_user（别名 su）`）读取 → `su@字段`，**不依赖前端产物传参、不沿用文档示例的 `u@`**。md 未声明别名时查询 field 不带别名。任一端发现别名不一致时，以 md 声明为准生成本端代码并在返回中标注，禁止跨 subagent 发消息返工。
 
 ## 输出清单示例（crud-module）
 

@@ -14,7 +14,9 @@
 
 ## 输出根
 
-所有路径相对于 **`GUAVA_BACKEND_ROOT`** + `backend.module`（见配置或 Interactive 确认）。
+md `## 服务配置(backend)` 的「工程」字段（绝对路径）**优先**，直接作为生成文件的磁盘位置（其下 `src/main/java/{包路径}/`）。
+
+md 未声明时：所有路径相对于 **`GUAVA_BACKEND_ROOT`** + `backend.module`（见配置或 Interactive 确认）。
 
 ## 生成后
 
