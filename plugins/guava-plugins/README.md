@@ -5,6 +5,7 @@
 | Agent | 说明 |
 |-------|------|
 | `guava-codegen` | 给一个 md 路径 / 表名 / 生成请求（含"只生成后端"等单端语义），自动选择并执行下面的 code-* skill（也可显式指定） |
+| `guava-test` | 给系统 URL + 账号 + 功能（md 路径或菜单名），自动执行 Playwright 功能测试（菜单导航 / 按钮可用性 / 输入校验 / 保存修改），测试代码落在消费项目 `e2e/` 可复跑 |
 
 ### guava-codegen 用法
 
@@ -26,6 +27,55 @@
 
 前置条件与直接调用 skill 相同：已 `pnpm install`（含 guava-ui）、`GUAVA_BACKEND_ROOT` 已配置、`db.yml` 已填（code-from-db 需要）。
 
+### guava-test 用法
+
+在消费项目里用自然语言派活即可。输入优先级：**命令行显式参数 > `e2e.test.md` 配置 > 交互追问**。
+
+**有 `e2e.test.md`（URL/账号一次配好，日常推荐）：**
+
+| 你说 | agent 执行 |
+|------|-----------|
+| "测一下" / "跑一遍测试" | 自动发现工程根 `e2e.test.md`，环境+功能全取配置，直接开测 |
+| "测一下 `e2e.test.md`" | 显式指定配置文件，同上 |
+| "测一下，但只跑按钮和输入校验" | 配置取 URL/账号，范围取命令行（`scope: [buttons, validations]`） |
+| "测一下 `src/pages/sysMng/deptMng.md`" | 配置取环境，功能被命令行覆盖为部门管理 |
+| "测一下 `e2e.test.md`，headless 关掉，我想看着浏览器跑" | 写 `E2E_HEADLESS=false` 有头模式执行 |
+
+**无配置（四要素全给，一次性完整输入）：**
+
+| 你说 | agent 执行 |
+|------|-----------|
+| "测一下 http://localhost:5173，admin/123456，功能 `src/pages/sysMng/userMng.md`" | 读 md + 生成产物推导用例 → 装 Playwright、幂等生成 `e2e/` 脚手架 → 跑菜单导航 / 按钮 / 校验 / 保存修改 4 类用例 → 清理自建数据 → 报告 |
+| "帮我测 https://test.example.com 账号 admin 密码 Admin@123，测用户管理" | 自然语言变体，同样解析出 URL / 账号 / 功能 |
+
+**要素不全或功能描述模糊（agent 追问 / 自动匹配）：**
+
+| 你说 | agent 执行 |
+|------|-----------|
+| "测一下用户管理" | 无配置 → 追问"系统 URL 和账号"；同时 glob `src/pages/**` 列出候选功能让你挑 |
+| "测一下 https://xxx admin/123 系统管理下的用户管理" | `src/pages/**` 无匹配 → 实况探测模式：登录后按菜单路径点入，dump 菜单 / 按钮 / 表单推导用例（报告标注覆盖来源） |
+| "测一下订单列表" | 功能名模糊匹配 `src/pages/**`；1 个直接用，多个列出让你选 |
+
+**附加要求：**
+
+| 你说 | agent 执行 |
+|------|-----------|
+| "只测按钮和输入校验，别做新增修改" | 按声明裁剪用例范围（写操作类用例默认只触碰 `E2E_` 前缀自建数据） |
+| "编辑功能允许用预置的 admin 记录验证" | 安全门逐条确认后 `$AUTH_SCOPE` 带上该预置记录，报告标注授权来源 |
+
+**测试配置（可选，避免每次重复输入 URL/账号）**：复制模板到工程根并填写（与 `db.yml` 同约定，含真实凭据务必 gitignore）：
+
+```bash
+# 在你的业务工程根目录（如 ses-web/）
+cp <插件目录>/skills/code-test/config-template.md ./e2e.test.md
+# 编辑 e2e.test.md：baseUrl / username / password / feature
+# password 推荐写 ${E2E_PASSWORD}，运行时从环境变量解析
+```
+
+命令行显式参数优先级高于 `e2e.test.md` 配置。
+
+真实环境跑测试会真实写数据：默认只新增 / 修改 / 删除**测试自建数据**（用例结束自动清理）；涉及预置数据的用例会先向你确认。复跑：`pnpm exec playwright test`；报告：`pnpm exec playwright show-report`。凭据只写 `e2e/.env.e2e`（已 gitignore）。
+
 ## 命令
 
 | 命令 | 说明 |
@@ -35,6 +85,7 @@
 | `/guava-plugins:code-all` | 先 front 后 back |
 | `/guava-plugins:code-from-db` | 连接 MySQL 读表结构 → 生成 `.md` → 全栈页面表单 |
 | `/guava-plugins:code-optimize` | 前端/后端性能分析 + 优先级排序的修复 |
+| `/guava-plugins:guava-test` | 自动化功能测试（agent 调度）：给 URL + 账号 + 功能，Playwright 跑菜单/按钮/校验/保存修改，产物落 `e2e/` |
 
 配置放在消费项目的 `src/pages/**/*.md`。
 

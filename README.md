@@ -21,6 +21,19 @@ Guava 项目的 Claude Code 插件市场（marketplace 名：**guava-tools**）�
 claude --plugin-dir /path/to/guava-claude-plugins/plugins/guava-plugins
 ```
 
+## 独立 agent（不装插件）
+
+只想用自动化测试、不想装插件时：把 [standalone/guava-test.md](standalone/guava-test.md) 复制为个人 agent 或项目 agent——
+
+```bash
+# 个人 agent：所有项目可用
+cp standalone/guava-test.md ~/.claude/agents/guava-test.md
+# 或项目 agent：仅当前项目
+cp standalone/guava-test.md <你的工程>/.claude/agents/guava-test.md
+```
+
+自包含（工作流 + e2e 脚手架模板全部内联，无 `${CLAUDE_PLUGIN_ROOT}` 依赖），用法与插件版一致：自然语言说"测一下 http://xxx admin/123 功能 src/pages/userMng.md"（或备好 `e2e.test.md` 后直接说"测一下"），模型自动以 Agent 方式启动。改插件侧 code-test 文档后需同步本文件（结构镜像，见文件头说明）。
+
 ## 命令
 
 | 命令 | 说明 |
@@ -30,12 +43,14 @@ claude --plugin-dir /path/to/guava-claude-plugins/plugins/guava-plugins
 | `/guava-plugins:code-all` | 全栈：先 front 后 back |
 | `/guava-plugins:code-from-db` | 从 MySQL 表结构生成（PO-only 或全栈） |
 | `/guava-plugins:code-optimize` | 前端/后端性能分析与修复 |
+| `/guava-plugins:guava-test` | 自动化功能测试（agent 调度）：给 URL + 账号 + 功能，Playwright 跑菜单/按钮/校验/保存修改，产物落 `e2e/` |
 
 ## Agent
 
 | Agent | 说明 |
 |-------|------|
 | `guava-plugins:guava-codegen` | 调度 agent：给定 md 路径 / 表名 / 请求，自动选择并执行上面的 code-* skill（用法示例见插件 README） |
+| `guava-plugins:guava-test` | 给定系统 URL / 账号 / 功能（或工程根 `e2e.test.md` 测试配置一次配好复用），自动执行 Playwright 功能测试（用法示例见插件 README） |
 
 ## Skill 与 MCP
 
@@ -46,8 +61,8 @@ plugins/guava-plugins/
 ├── .claude-plugin/plugin.json
 ├── .mcp.json              # ${CLAUDE_PLUGIN_ROOT}/mcp/...
 ├── mcp/                   # guava-ui catalog + gv-* 单组件
-├── skills/                # code-frontend / code-backend / code-all / code-from-db / code-optimize
-├── agents/                # guava-codegen（按 md 自动调度 code-* skill）
+├── skills/                # code-frontend / code-backend / code-all / code-from-db / code-optimize / code-test（+guava-test 入口）
+├── agents/                # guava-codegen（按 md 自动调度 code-* skill）、guava-test（自动化测试调度）
 ├── context/
 └── hooks/
 ```

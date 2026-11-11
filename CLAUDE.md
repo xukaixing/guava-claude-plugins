@@ -12,6 +12,8 @@ Runtime contract: paths resolve against `${CLAUDE_PLUGIN_ROOT}` (the installed p
 
 ```
 .claude-plugin/marketplace.json      # marketplace + plugin manifest (version, owner)
+standalone/
+  guava-test.md                      # self-contained e2e-test agent (no plugin needed; copy to ~/.claude/agents/)
 plugins/guava-plugins/
   .claude-plugin/plugin.json
   .mcp.json                          # MCP registry; paths use ${CLAUDE_PLUGIN_ROOT}
@@ -34,9 +36,12 @@ plugins/guava-plugins/
     code-all/                        # front → back pipeline + config-bridge
     code-from-db/                    # MySQL 表结构 → md → 全栈（或 PO-only）
     code-optimize/                   # front + back performance analysis + prioritized fixes
+    code-test/  (+ templates/)       # Playwright 功能测试：菜单/按钮/校验/保存修改，产物落消费项目 e2e/；测试配置模板 config-template.md（→ 工程根 e2e.test.md 复用 URL/账号）
     guava-codegen/                   # entry skill: delegates to the guava-codegen agent
+    guava-test/                      # entry skill: delegates to the guava-test agent
   agents/
     guava-codegen.md                 # 调度 agent：按 md 路径/表名自动选择并执行 code-* skill
+    guava-test.md                    # 调度 agent：按 URL+账号+功能拉起 code-test subagent 执行 e2e 测试
 ```
 
 ## Commands
@@ -80,7 +85,7 @@ Env consumed: `GUAVA_BACKEND_ROOT` (defaults to `${CLAUDE_PROJECT_DIR}/../guava-
 
 **Three layers that must be understood together:**
 
-1. **Skills** (`skills/*/SKILL.md` + `templates/`) define the code-generation workflow. `code-frontend` reads a consumer's `src/pages/<feature>.md` config (YAML + tables) and writes Vue/API/helper/types/i18n into `src/views/<view>/`. `code-backend` writes Java under `GUAVA_BACKEND_ROOT` (templates aligned to the `SysUser*` reference files: 4-space, Allman braces, `<p>` Javadoc). `code-all` is a pure orchestration doc (Phase A front subagent → Phase B back subagent, bridged by `config-bridge.md`). `code-optimize` analyzes front/back code for performance bottlenecks, memory leaks, and optimization opportunities, delivering prioritized fixes. Each skill owns an **overlay policy** (`_shared.md`): e.g. `types/helper/data/vue` are whole-file overwritten; `src/api/*` is append-only for missing functions; `zh-CN.ts`/`en.ts` replace per-key groups.
+1. **Skills** (`skills/*/SKILL.md` + `templates/`) define the code-generation workflow. `code-frontend` reads a consumer's `src/pages/<feature>.md` config (YAML + tables) and writes Vue/API/helper/types/i18n into `src/views/<view>/`. `code-backend` writes Java under `GUAVA_BACKEND_ROOT` (templates aligned to the `SysUser*` reference files: 4-space, Allman braces, `<p>` Javadoc). `code-all` is a pure orchestration doc (Phase A front subagent → Phase B back subagent, bridged by `config-bridge.md`). `code-optimize` analyzes front/back code for performance bottlenecks, memory leaks, and optimization opportunities, delivering prioritized fixes. `code-test` derives test cases from a feature's md config + generated Vue source, scaffolds Playwright into the consumer's `e2e/` (idempotent, only-if-missing), and runs menu-navigation / button-usability / input-validation / save-edit tests against a real URL+account (writes only self-created `E2E_`-prefixed data, cleaned up afterwards). Each skill owns an **overlay policy** (`_shared.md`): e.g. `types/helper/data/vue` are whole-file overwritten; `src/api/*` is append-only for missing functions; `zh-CN.ts`/`en.ts` replace per-key groups; `code-test` never overwrites existing scaffold files (config/fixtures/helpers), only the feature spec.
 
 2. **MCP servers** (`mcp/`) supply component knowledge. `guava-ui` is the **catalog** (list/resolve/search Gv*, page recipes like `crud-list` / `form-edit` / `tabs`). Each `gv-*` server exposes `get_usage` / `get_api` / `get_examples` (vendored from press at generate time; may lag npm), `get_props` (live from the consumer's `node_modules/guava-ui/lib/types/index.d.ts`), and `get_source` (original SFC shipped inside the installed package's source map — the npm-freshness ground truth). Responses to the doc tools carry an `npm` block (`packageVersion` / `sfcLastEditTime` / `pressGeneratedAt`) so callers can judge press staleness; props / emits / 源码 are always npm-authoritative. The skill mandates: **never write `<template>` without first calling the relevant MCP**; prefer `Gv*`, fall back to `el-*` only when no wrapper exists. The backend counterpart is `guava-backend` (`mcp/guava-backend/`): `get_stack` (module layering parent-BOM → component → entity → platform), `list/search/get_dependency` (BOM deps + versions from `guava-parent-starter`), and `list/search/get_platform_class` (class index of platform/component/entity starters, e.g. `BizCode` / `MarkLog` / `BasePO` / `Map2ObjUtil`; utils excluded), and `list_utils` / `search_utils` / `get_util` (the `com.guava.platform.utils.*` util-class index — per-method Javadoc summaries, optional `method` filter on `get_util`; codegen must consult these and prefer the utils over reinventing helpers). `code-backend` mandates `get_stack` before writing any Java; versions are BOM-authoritative (`version=null` = managed by an imported BOM, never hardcode).
 
@@ -96,5 +101,6 @@ Env consumed: `GUAVA_BACKEND_ROOT` (defaults to `${CLAUDE_PROJECT_DIR}/../guava-
 - Component MCP servers are generated (templated `server.mjs` written by `generate-components.mjs`); don't hand-edit them — regenerate.
 - `paths.mjs` `resolveProjectRoot()` resolves the consumer project in order: `CLAUDE_PROJECT_DIR` / `GUAVA_PROJECT_DIR` env → cwd if it has `node_modules/guava-ui` → walk up from cwd; missing env vars or unusual layouts break prop/source resolution.
 - Front code style is strict: `const fn = () => {}` only (no `function`, no `reactive`, no bare `any` → `Recordable<any>`), `@section` markers, multi-line JSDoc per method. Enforced by `code-review.md` checklists and the lint hook.
+- `standalone/guava-test.md` is a **self-contained mirror** of the code-test skill docs + guava-test agent (inline workflow + e2e scaffold templates); edit the plugin-side docs first, then sync it (both READMEs point to it for non-plugin usage).
 - Backend targets JDK >= 25; generated Java must compile at that level.
 - Consumer settings live in the consumer's `.claude/settings.json` (env + permissions), **not** here. This repo's `.claude/settings.json` is for developing the plugin itself.
