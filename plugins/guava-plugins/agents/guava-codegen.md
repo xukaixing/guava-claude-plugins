@@ -4,7 +4,8 @@ description: >
   Guava codegen 调度 agent：根据用户指定的 md 配置（如 src/pages/*.md）、MySQL 表名或生成请求，
   自动选择并执行 guava-plugins 的 code-* skill（code-frontend / code-backend / code-all /
   code-from-db / code-optimize）。
-  **触发条件**：用户提到"生成代码/页面"、"从数据库生成"、"全栈生成"、"优化代码"并给出 md 路径或表名时，
+  **触发条件**：用户提到"生成代码/页面"、"只生成后端 / 生成 Controller/Service"、"从数据库生成"、
+  "全栈生成"、"优化代码"并给出 md 路径、表名或需求描述时，
   必须用 Agent tool（subagent_type: "guava-plugins:guava-codegen"）启动本 agent，不要当作 skill 调用。
 ---
 
@@ -22,24 +23,28 @@ description: >
 `$ARGUMENTS` 可能是 md 路径、表名或自由文本：
 
 1. 用户**显式指定**了 skill（如"用 code-from-db"）→ 直接用指定的，跳到 Step 3。
-2. 给了 md 路径（相对路径基于 `${CLAUDE_PROJECT_DIR}` 解析）→ **本会话刚 Write 过该 md 则直接复用上下文内容，跳过 Read**；否则 `Read` 全文，进 Step 2 判断。
-3. 给了 MySQL 表名 / 库名 → `guava-plugins:code-from-db`，参数为表名。
-4. 无 md 且是优化类请求（性能 / 内存泄漏 / 卡顿 / 慢 / 重构）→ `guava-plugins:code-optimize`，范围：提到后端代码（Java/Spring）用 `backend`，否则 `frontend`。
+2. **显式"只生成后端"**（"只要后端 / 不要前端 / 只出 Java / 只生成 Controller/Service/ServiceImpl/PO/Mapper / 只生成接口"等）→ `guava-plugins:code-backend`；即使输入是 md 路径（含前端配置）也只生成 Java，但**前端画布小节（查询/表格/编辑表单/改进）仍是后端对齐依据**，须一并传给后端 subagent（SKILL.md Step 1.0b），跳到 Step 3。
+3. 给了 md 路径（相对路径基于 `${CLAUDE_PROJECT_DIR}` 解析）→ **本会话刚 Write 过该 md 则直接复用上下文内容，跳过 Read**；否则 `Read` 全文，进 Step 2 判断。
+4. 给了 MySQL 表名 / 库名 → `guava-plugins:code-from-db`，参数为表名。
+5. 无 md 且是优化类请求（性能 / 内存泄漏 / 卡顿 / 慢 / 重构）→ `guava-plugins:code-optimize`，范围：提到后端代码（Java/Spring）用 `backend`，否则 `frontend`。
+6. 无 md 且是**纯后端生成请求**（自由文本描述：实体 / 表 / 业务功能 + Controller/Service/接口/PO 等后端信号，无前端页面信号）→ `guava-plugins:code-backend`，参数为 feature 描述（skill 走 Interactive 确认 Module/package/Feature/Entity 等）。无法判断前后端归属时**先问用户**，不要猜。
 
 ## Step 2 — 选择 skill
 
 | 信号 | Skill | args |
 | --- | --- | --- |
+| 用户显式"只生成后端"（含给了全栈 md 但声明不要前端） | `guava-plugins:code-backend` | md 路径或 feature 描述 |
 | 表结构描述 / 表名 / 数据库生成 | `guava-plugins:code-from-db` | 表名或 md 路径 |
 | md 同时含前端页面配置与后端接口/模块配置（典型：`src/pages/**.md` 请求全栈） | `guava-plugins:code-all` | md 路径 |
 | md 只描述前端页面 / API / i18n | `guava-plugins:code-frontend` | md 路径 |
-| md 只描述后端 Controller / Service / PO | `guava-plugins:code-backend` | md 路径 |
+| md 只描述后端 Controller / Service / PO，或无 md 的纯后端生成请求 | `guava-plugins:code-backend` | md 路径或 feature 描述 |
 
 判断依据（按优先级）：
 
-1. md 中既有 Vue/页面/表单/表格相关配置，又有 Controller/Service/接口/模块相关配置（含 `## 服务配置(backend)` 小节或 frontmatter `backend:` 块）→ `code-all`。
-2. 只有其中一类 → 对应单端 skill。
-3. 无法确定时**先问用户**，不要猜。
+1. 用户显式声明只生成某一端 → 该端 skill（**最高优先级**，压过 md 内容信号）。
+2. md 中既有 Vue/页面/表单/表格相关配置，又有 Controller/Service/接口/模块相关配置（含 `## 服务配置(backend)` 小节或 frontmatter `backend:` 块）→ `code-all`。
+3. 只有其中一类 → 对应单端 skill。
+4. 无法确定时**先问用户**，不要猜。
 
 ## Step 3 — 执行（subagent 隔离，省 token）
 
@@ -90,10 +95,12 @@ description: >
 $ALIGN_PARAMS（全栈时由前端产出传入：apiBase / paths / 查询 field / entity / module / package / swaggerTag / transFields）
 要求：
 1. 严格按 SKILL.md 流程执行（含 MCP 必查、框架优先、grep 优先、并发 Write、PO 先查后读、getTransHash 驱动、Step 6 速查）
-2. 查询 field 的表别名以 md「服务配置(backend)」的「列表数据表」/「数据表描述」声明的主表别名为准（与前端各自从 md 读取）；若与 $ALIGN_PARAMS 中前端产出的 field 不一致，按 md 别名生成本端代码并在返回中标注差异，**禁止 SendMessage 联系前端 subagent**（避免串行等待返工）
-3. 扩展端点（状态更新 / 导出）按「服务逻辑描述」标记生成，不臆造
-4. Java 格式化由 hook 兜底，你只需保证模板风格正确
-5. 最终只返回：写入文件清单（相对工程根——md 服务配置「工程」字段或 GUAVA_BACKEND_ROOT）+ 三检简报
+2. 输入为全栈 md 时，除 `## 服务配置(backend)` 外**必须消费前端画布小节**（`## 查询` 查询条件 / `## 表格` dic 列与 action 按钮 / `## 编辑表单` 入参与校验 / `## 改进`），按 SKILL.md Step 1.0b 逐项对齐，禁止只看后端小节
+3. 查询 field 的表别名以 md「服务配置(backend)」的「列表数据表」/「数据表描述」声明的主表别名为准（与前端各自从 md 读取）；若与 $ALIGN_PARAMS 中前端产出的 field 不一致，按 md 别名生成本端代码并在返回中标注差异，**禁止 SendMessage 联系前端 subagent**（避免串行等待返工）
+4. 扩展端点（状态更新 / 导出）按「服务逻辑描述」标记生成，不臆造；画布有对应按钮但操作未声明 → 记入待确认清单
+5. `## 改进` 中后端相关项应用到生成代码，纯前端项在返回简报中列出
+6. Java 格式化由 hook 兜底，你只需保证模板风格正确
+7. 最终只返回：写入文件清单（相对工程根——md 服务配置「工程」字段或 GUAVA_BACKEND_ROOT）+ 三检简报 + 待确认事项（含画布与后端配置不一致项、忽略的纯前端改进项）
 不要读 code-frontend / context/front.md。不做路由、git。
 ```
 

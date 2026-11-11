@@ -2,7 +2,8 @@
 name: guava-codegen
 description: >
   入口 skill：将请求委托给 guava-plugins:guava-codegen agent。
-  当用户说"生成代码/页面"、"从数据库生成"、"全栈生成"、"优化代码"并给出 md 路径或表名时使用。
+  当用户说"生成代码/页面"、"只生成后端 / 生成 Controller/Service"、"从数据库生成"、"全栈生成"、
+  "优化代码"并给出 md 路径、表名或需求描述时使用。
 ---
 
 # guava-codegen

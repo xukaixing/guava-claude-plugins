@@ -3,6 +3,7 @@ name: code-backend
 description: >
   Backend: Spring Boot Controller/Service/ServiceImpl under GUAVA_BACKEND_ROOT.
   Invoke /guava-plugins:code-backend. Read context/backend.md + this SKILL.
+  输入为全栈 md 时同样消费前端画布小节（查询/表格/编辑表单/改进）做前后端对齐。
   由 guava-codegen 以独立 subagent 执行，勿与其他端 skill 混载。
 disable-model-invocation: true
 ---
@@ -81,11 +82,21 @@ Step 1.0：**服务配置(backend) 小节消费**（设计器「后端配置」�
 
 md 另有 `### 数据表描述`（旧版/手写，主表 + 关联 JOIN）时用于多表 JOIN 配置；两处表名冲突以 `### 列表数据表` 为准。
 
-Step 1.1：查询条件（必选，[search-conditions.md](search-conditions.md)，field 与前端一致）。
+Step 1.0b：**前端画布小节消费**（输入为全栈 md 时**必做**，即使"只生成后端"——后端必须与前端画布声明对齐，不得只看 `## 服务配置(backend)`）。逐小节消费规则：
+
+| md 小节 | 后端消费 |
+|---------|---------|
+| `## 查询` 表格（`名称\|字段\|类型\|校验\|长度\|扩展`） | 每个字段行 = 一个查询条件：field 取「字段」列（按 `### 列表数据表` 别名加前缀 → `su@字段`）；「校验」列映射查询类型（`isAny`→like、`isDic`→eq、`isNumber`→eq、`isDate`→daterange，`扩展` 含 `dateType:daterange` 确认）；填入 Step 1.1 确认表，**禁止脱离 md 臆造查询条件** |
+| `## 表格` 表格（`名称\|字段\|宽度\|筛选\|类型\|固定\|扩展`） | `扩展` 含 `dic=xx` / `类型` 含 `dic:xx` 的列 → `getTransHash()` 条目（与 `### 字典翻译` 合并，冲突以 `### 字典翻译` 为准）；`类型` 为 `action:编辑,删除` 的行 → 核对「服务逻辑描述」操作集合：画布有删除/状态更新/导出按钮但后端操作未声明 → 记入待确认清单，不擅自生成；`multiHeader` / `amount` / `type=tag` 等纯展示扩展 → 不生成后端逻辑，仅作 SELECT 列存在的依据 |
+| `## 编辑表单` 各小节（含 `###` 子区） | 字段行（`名称\|字段\|类型\|必填\|校验\|长度\|只读\|占用列\|扩展`）= save/update 入参集合：`必填 Y` → `AssertMyUtil` 非空校验；`校验`（isNumber/isDate/isDic）→ 对应类型校验；`长度` → 长度校验 + PO 字段长度对齐；`只读 Y` → 不作为保存入参（仅列表回填/展示）；**多个 `## 编辑表单 - <描述>` 小节**（如 suffixBtn 弹出的子表单）→ 每个额外表单评估是否需要独立 save 端点，需要则按标题推导方法名并记入待确认清单 |
+| `### 布局` / `### 操作列规则` / 「服务逻辑描述」逻辑描述文本 | 纯描述不直接生成代码，作为 ServiceImpl 业务逻辑备注与 `@MarkLog` 操作说明依据 |
+| `## 标签页` 内嵌列表 | 与 `### 列表数据表` 非主画布行对应，各生成一套 `find{Xxx}`（见 Step 1.0 多列表规则） |
+
+Step 1.1：查询条件（必选，[search-conditions.md](search-conditions.md)，field 与前端一致）。**md 模式下查询条件直接取 Step 1.0b 从 `## 查询` 小节解析的结果**（field、查询类型、字典翻译逐项对应）；无 `## 查询` 小节或自由文本输入时才走 Interactive 确认。
 
 Step 1.1a：**查询 SQL 规则**——单表走 `MyUtil.getConditionsWhere` 模式（context/backend.md §对齐表），FROM 表与 SELECT 列按 `### 列表数据表` 生成；多表按 `### 数据表描述` 的 JOIN 配置生成 JOIN 查询（SELECT 列带表别名，WHERE 条件同样走条件构造器，不拼用户原始入参）。设计器只存配置不生成 SQL，SQL 一律由本 skill 生成。
 
-Step 1.2：业务字段（add/edit 时）。
+Step 1.2：业务字段（add/edit 时）。**md 模式下直接取 Step 1.0b 从 `## 编辑表单` 小节解析的入参集合**（必填/校验/长度/只读逐项映射到 `AssertMyUtil` 校验与 PO 字段长度），不重复 Interactive 确认。
 
 Step 1.3：CRUD（禁止默认全开，查询必选）。
 
@@ -105,11 +116,13 @@ Step 4.5：PO 实体（ServiceImpl 引用 `{Entity}PO`，缺失则编译失败�
 
 Step 5：Mapper/SqlProvider、`getTransHash()`、`@MarkLog`、与前端 `paths` 对齐。
 
-Step 5.1：**`getTransHash()` 字典翻译**——从 `### 字典翻译` 小节逐条写入 `transHash.put(field, transValue)`。规则详见 [conventions.md §字典翻译](conventions.md)；无该小节时仅翻译 `createTime`。
+Step 5.1：**`getTransHash()` 字典翻译**——以 `### 字典翻译` 小节为主，**合并 Step 1.0b 从 `## 表格` 列 `dic=` / `dic:` 扩展收集的条目**（去重，冲突以 `### 字典翻译` 为准），逐条写入 `transHash.put(field, transValue)`。规则详见 [conventions.md §字典翻译](conventions.md)；两处皆无时仅翻译 `createTime`。
+
+Step 5.5：**`## 改进` 应用**（md 含该小节时必做）——逐条分析：后端相关项（SQL / 索引 / 校验 / 端点 / 字段 / 事务 / 性能）应用到已生成代码做二次优化；纯前端项（布局 / 样式 / 交互 / 组件）忽略但须在返回简报中列出，供前端生成时参考。
 
 Step 6 — 本次生成代码检查（必做，速查优先）：
 
-先凭刚写完的内容速查：包路径 / 命名与前端 `paths` 对齐；写操作有 `@MarkLog` + `AssertMyUtil` 校验；查询条件走 `MyUtil.getConditionsWhere`，不拼用户原始入参；列表查询分页；无循环内单条查库；Javadoc 齐全（`<p>` + 标准 `@param`/`@return`/`@since`，声明 `throws` 的方法带 `@throws` 中文说明）、覆盖时保留原 `@since`；工具方法已 static import、`HashMap.newHashMap(16)`、接口 `throws IOException` 的实现按实际收窄；工具/常量/翻译等能力复用三层框架现成类、未自造。
+先凭刚写完的内容速查：包路径 / 命名与前端 `paths` 对齐；md 模式下查询条件 / 入参 / 字典翻译已按 Step 1.0b 与前端画布小节逐项对齐、`## 改进` 已应用；写操作有 `@MarkLog` + `AssertMyUtil` 校验；查询条件走 `MyUtil.getConditionsWhere`，不拼用户原始入参；列表查询分页；无循环内单条查库；Javadoc 齐全（`<p>` + 标准 `@param`/`@return`/`@since`，声明 `throws` 的方法带 `@throws` 中文说明）、覆盖时保留原 `@since`；工具方法已 static import、`HashMap.newHashMap(16)`、接口 `throws IOException` 的实现按实际收窄；工具/常量/翻译等能力复用三层框架现成类、未自造。
 
 全过 → 输出三行简报（`规范 / 安全 / 性能：通过（速查）`）；任一可疑 → Read [code-review.md](code-review.md) 深检，Critical 须修复并再检。
 

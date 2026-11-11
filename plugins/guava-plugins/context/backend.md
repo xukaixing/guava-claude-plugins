@@ -21,12 +21,17 @@ md `## 服务配置(backend)` 的「工程」字段（绝对路径，如 `/.../g
 
 ## 与前端对齐
 
+「只生成后端」时输入若为全栈 md，**前端画布小节同样是后端输入**（消费规则见 `skills/code-backend/SKILL.md` Step 1.0b）：后端不得只看 `## 服务配置(backend)`，必须与画布声明逐项对齐。
+
 | 前端配置 | 后端 |
 |----------|------|
 | `apiBase: /sysuser` | `@RequestMapping("/sysuser/")` 或 feature 段一致 |
 | `paths.find/save/...` | Controller 端点同名 |
-| 查询表 `field` | `MyUtil.getConditionsWhere` 字段一致（见 `search-conditions.md`） |
-| 表格列 `dicType` | `getTransHash()` 字典翻译自动收集 |
+| `## 查询` 字段 + 校验 | `MyUtil.getConditionsWhere` 字段一致（见 `search-conditions.md`）；`isAny`→like、`isDic`/`isNumber`→eq、`isDate`→daterange |
+| 表格列 `dicType` / 列 `dic=` 扩展 | `getTransHash()` 字典翻译自动收集（与 `### 字典翻译` 合并） |
+| `## 编辑表单` 必填 / 校验 / 长度 / 只读 | `AssertMyUtil` 校验与 PO 字段长度；只读字段不进保存入参 |
+| 表格 `action:` 按钮（删除 / 状态更新 / 导出） | 与「服务逻辑描述」操作集合核对，缺失记入待确认清单 |
+| `## 改进` 小节 | 后端相关项（SQL/校验/端点/字段/性能）应用到生成代码，纯前端项忽略并在简报列出 |
 | 扩展端点标记（状态更新/导出） | 对应 Controller/Service 方法 |
 
 ## 服务配置(backend) 格式（设计器导出）

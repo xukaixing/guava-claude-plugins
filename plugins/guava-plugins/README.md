@@ -4,7 +4,7 @@
 
 | Agent | 说明 |
 |-------|------|
-| `guava-codegen` | 给一个 md 路径 / 表名 / 生成请求，自动选择并执行下面的 code-* skill（也可显式指定） |
+| `guava-codegen` | 给一个 md 路径 / 表名 / 生成请求（含"只生成后端"等单端语义），自动选择并执行下面的 code-* skill（也可显式指定） |
 
 ### guava-codegen 用法
 
@@ -14,13 +14,15 @@
 |------|-----------|
 | "用 guava-codegen 按 `src/pages/userMng.md` 生成代码" | 读 md → 前后端配置都有 → `code-all` |
 | "根据 `src/pages/deptList.md` 只生成前端" | → `code-frontend` |
+| "按 `src/pages/userMng.md` 只生成后端" | 显式单端 → `code-backend`（只消费 md 后端部分） |
+| "只生成后端：用户管理，要 Controller/Service/PO"（无 md） | 纯后端自由文本 → `code-backend`（Interactive 确认模块/包/实体） |
 | "从 `sys_user` 表生成全栈页面" | → `code-from-db`（走 mysql-schema MCP） |
 | "生成 `sys_role` 的 PO 就行" | → `code-from-db` PO-only 模式 |
 | "优化 `src/views/userMng/` 的性能，有点卡" | → `code-optimize`（frontend） |
 | "分析一下后端这个接口为什么慢" | → `code-optimize`（backend） |
 | "用 code-backend 生成这个 md 的接口" | 显式指定 → `code-backend` |
 
-调度规则：md 含前端+后端配置 → `code-all`；只含一端 → 对应单端 skill；表名/表结构 → `code-from-db`；优化类请求 → `code-optimize`。也可显式点名：`Task(subagent_type: "guava-plugins:guava-codegen", prompt: "...")`。
+调度规则：用户**显式声明只生成某一端 → 该端 skill（最高优先级**，即使 md 含两端配置）；否则 md 含前端+后端配置 → `code-all`；只含一端 → 对应单端 skill；表名/表结构 → `code-from-db`；无 md 的纯后端生成请求（Controller/Service/PO/接口等后端信号）→ `code-backend`；优化类请求 → `code-optimize`。无法判断前后端归属时先问用户。也可显式点名：`Task(subagent_type: "guava-plugins:guava-codegen", prompt: "...")`。
 
 前置条件与直接调用 skill 相同：已 `pnpm install`（含 guava-ui）、`GUAVA_BACKEND_ROOT` 已配置、`db.yml` 已填（code-from-db 需要）。
 
