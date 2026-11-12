@@ -15,6 +15,7 @@
 | `e2e/fixtures.ts` | [templates/fixtures.ts.md](templates/fixtures.ts.md) | **跳过** |
 | `e2e/helpers.ts` | [templates/helpers.ts.md](templates/helpers.ts.md) | **跳过** |
 | `e2e/env.d.ts` | [templates/env.d.ts.md](templates/env.d.ts.md) | **跳过** |
+| `e2e/progress-reporter.ts` | [templates/progress-reporter.ts.md](templates/progress-reporter.ts.md) | **跳过** |
 | `e2e/.env.e2e` | 无模板，按 key 追加（见 §3） | 缺 key 才追加，不覆盖已有值 |
 | `e2e/<feature>.spec.ts` | 用例模板生成（test-templates.md） | **整文件覆盖重写** |
 
@@ -27,9 +28,9 @@
 - 缺 `@playwright/test` → `pnpm add -D @playwright/test dotenv && pnpm exec playwright install chromium`
 - 已有则跳过安装（**不要**重复 `playwright install`，版本不匹配时报错再处理）
 
-playwright.config.ts 在工程根（与 package.json 同级）；`testDir: './e2e'`；只跑 chromium。**并行策略**：`workers` 由 `E2E_WORKERS` 驱动（默认 3）——T1–T3 只读用例并行安全，T4 写操作用例用 `test.describe.serial` 独占一个 worker；数据相互干扰时用 `E2E_WORKERS=1` 全串行。
+playwright.config.ts 在工程根（与 package.json 同级）；`testDir: './e2e'`；只跑 chromium。**并行策略**：`workers` 由 `E2E_WORKERS` 驱动（默认 5）——T1–T3 只读用例并行安全，T4 写操作用例用 `test.describe.serial` 独占一个 worker；数据相互干扰时用 `E2E_WORKERS=1` 全串行。
 
-> **旧配置升级**：既有工程的 `playwright.config.ts` 是脚手架（绝不自动覆盖），若仍是 `workers: 1` 硬编码，在报告"改进建议"里提示用户手动改为 `workers: Number(process.env.E2E_WORKERS ?? 3)` 一行即可。
+> **旧配置升级**：既有工程的 `playwright.config.ts` 是脚手架（绝不自动覆盖），若仍是 `workers: 1` / `workers ?? 3` 硬编码，或 reporter 未注册 `./e2e/progress-reporter.ts`，在报告"改进建议"里提示用户手动改为 `workers: Number(process.env.E2E_WORKERS ?? 5)` 并在 reporter 数组追加 `'./e2e/progress-reporter.ts'`（文件本身从模板补齐）。
 
 ## 3. 凭据契约（env）
 

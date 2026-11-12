@@ -69,7 +69,7 @@ disable-model-invocation: true
 ### Step 2：环境引导（Phase A，幂等，详见 [fixtures.md](fixtures.md)）
 
 1. **依赖**：`package.json` 缺 `@playwright/test` → `pnpm add -D @playwright/test dotenv && pnpm exec playwright install chromium`
-2. **脚手架**：`e2e/` 下 5 个文件（config / auth.setup / fixtures / helpers / env.d.ts）**仅缺失时**从 [templates/](templates/) 提取写入，已存在**绝不覆盖**
+2. **脚手架**：`e2e/` 下 6 个文件（config / auth.setup / fixtures / helpers / env.d.ts / progress-reporter）**仅缺失时**从 [templates/](templates/) 提取写入，已存在**绝不覆盖**
 3. **凭据**：写入 `e2e/.env.e2e`（缺 key 才追加，不覆盖已有值）
 4. **gitignore**：检查并追加 `e2e/.auth/`、`e2e/.env.e2e`
 5. **登录冒烟**：`pnpm exec playwright test --project=setup` 验证 auth.setup 通过；失败（验证码 / 多步登录等）→ 如实上报主 agent 转问用户，禁止绕过
@@ -89,7 +89,8 @@ cd ${CLAUDE_PROJECT_DIR} && pnpm exec playwright test e2e/<feature>.spec.ts
 ```
 
 - 每轮跑完立刻输出一行进度：`第 X 轮：通过 N / 失败 M（耗时 Xs）`，失败用例列出标题
-- **提速约定**：默认 `workers=3`（T1–T3 只读并行、T4 `describe.serial` 独占 worker）；只有数据相互干扰时才 `E2E_WORKERS=1 pnpm exec playwright test …` 全串行
+- **实时进度与计时**：工程注册了 `e2e/progress-reporter.ts`，每条用例结束即写 `e2e/progress.log`（时间戳 / 进度序号 / 单条耗时 / worker），运行结束写 `e2e/reports/last-run-summary.json`（总耗时 + 每用例耗时 + 最慢 Top5）。后台执行时主会话可 `tail -f e2e/progress.log` 实时观察；每轮耗时以该日志首行（▶ 开始）与汇总行（■ 运行结束）的时间戳之差为准，**禁止凭感觉估算耗时**
+- **提速约定**：默认取 `playwright.config.ts` 的 workers（消费工程已按只读/写操作分组并行调好）；只有数据相互干扰时才 `E2E_WORKERS=1 pnpm exec playwright test …` 全串行
 - 失败分类：**选择器 / 测试代码问题** → 修 spec 重跑（**累计 ≤2 轮**）；**疑似被测系统 bug**（操作正常但系统报错 / 校验缺失 / 保存无响应）→ 不再重试，保留证据，按 [bug-report.md](bug-report.md) 追加 `e2e/bugs.md` 台账
 - 导出按钮用例：断言下载触发 + 文件非空即可，不解析内容
 
@@ -111,6 +112,9 @@ cleanup fixture 在每条用例 teardown 里执行注册的删除函数（`after
 ### 失败详情（如有）
 | 用例 | 期望 | 实际 | 证据（screenshot/trace 路径） | suspected 层 |
 ### 清理状态：已清理 / 残留：<清单>
+### 耗时统计
+- 各轮耗时（第 X 轮 Xs）与**总测试耗时**（从 e2e/reports/last-run-summary.json 读取 wallTimeMs，禁止估算）
+- 最慢用例 Top3（标题 + 耗时）；明显超出均值的用例给出提速建议
 ### 改进建议：data-testid 候选、flaky 选择器、覆盖缺口、config 提速建议（如仍 workers=1）
 ```
 
@@ -128,12 +132,12 @@ cleanup fixture 在每条用例 teardown 里执行注册的删除函数（`after
 
 | 约束 | 说明 |
 | --- | --- |
-| **脚手架仅缺失时写** | config / auth.setup / fixtures / helpers / env.d.ts 已存在绝不覆盖；feature spec 整文件覆盖 |
+| **脚手架仅缺失时写** | config / auth.setup / fixtures / helpers / env.d.ts / progress-reporter 已存在绝不覆盖；feature spec 整文件覆盖 |
 | **凭据走 env** | 只进 `e2e/.env.e2e`；禁止硬编码进 spec / helper / 报告 |
 | **Vue 源码优先** | 用例推导中 md 与生成产物不一致时，以 `src/views/` 实际 DOM 结构为准 |
 | **失败迭代 ≤2 轮** | 超出按疑似系统 bug 上报，不无限重试 |
 | **真实环境红线** | 只写自建数据（`E2E_` 前缀）；超范围用例跳过并标注 |
 | **baseUrl = 已部署环境** | 指向 k8s 部署的远程地址（Ingress/域名）；禁止默认 localhost、禁止启动本地 dev server / 配 `webServer` 指向本地 |
-| **过程可见** | Phase B 每轮跑完输出进度行；里程碑（环境就绪/清单/spec/报告落盘）逐一向用户可见 |
+| **过程可见** | Phase B 每轮跑完输出进度行（耗时取自 `e2e/progress.log` 首末行时间戳，禁止估算）；里程碑（环境就绪/清单/spec/报告落盘）逐一向用户可见；后台执行时提示 `tail -f e2e/progress.log` |
 | **bug 统一入台账** | 疑似系统 bug 只进 `e2e/bugs.md`（append-only），运行报告回链编号；测试代码问题不进台账 |
 | **v1 单功能** | 一次跑一个 feature；manifest 格式预留多 feature 扩展 |

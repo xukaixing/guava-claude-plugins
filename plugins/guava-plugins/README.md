@@ -6,6 +6,7 @@
 |-------|------|
 | `guava-codegen` | 给一个 md 路径 / 表名 / 生成请求（含"只生成后端"等单端语义），自动选择并执行下面的 code-* skill（也可显式指定） |
 | `guava-test` | 给系统 URL + 账号 + 功能（md 路径或菜单名），自动执行 Playwright 功能测试（菜单导航 / 按钮可用性 / 输入校验 / 保存修改），测试代码落在消费项目 `e2e/` 可复跑 |
+| `guava-test-init` | 给功能范围（pages md 路径 / 功能名 / view 路径 / `all`），以 `src/views/` 源码为权威、`src/pages` md 为基线交叉核对，反向生成 `e2e/cases/<feature>.md` 测试专用 md（供 guava-test 的 feature 使用）；不执行测试、不需要 URL/凭据 |
 
 ### guava-codegen 用法
 
@@ -76,6 +77,24 @@ cp <插件目录>/skills/code-test/config-template.md ./e2e.test.md
 
 真实环境跑测试会真实写数据：默认只新增 / 修改 / 删除**测试自建数据**（用例结束自动清理）；涉及预置数据的用例会先向你确认。复跑：`pnpm exec playwright test`；报告：`pnpm exec playwright show-report`。凭据只写 `e2e/.env.e2e`（已 gitignore）。
 
+`feature` 除了指向 `src/pages/<feature>.md`，也可以指向 guava-test-init 反向生成的 `e2e/cases/<feature>.md`（以源码为权威的测试专用配置，见下）。
+
+### guava-test-init 用法
+
+在消费项目里用自然语言派活即可，**不执行测试、不需要 URL/凭据**。输入优先级：**命令行显式参数 > 交互追问**。
+
+| 你说 | agent 执行 |
+|------|-----------|
+| "给用户管理生成测试 md" | 功能名模糊匹配 `src/pages/**` → 以 `src/views/<view>/` 源码为权威、`src/pages` md 为基线交叉核对 → 写 `e2e/cases/<feature>.md`（已存在则跳过） |
+| "按 `src/pages/sysMng/deptMng.md` 反向生成测试配置" | 显式 md 路径 → 同上 |
+| "根据 `src/views/orderList/` 的源码生成测试 md" | view 路径输入 → 反查对应 pages md 作基线 |
+| "给所有页面批量生成测试 md" | `all` 批量模式：glob `src/pages/**/*.md` 全量，>3 个拆并行 subagent |
+| "同步用户管理的测试 md" | sync 模式（用户显式说"更新 / 同步 / 强制覆盖"）：覆盖已存在的 `e2e/cases/<feature>.md`，输出漂移记录（旧 md → 源码实际） |
+
+调度规则：功能必填（缺 → 追问；模糊多个 → 列出候选让你选）；显式声明"更新 / 同步 / 强制覆盖" → sync 模式，否则已存在的测试 md 一律跳过。全程 `src/` 只读，唯一写入点是 `e2e/cases/`；生成的 md frontmatter 不含 baseUrl/username/password。
+
+生成后：把 `e2e.test.md` 的 `feature:` 指向 `e2e/cases/<feature>.md`，即可用 guava-test 跑测试；已存在被跳过的，确认差异摘要后说"同步 <feature>"以 sync 模式更新。
+
 ## 命令
 
 | 命令 | 说明 |
@@ -86,6 +105,7 @@ cp <插件目录>/skills/code-test/config-template.md ./e2e.test.md
 | `/guava-plugins:code-from-db` | 连接 MySQL 读表结构 → 生成 `.md` → 全栈页面表单 |
 | `/guava-plugins:code-optimize` | 前端/后端性能分析 + 优先级排序的修复 |
 | `/guava-plugins:guava-test` | 自动化功能测试（agent 调度）：给 URL + 账号 + 功能，Playwright 跑菜单/按钮/校验/保存修改，产物落 `e2e/` |
+| `/guava-plugins:guava-test-init` | 测试 md 反向生成（agent 调度）：给功能范围，源码为权威交叉核对生成 `e2e/cases/<feature>.md`，供 guava-test 使用 |
 
 配置放在消费项目的 `src/pages/**/*.md`。
 

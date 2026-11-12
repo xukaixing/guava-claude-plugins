@@ -20,9 +20,11 @@ export default defineConfig({
   // 提速：T1-T3 只读用例文件内并行（fullyParallel），T4 写操作用 test.describe.serial 独占一个 worker
   // 数据敏感场景可 E2E_WORKERS=1 强制全串行
   fullyParallel: true,
-  workers: Number(process.env.E2E_WORKERS ?? 3),
+  workers: Number(process.env.E2E_WORKERS ?? 5),
   retries: 0,
-  reporter: [['list'], ['html', { open: 'never' }]],
+  // progress-reporter：每条用例结束实时写 e2e/progress.log（耗时/进度），结束写 e2e/reports/last-run-summary.json
+  // 后台跑测试时可 tail -f e2e/progress.log 观察实时进度
+  reporter: [['list'], ['html', { open: 'never' }], ['./e2e/progress-reporter.ts']],
   use: {
     baseURL: process.env.E2E_BASE_URL,
     headless: process.env.E2E_HEADLESS !== 'false',

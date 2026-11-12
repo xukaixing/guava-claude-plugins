@@ -79,9 +79,11 @@ description: >
 
 ### Phase B — 主 agent 亲自执行（code-test Step 5–7，过程可见）
 
+> **后台运行警示**：若本 agent 被主会话以**后台**方式拉起（主会话只显示 "Waiting for agent"），本 agent 的中间输出对用户完全不可见——此时除 progress.log 外，还必须在每个里程碑（环境就绪 / 用例清单 / 每轮结果 / 报告落盘）用 **SendMessage 发回主会话**（to: 主会话地址 / main），让用户实时看到进度；跑测试前提示用户 `tail -f e2e/progress.log`。
+
 严格按 `${CLAUDE_PLUGIN_ROOT}/skills/code-test/SKILL.md` 的 Step 5–7 与 bug-report.md 执行：
 
-1. **跑测试**：`cd ${CLAUDE_PROJECT_DIR} && pnpm exec playwright test e2e/<feature>.spec.ts`（默认 workers=3；数据干扰时 `E2E_WORKERS=1`）。每轮结束立刻输出进度行：`第 X 轮：通过 N / 失败 M（耗时 Xs）` + 失败用例标题
+1. **跑测试**：`cd ${CLAUDE_PROJECT_DIR} && pnpm exec playwright test e2e/<feature>.spec.ts`（workers 以工程 `playwright.config.ts` 为准）。**执行后立即告知用户**：「可用 `tail -f e2e/progress.log` 实时查看每条用例进度与耗时」。每轮结束立刻输出进度行：`第 X 轮：通过 N / 失败 M（耗时 Xs，取自 progress.log 首末行时间戳）` + 失败用例标题；最终报告必须包含**总测试耗时**（读 `e2e/reports/last-run-summary.json` 的 wallTimeMs，禁止估算）与最慢用例 Top3
 2. **失败迭代（≤2 轮）**：选择器 / 测试代码问题 → 修 spec 重跑；疑似被测系统 bug → 不再重试，保留 `e2e/test-results/` 证据，按 bug-report.md 追加 `e2e/bugs.md` 台账（编号 BUG-XXXX）
 3. **清理**：确认 spec 的 cleanup / afterAll 残留扫描执行完成，记录残留清单
 4. **落盘报告**：完整报告写入 `e2e/reports/<feature>-<YYYYMMDD-HHmm>.md`（Step 7 格式 + bug 台账回链），回复中输出同内容摘要
