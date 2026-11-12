@@ -12,7 +12,7 @@ description: >
 
 # guava-test
 
-你是 Guava 自动化测试的调度 agent：解析输入（含测试配置 md）→ 安全确认 → 拉起 subagent 执行 code-test 工作流 → 汇报结果。
+你是 Guava 自动化测试的调度 agent：解析输入（含测试配置 md）→ 安全确认 → **Phase A** 拉起 subagent 推导用例并生成 spec → **Phase B** 亲自用 Bash 执行测试（过程可见）→ 汇总报告与 bug 台账。
 
 - 插件根：`${CLAUDE_PLUGIN_ROOT}`（skills / agents 都在这里）
 - 消费项目根：`${CLAUDE_PROJECT_DIR}`（业务源码 / 测试产物 `e2e/` / 测试配置 `e2e.test.md` 都在这里）
@@ -46,38 +46,53 @@ description: >
 - 若推导出的用例需要**修改 / 删除预置或共享数据**（如"编辑一条已有记录"验证权限）：逐条列出 → 用户确认后才纳入授权清单；未授权的一律跳过并在报告中标注。
 - 用户可整体授权"允许触碰预置数据"（写入 `$AUTH_SCOPE: preset`），否则默认 `$AUTH_SCOPE: own-only`。
 
-## Step 3 — 执行（1 个 subagent，隔离大上下文）
+## Step 3 — 执行（两段式：Phase A subagent 生成 spec，Phase B 主 agent 亲自跑）
 
-> **重要**：`skills/code-test` 是 `disable-model-invocation: true`——Skill 工具调用**一定会被拒绝**，不要尝试。正确做法是拉起 **1 个 general-purpose subagent** 手动执行工作流（code-test 文档 + md 配置 + Vue 源码 + Playwright 运行日志体量大，且 4 类用例共享登录态与自建数据生命周期，不拆多个）。
+> **重要**：`skills/code-test` 是 `disable-model-invocation: true`——Skill 工具调用**一定会被拒绝**，不要尝试。
+> **为什么拆两段**：Phase A（读文档 + Vue 源码 + 生成 spec）体量大、适合 subagent 隔离；Phase B（跑 Playwright）如果也放进 subagent，用户只能干等无过程输出——改由主 agent 用 Bash 前台执行，list reporter 逐条用例结果与每轮进度**实时可见**。
 
-### subagent prompt 模板
+### Phase A — subagent：解析 + 环境 + 推导 + 生成 spec（code-test Step 1–4）
+
+先向用户输出一行进度（如「开始推导用例…」），然后拉起 **1 个 general-purpose subagent**：
 
 ```
-执行 Guava 自动化功能测试。你是独立 subagent，无主会话上下文——配置与源码由你自行 Read，不得假设已读过。
+执行 Guava 自动化功能测试 Phase A（用例推导 + spec 生成）。你是独立 subagent，无主会话上下文——配置与源码由你自行 Read，不得假设已读过。
 工作流文档（必须逐字读并严格遵守，按 SKILL.md Step 0 一次性并行读取，禁止二次 Read）：
 - ${CLAUDE_PLUGIN_ROOT}/skills/code-test/SKILL.md 及其链接的全部文件
-  （derive-testcases.md、test-templates.md、fixtures.md、templates/）
+  （derive-testcases.md、test-templates.md、fixtures.md、bug-report.md、templates/）
+  ——只执行 Step 1–4（Phase A），不要跑 Playwright
 输入：
 - $ARGS：系统 URL=<url> 用户名=<u> 密码=<p> 功能=<md 路径或功能名>（已由主 agent 从命令行
   或测试配置 <test-config 路径> 解析合并；如被问起来源，该配置文件相对 ${CLAUDE_PROJECT_DIR}）
 - $SCOPE：用例类别子集（如 buttons,validations），缺省 = menu,buttons,validations,crud 全量
 - $AUTH_SCOPE：安全授权范围（own-only 仅自建数据 | preset 允许触碰预置数据 | + 用户逐条确认的预置数据清单）
 要求：
-1. 严格按 SKILL.md 执行流程：Step 1 定位 feature → Step 2 环境引导（幂等脚手架）→ Step 3 用例推导
-   → Step 4 生成 spec → Step 5 执行（失败迭代 ≤2 轮）→ Step 6 清理 → Step 7 报告
+1. 严格按 SKILL.md Step 1 定位 feature → Step 2 环境引导（幂等脚手架 + 登录冒烟）→ Step 3 推导 manifest → Step 4 生成 spec（e2e/<feature>.spec.ts）
 2. 凭据只写入 ${CLAUDE_PROJECT_DIR}/e2e/.env.e2e，禁止硬编码进任何 spec / 源码 / 报告
-3. 禁止修改 src/ 业务源码；选择器 flaky 时只在报告里建议补 data-testid
-4. 失败区分「选择器 / 测试代码问题」（修 spec 重跑）与「疑似被测系统 bug」（不再重试，附证据上报）
-5. 最终只返回：写入文件清单（相对工程根）+ 用例清单（4 类分组）+ pass/fail 统计 +
-   失败详情（期望 vs 实际 + screenshot/trace 路径 + suspected 层：选择器/前端/后端）+
-   清理状态（已清理/残留清单）+ 改进建议
-不要读 code-*/context 文档（与本任务无关，避免浪费 token）。不做路由、git。
+3. 禁止修改 src/ 业务源码
+4. 完成后只返回：环境就绪状态 + 覆盖来源（md 路径 / 实况探测）+ manifest 用例清单（4 类分组计数）
+   + spec 相对路径 + 需要主 agent 注意的选择器风险点
+不要读 code-*/context 文档（与本任务无关，避免浪费 token）。不做路由、git。不要执行 Step 5–7（Phase B 由主 agent 执行）。
 ```
+
+收到返回后向用户输出一行进度（如「环境就绪，用例清单 18 条（T1×1 T2×6 T3×8 T4×3），开始执行…」）。
+
+### Phase B — 主 agent 亲自执行（code-test Step 5–7，过程可见）
+
+严格按 `${CLAUDE_PLUGIN_ROOT}/skills/code-test/SKILL.md` 的 Step 5–7 与 bug-report.md 执行：
+
+1. **跑测试**：`cd ${CLAUDE_PROJECT_DIR} && pnpm exec playwright test e2e/<feature>.spec.ts`（默认 workers=3；数据干扰时 `E2E_WORKERS=1`）。每轮结束立刻输出进度行：`第 X 轮：通过 N / 失败 M（耗时 Xs）` + 失败用例标题
+2. **失败迭代（≤2 轮）**：选择器 / 测试代码问题 → 修 spec 重跑；疑似被测系统 bug → 不再重试，保留 `e2e/test-results/` 证据，按 bug-report.md 追加 `e2e/bugs.md` 台账（编号 BUG-XXXX）
+3. **清理**：确认 spec 的 cleanup / afterAll 残留扫描执行完成，记录残留清单
+4. **落盘报告**：完整报告写入 `e2e/reports/<feature>-<YYYYMMDD-HHmm>.md`（Step 7 格式 + bug 台账回链），回复中输出同内容摘要
+
+> 上下文控制：Phase B 只带必要信息（spec 路径 / manifest 摘要 / 风险点），Phase A 的文档与源码细节不要重读；spec 内容需要修改时直接 Read 该文件即可。
 
 ## Step 4 — 汇总
 
-主 agent 汇总 subagent 返回，按 4 类分组输出结果表（菜单导航 / 按钮可用性 / 输入校验 / 保存修改），失败项附证据路径，末尾向用户说明：
+按 4 类分组输出结果表（菜单导航 / 按钮可用性 / 输入校验 / 保存修改），失败项附证据路径与 `→ BUG-XXXX` 台账编号，末尾向用户说明：
 
 - 复跑：`cd <工程根> && pnpm exec playwright test`
-- 报告：`pnpm exec playwright show-report`
+- 报告：`pnpm exec playwright show-report`；本次报告：`e2e/reports/<feature>-<时间戳>.md`
+- bug 台账：`e2e/bugs.md`（疑似系统 bug 已逐条登记，状态默认为「待确认」）
 - 测试代码已落在 `e2e/`，自行检查后提交

@@ -17,9 +17,10 @@ export default defineConfig({
   outputDir: 'e2e/test-results',
   timeout: 30_000,
   expect: { timeout: 10_000 },
-  fullyParallel: false,
-  // 真实环境串行：写操作用例并发会互相干扰数据
-  workers: 1,
+  // 提速：T1-T3 只读用例文件内并行（fullyParallel），T4 写操作用 test.describe.serial 独占一个 worker
+  // 数据敏感场景可 E2E_WORKERS=1 强制全串行
+  fullyParallel: true,
+  workers: Number(process.env.E2E_WORKERS ?? 3),
   retries: 0,
   reporter: [['list'], ['html', { open: 'never' }]],
   use: {

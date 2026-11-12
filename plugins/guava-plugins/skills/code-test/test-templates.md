@@ -188,6 +188,7 @@ test.afterAll(async ({ browser }) => {
 - 下拉选择：`selectOptionByText(page, label, optionText)`（helper 内 `el-select` 点击 + `el-select-dropdown__item` 文本选择）；日期用 `el-date-editor` input fill
 - 每个 expect 前自动等待由 Playwright 断言重试承担，不手写 `waitForTimeout`（固定 sleep 禁止；确需等待用 `expect(...).toBeVisible()` 或 `waitForResponse`）
 - 失败截图 / trace 由 config 的 `screenshot: 'only-on-failure'` / `trace: 'retain-on-failure'` 自动产出，报告引用 `e2e/test-results/` 路径
+- **并行安全**（默认 `workers=3`）：T1–T3 describe 之间禁止传递状态、禁止共用自建数据（各自重新导航、各自打开表单）；写操作只在 T4 `describe.serial` 内，且只操作本 describe 自建记录
 
 ## 测试数据构造（全自动，无需人工准备）
 
