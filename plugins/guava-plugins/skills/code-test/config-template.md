@@ -13,7 +13,9 @@
 ```yaml
 ---
 # ---- 环境（必填）----
-baseUrl: http://localhost:5173        # 被测系统入口
+# baseUrl 指向【已部署环境】（k8s Ingress / 域名，如 https://guava-test.example.com）；
+# 不是本地 dev server——禁止默认 localhost、禁止为了测试去启动 pnpm dev / 配置 webServer
+baseUrl: https://guava-test.example.com   # 被测系统入口（k8s 部署的远程地址）
 username: admin                       # 登录用户名
 password: ${E2E_PASSWORD}             # 支持 ${ENV_VAR} 引用（运行时从环境变量解析）；也可填明文（注意 gitignore）
 headless: true                        # false = 有头浏览器调试（默认 true）

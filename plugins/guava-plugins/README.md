@@ -45,7 +45,7 @@
 
 | 你说 | agent 执行 |
 |------|-----------|
-| "测一下 http://localhost:5173，admin/123456，功能 `src/pages/sysMng/userMng.md`" | 读 md + 生成产物推导用例 → 装 Playwright、幂等生成 `e2e/` 脚手架 → 跑菜单导航 / 按钮 / 校验 / 保存修改 4 类用例 → 清理自建数据 → 报告 |
+| "测一下 https://guava-test.example.com，admin/123456，功能 `src/pages/sysMng/userMng.md`" | 读 md + 生成产物推导用例 → 装 Playwright、幂等生成 `e2e/` 脚手架 → 跑菜单导航 / 按钮 / 校验 / 保存修改 4 类用例 → 清理自建数据 → 报告 |
 | "帮我测 https://test.example.com 账号 admin 密码 Admin@123，测用户管理" | 自然语言变体，同样解析出 URL / 账号 / 功能 |
 
 **要素不全或功能描述模糊（agent 追问 / 自动匹配）：**

@@ -31,7 +31,7 @@ description: >
 
 | 参数 | 说明 | 必填 |
 | --- | --- | --- |
-| 系统 URL | 被测系统入口，如 `http://localhost:5173` / `https://xxx.example.com`；可取配置 md `baseUrl` | ✅ |
+| 系统 URL | 被测系统入口——**已部署环境地址**（k8s Ingress / 域名，如 `https://guava-test.example.com`），非本地 dev server；可取配置 md `baseUrl` | ✅ |
 | 用户名 / 密码 | 登录账号；缺任一 → **必须问用户**，禁止捏造、禁止用占位值跑 | ✅ |
 | 功能 | `src/pages/<feature>.md` 路径 / 功能名（模糊匹配 `src/pages/**`）/ 菜单路径文本；可取配置 md `feature` | ✅ |
 | 范围 | 用例类别子集（菜单导航 / 按钮 / 校验 / 保存修改），命令行 > 配置 md `scope`，缺省 4 类全测 | 可选 |

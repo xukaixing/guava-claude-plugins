@@ -124,4 +124,5 @@ cleanup fixture 在每条用例 teardown 里执行注册的删除函数（`after
 | **Vue 源码优先** | 用例推导中 md 与生成产物不一致时，以 `src/views/` 实际 DOM 结构为准 |
 | **失败迭代 ≤2 轮** | 超出按疑似系统 bug 上报，不无限重试 |
 | **真实环境红线** | 只写自建数据（`E2E_` 前缀）；超范围用例跳过并标注 |
+| **baseUrl = 已部署环境** | 指向 k8s 部署的远程地址（Ingress/域名）；禁止默认 localhost、禁止启动本地 dev server / 配 `webServer` 指向本地 |
 | **v1 单功能** | 一次跑一个 feature；manifest 格式预留多 feature 扩展 |

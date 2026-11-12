@@ -11,7 +11,7 @@ process.env 类型声明（IDE 提示用；Playwright 运行时自身转译 TS�
 ```ts
 declare namespace NodeJS {
   interface ProcessEnv {
-    /** 被测系统入口，如 http://localhost:5173 */
+    /** 被测系统入口：已部署环境地址（k8s Ingress/域名），非本地 dev server */
     E2E_BASE_URL?: string;
     /** 登录用户名 */
     E2E_USERNAME?: string;

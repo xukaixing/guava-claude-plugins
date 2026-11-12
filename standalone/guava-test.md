@@ -38,7 +38,7 @@ description: >
 
 | 参数 | 说明 | 必填 |
 | --- | --- | --- |
-| 系统 URL | 被测系统入口；可取配置 `baseUrl` | ✅ |
+| 系统 URL | 被测系统入口——**已部署环境地址**（k8s Ingress / 域名，如 `https://guava-test.example.com`），非本地 dev server；可取配置 `baseUrl` | ✅ |
 | 用户名 / 密码 | 缺任一 → **必须问用户**，禁止捏造、禁止占位值 | ✅ |
 | 功能 | `src/pages/<feature>.md` 路径 / 功能名（模糊匹配 `src/pages/**`）/ 菜单路径文本；可取配置 `feature` | ✅ |
 | 范围 | `menu` / `buttons` / `validations` / `crud` 子集，命令行 > 配置，缺省全量 | 可选 |
@@ -518,7 +518,7 @@ export const expectNoConsoleErrors = (errors: string[], ignorePatterns: RegExp[]
 ```ts
 declare namespace NodeJS {
   interface ProcessEnv {
-    /** 被测系统入口，如 http://localhost:5173 */
+    /** 被测系统入口：已部署环境地址（k8s Ingress/域名），非本地 dev server */
     E2E_BASE_URL?: string;
     /** 登录用户名 */
     E2E_USERNAME?: string;
@@ -542,7 +542,9 @@ declare namespace NodeJS {
 
 ```yaml
 ---
-baseUrl: http://localhost:5173
+# baseUrl 指向【已部署环境】（k8s Ingress / 域名），非本地 dev server——禁止默认 localhost、
+# 禁止为了测试去启动 pnpm dev / 配置 webServer
+baseUrl: https://guava-test.example.com
 username: admin
 password: ${E2E_PASSWORD}   # 支持 ${ENV_VAR}；也可填明文（注意 gitignore）
 headless: true
@@ -570,7 +572,7 @@ authScope: own-only
 | --- | --- |
 | "测一下"（有 e2e.test.md） | 环境+功能全取配置 |
 | "测一下，但只跑按钮和输入校验" | 配置取环境，范围取命令行 |
-| "测一下 http://localhost:5173，admin/123456，功能 src/pages/sysMng/userMng.md" | 四要素全给（无配置场景） |
+| "测一下 https://guava-test.example.com，admin/123456，功能 src/pages/sysMng/userMng.md" | 四要素全给（无配置场景） |
 | "帮我测 https://test.example.com 账号 admin 密码 Admin@123，测用户管理" | 自然语言变体 |
 | "测一下用户管理"（无配置） | 追问 URL/账号 + 列候选功能 |
 | "测一下 https://xxx admin/123 系统管理下的用户管理" | 菜单路径 → 实况探测模式 |
