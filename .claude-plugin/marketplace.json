@@ -1,7 +1,7 @@
 {
   "name": "guava-tools",
   "description": "Guava AI Coding Assistant Claude Code Plugin Market",
-  "version": "1.5.1",
+  "version": "2.0.0",
   "owner": {
     "name": "xukaixing<xukaixing@hotmail.com>"
   },
@@ -9,8 +9,8 @@
     {
       "name": "guava-plugins",
       "source": "./plugins/guava-plugins",
-      "description": "Guava 全栈生成 + Gv* MCP + 自动化测试: /guava-plugins:code-frontend|code-backend|code-all|code-from-db|code-optimize，agent guava-codegen 按 md 自动调度、guava-test 按 URL+账号+功能跑 Playwright 功能测试",
-      "version": "1.5.1",
+      "description": "Guava 全栈生成 + Gv* MCP: /guava-plugins:code-frontend|code-backend|code-all|code-from-db|code-optimize，agent guava-codegen 按 md 自动调度",
+      "version": "2.0.0",
       "keywords": [
         "guava",
         "guava-ui",
@@ -18,8 +18,6 @@
         "spring-boot",
         "crud",
         "codegen",
-        "e2e",
-        "playwright",
         "ses-web"
       ]
     }
