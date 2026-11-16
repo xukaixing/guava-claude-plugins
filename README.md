@@ -36,6 +36,7 @@ claude --plugin-dir /path/to/guava-claude-plugins/plugins/guava-plugins
 | Agent | 说明 |
 |-------|------|
 | `guava-plugins:guava-codegen` | 调度 agent：给定 md 路径 / 表名 / 请求，自动选择并执行上面的 code-* skill（用法示例见插件 README） |
+| `guava-plugins:guava-test-manager` | 自动化测试调度 agent：URL+账号+功能 → 生成 Playwright 用例 → 触发执行 → 失败分析（多应用，经 test-manager MCP） |
 
 ## Skill 与 MCP
 
@@ -46,8 +47,9 @@ plugins/guava-plugins/
 ├── .claude-plugin/plugin.json
 ├── .mcp.json              # ${CLAUDE_PLUGIN_ROOT}/mcp/...
 ├── mcp/                   # guava-ui catalog + gv-* 单组件
-├── skills/                # code-frontend / code-backend / code-all / code-from-db / code-optimize（+guava-codegen 入口）
-├── agents/                # guava-codegen（按 md 自动调度 code-* skill）
+├── skills/                # code-frontend / code-backend / code-all / code-from-db / code-optimize / guava-test-manager（+guava-codegen 入口）
+├── agents/                # guava-codegen（按 md 自动调度 code-* skill）、guava-test-manager（测试调度）
+├── mcp/test-manager/      # 自动化测试平台 MCP（对接独立部署的 guava-auto-test Test Manager）
 ├── context/
 └── hooks/
 ```

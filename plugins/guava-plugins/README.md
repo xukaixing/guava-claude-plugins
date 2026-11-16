@@ -5,6 +5,7 @@
 | Agent | 说明 |
 |-------|------|
 | `guava-codegen` | 给一个 md 路径 / 表名 / 生成请求（含"只生成后端"等单端语义），自动选择并执行下面的 code-* skill（也可显式指定） |
+| `guava-test-manager` | 自动化测试调度：注册被测应用 → 生成/维护 Playwright 用例 → 触发执行 → 分析失败并回写结论（多应用，经 test-manager MCP） |
 
 ### guava-codegen 用法
 
@@ -35,6 +36,7 @@
 | `/guava-plugins:code-all` | 先 front 后 back |
 | `/guava-plugins:code-from-db` | 连接 MySQL 读表结构 → 生成 `.md` → 全栈页面表单 |
 | `/guava-plugins:code-optimize` | 前端/后端性能分析 + 优先级排序的修复 |
+| `/guava-plugins:guava-test-manager` | 自动化测试入口（转发给 guava-test-manager agent） |
 
 配置放在消费项目的 `src/pages/**/*.md`。
 
@@ -71,6 +73,8 @@ cp <插件目录>/mcp/mysql-schema/db.example.yml ./db.yml
 | 生成流程 / 模板 | `skills/code-frontend` 等 |
 | Gv* 用法与 props | `.mcp.json` → `mcp/`（`guava-ui` + `gv-*`） |
 | 后端依赖 / 分层 / 平台类索引 | `.mcp.json` → `mcp/guava-backend`（`get_stack` / `search_dependencies` / `search_platform_classes`） |
+| 自动化测试平台 | `.mcp.json` → `mcp/test-manager`（项目/套件/用例/run 全生命周期，对接独立部署的 guava-auto-test Test Manager） |
+| 自动化测试平台 | `.mcp.json` → `mcp/test-manager`（项目/套件/用例/run 全生命周期，对接独立部署的 [guava-auto-test](https://github.com/) Test Manager） |
 
 写 template 前用 MCP：`get_page_recipe` / `get_usage` / `get_props`；写 Java 前用 `guava-backend`：`get_stack` + `search_platform_classes`。详见 [mcp/README.md](mcp/README.md)。
 

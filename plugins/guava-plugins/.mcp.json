@@ -223,6 +223,13 @@
       "args": [
         "${CLAUDE_PLUGIN_ROOT}/mcp/components/GvValidate/server.mjs"
       ]
+    },
+    "test-manager": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/mcp/test-manager/server.mjs"
+      ]
     }
   }
 }
