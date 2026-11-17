@@ -27,7 +27,7 @@ Step 0：**guava-backend MCP 必查**（同轮复用，禁止重复查询）：
 
 **框架优先原则**：工具/断言/常量/翻译/导出/加解密等能力，**必须优先复用 entity / component / platform 三层框架已提供**的类（utils 工具逻辑先经 `list_utils` / `search_utils` / `get_util`，其余经 `search_platform_classes` 确认签名后使用），**禁止自造等价实现**。详见 [conventions.md §常用工具类](conventions.md)。
 
-Step 0.1：**grep 优先，不整读大文件**——`grep -rl "class {Entity}" $GUAVA_BACKEND_ROOT --include=*.java` 确认目标模块是否已有同类实现；仅在需要覆盖 / 端点对齐时 Read 具体文件的相关方法段，**不整读参考大文件**。
+Step 0.1：**grep 优先，不整读大文件**——`grep -rl "class {ApiName}" $GUAVA_BACKEND_ROOT --include=*.java` 确认目标模块是否已有同类实现（Controller/Service/ServiceImpl 按 `{ApiName}` 命名）；仅在需要覆盖 / 端点对齐时 Read 具体文件的相关方法段，**不整读参考大文件**。
 
 Step 1：Module、package、Feature、Entity、RequestMapping、Swagger Tag（见 context/backend.md）。
 
@@ -41,11 +41,13 @@ Step 1.0：**服务配置(backend) 小节消费**（设计器「后端配置」�
 |------|------|
 | 工程 | 生成文件的磁盘绝对位置（Maven 子模块根，如 `/.../guava-admin-starter`）→ **直接作为输出根**，覆盖 `GUAVA_BACKEND_ROOT` 推导 |
 | 包路径 | Java 主包根（如 `com.guava.admin`），文件写入 `{工程}/src/main/java/{包路径}/` |
-| 功能 | controller/service 目录名（如 `usermng1`）→ `controller/{功能}/`、`service/{功能}/` |
+| 功能 | controller/service 目录名（如 `userMng1`）→ `controller/{功能}/`、`service/{功能}/` |
 | 数据库实例 | mysql-schema 连库依据：PO 生成、表存在校验（Step 4.5） |
-| 请求上下文 | Controller `@RequestMapping("/sysuser1/")` |
-| Swagger Tag | `@Tag(name = "admin-usermng1")`，缺失默认 `admin-{功能}` |
-| 实体 | PO 类名（`model/po/{实体}.java`），并决定 Controller/Service/ServiceImpl/Mapper/SqlProvider 命名 |
+| 请求上下文 | Controller `@RequestMapping("/sysuser1/")`；并推导类名前缀 `{ApiName}`（去 `/` PascalCase 保留驼峰，`/sysUser` → `SysUser`） |
+| Swagger Tag | `@Tag(name = "prtBase-userMng1")`，缺失默认 `{模块}-{功能}`（驼峰保留，不写死 admin） |
+| 实体 | PO 类名（`model/po/{实体}.java`），决定 Mapper/SqlProvider 命名与方法动词（`find/save/update/remove{Entity}`）；**Controller/Service/ServiceImpl 类名由请求上下文推导（`{ApiName}`），不用实体名** |
+| 主键 | 占位 `{pk}`：Controller `@PathVariable("{pk}")`、Service/ServiceImpl 入参、Mapper deleteById、PO `@TableId` 字段名；默认 `id` |
+| 主键序列 | 占位 `{pkSeq}`：非空时 PO 加 `@KeySequence("{pkSeq}")` + `IdType.INPUT`；默认 `common` |
 
 **### 服务逻辑描述**（仅生成勾选操作，「查询」必选）：
 
@@ -56,6 +58,7 @@ Step 1.0：**服务配置(backend) 小节消费**（设计器「后端配置」�
 | 操作：更新 | `update{Entity}` 端点 |
 | 状态更新 | 额外生成 `update{Entity}Status` 端点 |
 | 导出 | 额外生成 `export{Entity}Data` 端点（Excel） |
+| 操作日志 | 「操作日志」标记存在 → Controller 写操作生成 `@MarkLog`（含 import）；**否则不生成（默认）** |
 | 逻辑描述 | 业务逻辑备注（供 ServiceImpl 参考） |
 
 **### 字典翻译**：每行 `- field：dic\|xx` → `getTransHash()` 配置（详见 Step 5.1）。
@@ -122,7 +125,7 @@ Step 5.5：**`## 改进` 应用**（md 含该小节时必做）——逐条分�
 
 Step 6 — 本次生成代码检查（必做，速查优先）：
 
-先凭刚写完的内容速查：包路径 / 命名与前端 `paths` 对齐；md 模式下查询条件 / 入参 / 字典翻译已按 Step 1.0b 与前端画布小节逐项对齐、`## 改进` 已应用；写操作有 `@MarkLog` + `AssertMyUtil` 校验；查询条件走 `MyUtil.getConditionsWhere`，不拼用户原始入参；列表查询分页；无循环内单条查库；Javadoc 齐全（`<p>` + 标准 `@param`/`@return`/`@since`，声明 `throws` 的方法带 `@throws` 中文说明）、覆盖时保留原 `@since`；工具方法已 static import、`HashMap.newHashMap(16)`、接口 `throws IOException` 的实现按实际收窄；工具/常量/翻译等能力复用三层框架现成类、未自造。
+先凭刚写完的内容速查：包路径 / 命名与前端 `paths` 对齐；md 模式下查询条件 / 入参 / 字典翻译已按 Step 1.0b 与前端画布小节逐项对齐、`## 改进` 已应用；写操作按「操作日志」标记决定是否加 `@MarkLog`（默认不加）+ `AssertMyUtil` 校验；查询条件走 `MyUtil.getConditionsWhere`，不拼用户原始入参；列表查询分页；无循环内单条查库；Javadoc 齐全（`<p>` + 标准 `@param`/`@return`/`@since`，声明 `throws` 的方法带 `@throws` 中文说明；**Service 接口方法除外——接口方法不加注释**）、覆盖时保留原 `@since`；工具方法已 static import、`HashMap.newHashMap(16)`、接口 `throws IOException` 的实现按实际收窄；工具/常量/翻译等能力复用三层框架现成类、未自造。
 
 全过 → 输出三行简报（`规范 / 安全 / 性能：通过（速查）`）；任一可疑 → Read [code-review.md](code-review.md) 深检，Critical 须修复并再检。
 

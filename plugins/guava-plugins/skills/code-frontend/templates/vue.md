@@ -30,7 +30,7 @@
   defineOptions({ name: '<ComponentName>' });
 
   // @hook
-  const { message, confirm } = useNotify();
+  const { message } = useNotify(); // 删除确认由 GvTable 操作列自带，无需 confirm
   const { t } = useI18n();
 
   // @data

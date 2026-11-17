@@ -47,6 +47,20 @@ const dictClearCB = (_, __, ___) => {};
 
 ---
 
+## 3.5 useNotify 签名约定
+
+`useNotify()` 解构出的 `message` / `alert` / `confirm` 均为 **`(msg, type)`** 顺序（参考 /gv.notify）：
+
+```typescript
+message('删除成功', 'success');
+alert('导出完成', 'success'); // Notification 弹窗
+```
+
+- 禁止写成 `message('success', '删除成功')`（参数顺序错误）
+- `message` 的 `type` 默认 `'warning'`、`alert` 默认 `'success'`，显式传 `'error'` 时用 `message(e, 'error')`
+
+---
+
 ## 4. frontendOnly 数据流（`frontendOnly: true`）
 
 **禁止 `@/api` import**；数据来自 [data.md](data.md)（列表）或本文件内 mock（表单）。三种形态：
@@ -62,13 +76,12 @@ const search<Feature>List = async () => {
   } catch (e) { message(e, 'error'); }
 };
 
-const delete<Feature> = (row, index) => {
-  confirm('确认删除？').then(async () => {
-    try {
-      if (row.id) { mockListRecords.splice(mockListRecords.findIndex((r) => r.id === row.id), 1); search<Feature>List(); message('删除成功', 'success'); }
-      else crud.removeResult(search<Feature>Data.value, index);
-    } catch (e) { message(e, 'error'); }
-  }).catch(() => {});
+// 操作列删除按钮由 GvTable 自带确认框，此处禁止再包 confirm
+const delete<Feature> = async (row, index) => {
+  try {
+    if (row.id) { mockListRecords.splice(mockListRecords.findIndex((r) => r.id === row.id), 1); search<Feature>List(); message('删除成功', 'success'); }
+    else crud.removeResult(search<Feature>Data.value, index);
+  } catch (e) { message(e, 'error'); }
 };
 ```
 

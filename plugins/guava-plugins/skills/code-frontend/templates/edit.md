@@ -284,7 +284,7 @@ const save<Feature><TabName> = async () => {
   try {
     const model = getFormModel(fm) || {};
     const d = await crud.submit(save<Feature><TabName>Api, { <feature>Id: masterId.value, ...model });
-    if (d) message('success', '保存成功');
+    if (d) message('保存成功', 'success');
   } catch (e) { message(e, 'error'); }
 };
 const handleTabClick = (tab: TabsPaneContext) => { activeTab.value = tab.paneName as string; };

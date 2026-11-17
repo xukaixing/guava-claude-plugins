@@ -27,12 +27,12 @@ i18n: false
 editPage: true
 api:
   module: admin/user
-  base: /sysuser
+  base: /sysUser
   operations:
-    list: /sysuser/findUsers
-    create: /sysuser/saveUser
-    update: /sysuser/updateUser/{id}
-    delete: /sysuser/deleteUser
+    list: /sysUser/findUsers
+    create: /sysUser/saveUser
+    update: /sysUser/updateUser/{id}
+    delete: /sysUser/deleteUser
 ---
 ```
 
@@ -121,7 +121,7 @@ expand:
 ## 明细
 - name: loginLog
   label: 用户登录明细
-  api: /sysuser/findUserLoginInfo
+  api: /sysUser/findUserLoginInfo
   columns:
     - label: 登录IP
       prop: loginIp

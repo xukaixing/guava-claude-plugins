@@ -7,11 +7,11 @@
 ```
 guava-{module}-starter/src/main/java/com/guava/{module}/
 ├── controller/{feature}/
-│   └── {Entity}Controller.java
+│   └── {ApiName}Controller.java
 ├── service/{feature}/
-│   ├── {Entity}Service.java
+│   ├── {ApiName}Service.java
 │   └── impl/
-│       └── {Entity}ServiceImpl.java
+│       └── {ApiName}ServiceImpl.java
 ├── repository/
 │   ├── {Entity}Mapper.java
 │   └── provider/
@@ -19,13 +19,15 @@ guava-{module}-starter/src/main/java/com/guava/{module}/
 └── model/po/          ← 实体类通常在 guava-entity 模块
 ```
 
+> `{ApiName}` = 请求上下文（`api.base` / 服务配置「请求上下文」）去 `/` 后 PascalCase，**保留驼峰**（如 `/sysUser` → `SysUser`）；缺失时回退 feature 转 PascalCase。Controller/Service/ServiceImpl 类名一律用 `{ApiName}`，不用实体名。
+
 ## 命名规范
 
 | 项目 | 规范 | 示例 |
 |------|------|------|
-| Controller | `{Entity}Controller` | `SysBizConfController` |
-| Service 接口 | `{Entity}Service` | `SysBizConfService` |
-| ServiceImpl | `{Entity}ServiceImpl` | `SysBizConfServiceImpl` |
+| Controller | `{ApiName}Controller` | `SysUserController` |
+| Service 接口 | `{ApiName}Service` | `SysUserService` |
+| ServiceImpl | `{ApiName}ServiceImpl` | `SysUserServiceImpl` |
 | Mapper | `{Entity}Mapper` | `SysBizConfMapper` |
 | SqlProvider | `{Entity}SqlProvider` | `SysBizConfSqlProvider` |
 | PO 实体 | `{Entity}PO` | `SysBizConfPO` |
@@ -41,7 +43,7 @@ guava-{module}-starter/src/main/java/com/guava/{module}/
 ### Controller
 
 ```java
-@Tag(name = "admin-{feature}")       // Swagger 分组，可选
+@Tag(name = "{moduleGroup}-{feature}") // Swagger 分组，可选（{moduleGroup}=服务配置「模块」，缺失默认 admin）
 @RestController
 @RequestMapping("/{feature}/")
 @Slf4j                               // 复杂模块加，简单模块可省略
@@ -95,7 +97,7 @@ public IPage<Map<String, Object>> findXxx(@RequestBody String params)
 
 ## 写操作注解
 
-新增/更新/删除加操作日志：
+新增/更新/删除加操作日志（**仅当服务逻辑描述勾选「操作日志」时生成，默认不生成**）：
 
 ```java
 @MarkLog(value = "新增业务参数-[{0}]", param = "paraName")
@@ -109,7 +111,7 @@ public IPage<Map<String, Object>> findXxx(@RequestBody String params)
 
 ```java
 /**
- * <p>系统用户控制器</p>
+ * <p>系统用户</p>
  *
  * @author Andy Xu <xukaixing@hotmail.com>
  * @since 2026/10/26
@@ -159,17 +161,20 @@ Swagger 方法注解：
 - createTime：date|yyyy-MM-dd HH:mm:ss
 ```
 
-对应代码：
+对应代码（**禁止内联字符串字面量**，一律引用模块翻译常量类，参考 `SysUserServiceImpl.getTransHash()`）：
 
 ```java
-transHash.put("status", "dic|yxzt");
-transHash.put("deptId", "dept|o");
-transHash.put("createTime", "date|" + FormatConstant.SIMPLE_DATE_TIME_FORMAT);
+import com.guava.{module}.constant.SysConstants;
+
+transHash.put("status", SysConstants.YXZT);
+transHash.put("deptId", SysConstants.DEPT_O);
+transHash.put("createTime", SysConstants.DATE_SIMPLE_DATE_TIME);
 ```
 
 - 无 `### 字典翻译` 小节时仅保留 `createTime` 翻译
 - 字典类型来自前端表格列 `dicType` 自动收集，可在 md 中手动追加
-- `FormatConstant.SIMPLE_DATE_TIME_FORMAT` / `SIMPLE_DATE_FORMAT` 按日期精度选择
+- md 前缀 → 常量映射：`dic|xx` → `SysConstants.{DIC 常量}`、`date|yyyy-MM-dd HH:mm:ss` → `SysConstants.DATE_SIMPLE_DATE_TIME`、`date|yyyy-MM-dd` → `SysConstants.DATE_SIMPLE_DATE`、`dept|o` → `SysConstants.DEPT_O`、`user|o` → `SysConstants.USER_O`
+- 常量类 `com.guava.{module}.constant.SysConstants` 无该类时新建（模式对齐 guava-admin-starter：`DICT_PREFIX + DicConstants.X` / `DATE_PREFIX + FormatConstant.X`）；**所需常量缺失时先补到常量类**，ServiceImpl 只引用常量
 
 ## 常用工具类
 

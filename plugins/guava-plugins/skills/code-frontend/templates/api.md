@@ -49,7 +49,7 @@ import { findDictFromTableApi } from '@/api/admin/user';
 | `update` | PUT | `{末段}Api` | `edit{Entity}` |
 | `delete` | POST | `{末段}Api` | `delete{Entity}` |
 
-> 示例：`list: /sysuser/findUsers` → API `findUsersApi`，方法 `searchUserList`
+> 示例：`list: /sysUser/findUsers` → API `findUsersApi`，方法 `searchUserList`
 
 ---
 
@@ -90,7 +90,7 @@ export const find<Feature>DtlApi = (datas: Recordable<any>) => {
 }
 ```
 
-> `<apiEndpoint>` 使用配置中的完整路径（如 `/sysuser/findUsers`）。
+> `<apiEndpoint>` 使用配置中的完整路径（如 `/sysUser/findUsers`）。
 
 ---
 

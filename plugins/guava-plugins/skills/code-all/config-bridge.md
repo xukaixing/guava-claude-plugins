@@ -34,7 +34,7 @@ backend:
 
 | YAML | 推导 |
 |------|------|
-| `api.base: /sysuser` | `feature: sysuser`，`@RequestMapping("/sysuser/")` |
+| `api.base: /sysUser` | `feature: sysUser`，`@RequestMapping("/sysUser/")` |
 | `backend.tables[0]` | `entity: SysUserPO`（全表名 PascalCase + `PO`） |
 | 表名 `sys_notice` | 端点动词 `Notice` → `findNotices` / `saveNotice` / `updateNotice/{id}` / `removeNotice/{id}`（去首段前缀 PascalCase，与 code-from-db Step 3 一致） |
 | `api: admin/user` | `module: guava-admin-starter`，`package: com.guava.admin` |
@@ -64,9 +64,11 @@ backend:
 **Phase B（GUAVA_BACKEND_ROOT）**：
 
 ```text
-{module}/src/main/java/{package}/controller/{feature}/{Entity}Controller.java
-{module}/src/main/java/{package}/service/{feature}/{Entity}Service.java
-{module}/src/main/java/{package}/service/{feature}/impl/{Entity}ServiceImpl.java
+{module}/src/main/java/{package}/controller/{feature}/{ApiName}Controller.java
+{module}/src/main/java/{package}/service/{feature}/{ApiName}Service.java
+{module}/src/main/java/{package}/service/{feature}/impl/{ApiName}ServiceImpl.java
 ```
+
+> `{ApiName}` = `api.base` 去 `/` PascalCase（保留驼峰），如 `/sysUser` → `SysUserController`；不用实体名。
 
 Mapper/SqlProvider 提醒用户按需补充（code-backend Step 5）。

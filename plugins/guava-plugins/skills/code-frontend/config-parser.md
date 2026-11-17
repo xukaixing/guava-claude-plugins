@@ -89,10 +89,11 @@ infoPage: true             # 生成 <Base>Info.vue（## 详情 小节，见 info
 表格内 `类型` 为 `action:按钮1,按钮2` 的行 = 操作列定义（字段列留空）：
 
 ```markdown
-| 操作 | | 80 | | action:编辑,编辑 | Y |
+| 操作 | | | | action:编辑,编辑 | Y |
 ```
 
 - 按钮名按顿号 / 逗号分隔，**原样写入 `content`，不去重**（「编辑、编辑」= 两个按钮）
+- **操作列忽略「宽度」列，不生成 `width`**（框架按按钮内容自适应宽度）
 - `action` 回调映射：`编辑 → actions.edit<Feature>`、`删除 → actions.delete<Feature>`、`详情 / 查看 → actions.info<Feature>`；其余按钮生成同名占位方法
 - 表格无 `action:` 行 → 回落 `### 操作列` 小节（精简格式逻辑）；两处同时存在**以行内为准**，不校验一致性；GvAIDesigner 导出已不再双写 `### 操作列`
 - `### 操作列规则` bullets 两种写法等价（`**编辑**：…` 或省 token 的 `编辑：…`）→ 非标准动作占位方法的方法体 / JSDoc 注释依据；标准动作用于校验既有行为，不重复生成

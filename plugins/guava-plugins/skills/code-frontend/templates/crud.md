@@ -47,7 +47,7 @@
   import <Base>Edit from './module/<Base>Edit.vue';  // add/edit
 
   defineOptions({ name: '<Base>Index' });
-  const { message, confirm } = useNotify();
+  const { message } = useNotify(); // 删除确认由 GvTable 操作列自带，无需 confirm
   const { t } = useI18n();
 
   const <feature>SearchFm = ref<FormInstance>();
@@ -77,14 +77,12 @@
   const edit<Feature> = (row: Recordable<any>, _index: number) => {
     operateType.value = 'update'; rowData.value = row; dialogVisible.value = true; title.value = '编辑<Base>';
   };
-  // ↓ delete enabled
-  const delete<Feature> = (row: Recordable<any>, index: number) => {
-    confirm('确认删除？').then(async () => {
-      try {
-        if (row.id) { await crud.submit(deleteXxxApi, { id: row.id }); search<Feature>List(); message('success', '删除成功'); }
-        else crud.removeResult(search<Feature>Data.value, index);
-      } catch (e) { message(e, 'error'); }
-    }).catch(() => {});
+  // ↓ delete enabled（操作列删除按钮由 GvTable 自带确认框，此处禁止再包 confirm）
+  const delete<Feature> = async (row: Recordable<any>, index: number) => {
+    try {
+      if (row.id) { await crud.submit(deleteXxxApi, { id: row.id }); search<Feature>List(); message('删除成功', 'success'); }
+      else crud.removeResult(search<Feature>Data.value, index);
+    } catch (e) { message(e, 'error'); }
   };
   // ↓ add/edit enabled
   const save<Base>Info = (payload: { type: 'update' | 'insert'; data: Recordable<any>; rownums?: number }) => {

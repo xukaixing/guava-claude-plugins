@@ -78,11 +78,11 @@ MCP `get_table_columns({database, table})` + `get_table_comment` → 拿到：
 | `title` | `TABLE_COMMENT`，空则表名 | `公告` |
 | `entity` | 表名 → PascalCase | `SysNotice` |
 | `view` | `<domain>/<feature>`，`domain`=表名第一个下划线段（无则 database），可覆写 | `sysMng/sysNotice` |
-| `apiBase` | `/<feature 小写去下划线>` | `/sysnotice` |
-| `find` 端点 | `{apiBase}/find{Entity 去 Sys 前缀}s` | `/sysnotice/findNotices` |
-| `save` 端点 | `{apiBase}/save{Entity 去 Sys 前缀}` | `/sysnotice/saveNotice` |
-| `update` 端点 | `{apiBase}/update{Entity 去 Sys 前缀}/{id}` | `/sysnotice/updateNotice/{id}` |
-| `delete` 端点 | `{apiBase}/remove{Entity 去 Sys 前缀}/{id}` | `/sysnotice/removeNotice/{id}` |
+| `apiBase` | `/<feature 去分隔符，保留驼峰大小写>` | `/sysNotice` |
+| `find` 端点 | `{apiBase}/find{Entity 去 Sys 前缀}s` | `/sysNotice/findNotices` |
+| `save` 端点 | `{apiBase}/save{Entity 去 Sys 前缀}` | `/sysNotice/saveNotice` |
+| `update` 端点 | `{apiBase}/update{Entity 去 Sys 前缀}/{id}` | `/sysNotice/updateNotice/{id}` |
+| `delete` 端点 | `{apiBase}/remove{Entity 去 Sys 前缀}/{id}` | `/sysNotice/removeNotice/{id}` |
 | 后端模块/包 | 读 `GUAVA_BACKEND_ROOT` 下同模块实现确定（默认 `guava-admin-starter` / `com.guava.admin`） | — |
 
 > 命名仅作起点，Step 3 用「确认表」展示，允许用户逐项覆写后再写 `.md`。
@@ -126,16 +126,16 @@ editPage: true
 i18n: false
 api:
   module: admin/sysNotice
-  base: /sysnotice
+  base: /sysNotice
   operations:
-    list: /sysnotice/findNotices
-    create: /sysnotice/saveNotice
-    update: /sysnotice/updateNotice/{id}
-    delete: /sysnotice/removeNotice/{id}
+    list: /sysNotice/findNotices
+    create: /sysNotice/saveNotice
+    update: /sysNotice/updateNotice/{id}
+    delete: /sysNotice/removeNotice/{id}
 backend:
   module: guava-admin-starter
   package: com.guava.admin
-  feature: sysnotice
+  feature: sysNotice
   entity: SysNoticePO
 ---
 

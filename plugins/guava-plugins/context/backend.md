@@ -25,7 +25,7 @@ md `## 服务配置(backend)` 的「工程」字段（绝对路径，如 `/.../g
 
 | 前端配置 | 后端 |
 |----------|------|
-| `apiBase: /sysuser` | `@RequestMapping("/sysuser/")` 或 feature 段一致 |
+| `apiBase: /sysUser` | `@RequestMapping("/sysUser/")`；并推导类名前缀 `{ApiName}` = `SysUser`（去 `/` PascalCase 保留驼峰），Controller/Service/ServiceImpl 命名 `{ApiName}Xxx` |
 | `paths.find/save/...` | Controller 端点同名 |
 | `## 查询` 字段 + 校验 | `MyUtil.getConditionsWhere` 字段一致（见 `search-conditions.md`）；`isAny`→like、`isDic`/`isNumber`→eq、`isDate`→daterange |
 | 表格列 `dicType` / 列 `dic=` 扩展 | `getTransHash()` 字典翻译自动收集（与 `### 字典翻译` 合并） |
@@ -48,12 +48,15 @@ md `## 服务配置(backend)` 的「工程」字段（绝对路径，如 `/.../g
 - 请求上下文：/sysuser1                      # @RequestMapping("/sysuser1/")
 - Swagger Tag：admin-usermng1               # @Tag(name = "admin-usermng1")
 - 实体：SysUserPO                            # PO 类名（model/po/SysUserPO.java）
+- 主键：id                                   # 路径参数/删除更新入参字段名，默认 id
+- 主键序列：common                           # ID 生成序列名，默认 common
 
 ### 服务逻辑描述
 
 - 操作：查询、保存、更新                    # 查询→find{Entity} / 保存→save{Entity} / 更新→update{Entity}；查询必选
 - 状态更新：updateSysUserStatus（启用/停用）
 - 导出：exportSysUserData（Excel）
+- 操作日志：MarkLog                          # 存在该标记 → Controller 写操作生成 @MarkLog；否则不生成（默认）
 - 逻辑描述：查询用户列表时左关联部门表获取部门名称
 
 ### 字典翻译
@@ -66,12 +69,15 @@ md `## 服务配置(backend)` 的「工程」字段（绝对路径，如 `/.../g
 ### 列表数据表
 
 - 用户信息列表（主画布）：数据库 guava_sys；表 sys_user（别名 su）
+  - 关联：LEFT JOIN sys_dept（别名 sd） ON su.dept_id = sd.id
+  - 过滤条件：sys_user → su.status = '1'
   - 查询列：userName、account、status、deptId、createTime
 - 登录日志列表：数据库 guava_sys；表 sys_login_log（别名 sl）
   - 查询列：userName、loginTime、ip
 ```
 
 - `### 列表数据表`：**每行 = 一个画布列表 = 一套独立查询方法与 SQL**（各自 `find{Xxx}` Controller/Service/ServiceImpl 方法 + SqlProvider SQL，FROM 表 / 别名 / SELECT 列按该行声明，互不共用）；`（主画布）` 标记 = 页面主列表，方法名取 `api.operations.list` 末段，其余列表按列表名去「列表」后缀转 PascalCase 推导
+- 子行 `关联：LEFT JOIN 表（别名 x） ON 别名.列 = 别名.列` → SqlProvider JOIN 段；子行 `过滤条件：表 → 条件内容` → WHERE 固定追加 `AND 条件内容`（不走前端查询参数）
 - 该行同时提供查询 field 表别名来源（`su@字段`）与 PO 生成的表名 / 库名（主画布列表）
 - 多表 JOIN 时 md 可另带 `### 数据表描述`（旧版/手写格式）：
 

@@ -8,7 +8,7 @@ Guava 后端通过 `MyUtil.getConditionsWhere(params, page)` 将前端搜索 JSO
 前端 GvForm 搜索
   → POST @RequestBody String params（JSON 字符串）
   → MyUtil.getConditionsWhere(params, page) 解析分页 + 条件
-  → SqlProvider 拼接 SQL： "... where " + conditions
+  → SqlProvider 拼接 SQL： "... WHERE " + conditions
   → Mapper 执行查询
   → transResultService.transResult() 翻译字典/日期
 ```
@@ -80,29 +80,36 @@ public IPage<Map<String, Object>> findXxx(Page<Map<String, Object>> page, String
 
 ## getTransHash() 字典翻译
 
-查询结果中的字典码、日期、关联 ID 需配置翻译：
+查询结果中的字典码、日期、关联 ID 需配置翻译。**禁止内联字符串字面量**（`"dic|yxzt"` / `"dept|o"` / `"date|" + FormatConstant...`），一律引用模块翻译常量类（参考 `guava-admin-starter` 的 `SysUserServiceImpl.getTransHash()`）：
+
+```java
+import com.guava.{module}.constant.SysConstants;
+```
 
 ```java
 private HashMap<String, String> getTransHash()
 {
-  HashMap<String, String> transHash = new HashMap<>();
-  transHash.put("bizType", "dic|ywlx");                              // 字典
-  transHash.put("status", "dic|yxzt");
-  transHash.put("deptId", "dept|o");                                 // 部门
-  transHash.put("createBy", "user|o");                               // 用户
-  transHash.put("createTime", "date|" + FormatConstant.SIMPLE_DATE_TIME_FORMAT);
+  HashMap<String, String> transHash = HashMap.newHashMap(16);
+  transHash.put("status", SysConstants.YXZT);             // 字典
+  transHash.put("bizType", SysConstants.YWLX);
+  transHash.put("deptId", SysConstants.DEPT_S);           // 部门
+  transHash.put("createBy", SysConstants.USER_O);         // 用户
+  transHash.put("createTime", SysConstants.DATE_SIMPLE_DATE_TIME);
   return transHash;
 }
 ```
 
-| 前缀 | 含义 | 示例 |
+| md 前缀 | 含义 | 常量示例（`SysConstants`） |
 |------|------|------|
-| `dic\|{dicType}` | 字典翻译 | `dic\|yxzt` |
-| `date\|{format}` | 日期格式化 | `date\|yyyy-MM-dd HH:mm:ss` |
-| `dept\|o` | 部门名称 | — |
-| `user\|o` | 用户名称 | — |
+| `dic\|{dicType}` | 字典翻译 | `YXZT` / `YWLX`（`DICT_PREFIX + DicConstants.*`） |
+| `date\|{format}` | 日期格式化 | `DATE_SIMPLE_DATE_TIME` / `DATE_SIMPLE_DATE`（`DATE_PREFIX + FormatConstant.*`） |
+| `dept\|o` / `dept\|s` | 部门翻译（s=单选 o=多选） | `DEPT_O` / `DEPT_S` |
+| `user\|o` / `user\|s` | 用户翻译 | `USER_O` / `USER_NAME` |
 
-**规则**：Step 1.1 确认表中标记了字典的字段，必须在 `getTransHash()` 中配置。
+**规则**：
+- Step 1.1 确认表中标记了字典的字段，必须在 `getTransHash()` 中配置
+- 常量类为 `com.guava.{module}.constant.SysConstants`（模块无该类时新建，模式对齐 guava-admin-starter：`DICT_PREFIX + DicConstants.X` / `DATE_PREFIX + FormatConstant.X`）；**所需常量缺失时先补到常量类**，ServiceImpl 只引用常量
+- md `### 字典翻译` 的 `dic|yxzt` → `SysConstants.YXZT`；`date|yyyy-MM-dd HH:mm:ss` → `SysConstants.DATE_SIMPLE_DATE_TIME`；`dept|o` → `SysConstants.DEPT_O`
 
 ## SqlProvider 查询 SQL 模板
 
@@ -125,8 +132,17 @@ public static String findXxx(Page<Map<String, Object>> page, String conditions)
 ```
 
 注意：
+- **SQL 关键字一律大写**：`SELECT` / `FROM` / `WHERE` / `LEFT JOIN` / `INNER JOIN` / `ON` / `AND`（与设计器 SQL 预览风格一致）
 - SELECT 列用 `db_column aliasName` 驼峰别名，与前端表格 `prop` 对齐
-- `conditions` 由平台生成，以 `and` 开头，直接 `append(conditions)`
+- `conditions` 由平台生成，以 `AND` 开头，直接 `append(conditions)`
+- **固定过滤条件**：`### 列表数据表` 中条目的「过滤条件：表 → 条件」行，逐条 `sql.append(" AND " + 条件)` 追加在 `conditions` 之后（如 `sql.append(" AND su.status = '1' ")`）
+- 多表关联 JOIN 段写法：
+
+```java
+  sql.append(" FROM sys_user u ");
+  sql.append(" LEFT JOIN sys_dept d ON u.dept_id = d.id ");
+  sql.append(" WHERE ");
+```
 
 ## 与 page-generator 联动
 
@@ -140,5 +156,5 @@ public static String findXxx(Page<Map<String, Object>> page, String conditions)
 | 前端 API | 后端 Controller |
 |---------|----------------|
 | `POST /admin/sysbizconf/findBizConf` | `@RequestMapping("/sysbizconf/")` + `@PostMapping("/findBizConf")` |
-| `POST /admin/sysuser/saveUser` | `@PostMapping("/saveUser")` |
-| `PUT /admin/sysuser/updateUser/{id}` | `@PutMapping("/updateUser/{id}")` |
+| `POST /admin/sysUser/saveUser` | `@PostMapping("/saveUser")` |
+| `PUT /admin/sysUser/updateUser/{id}` | `@PutMapping("/updateUser/{id}")` |

@@ -1,6 +1,6 @@
 # ServiceImpl 模板
 
-生成 `service/{feature}/impl/{Entity}ServiceImpl.java`。**仅实现 Step 1.3 选中的方法。**
+生成 `service/{feature}/impl/{ApiName}ServiceImpl.java`（`{ApiName}` = 请求上下文去 `/` 转 PascalCase，驼峰保留）。**仅实现 Step 1.3 选中的方法。**
 
 风格对齐 `guava-admin-starter` 的 `SysUserServiceImpl.java`（4 空格、Allman 大括号、注入字段带 `/** xxx */` 注释、Javadoc 带 `<p>`）。
 
@@ -14,9 +14,9 @@ import cn.hutool.core.util.ArrayUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.guava.{module}.constant.SysConstants;
 import com.guava.{module}.repository.{Entity}Mapper;
-import com.guava.{module}.service.{feature}.{Entity}Service;
-import com.guava.component.constant.FormatConstant;
+import com.guava.{module}.service.{feature}.{ApiName}Service;
 import com.guava.component.utils.bean.Map2ObjUtil;
 import com.guava.entity.po.{Entity}PO;
 import com.guava.platform.exception.BizCode;
@@ -45,7 +45,7 @@ import static com.guava.platform.utils.common.MyUtil.getValue;
  */
 @Service
 @Slf4j
-public class {Entity}ServiceImpl implements {Entity}Service
+public class {ApiName}ServiceImpl implements {ApiName}Service
 {
     /** {中文名}mapper */
     @Resource
@@ -67,14 +67,14 @@ public class {Entity}ServiceImpl implements {Entity}Service
     private HashMap<String, String> getTransHash()
     {
         HashMap<String, String> transHash = HashMap.newHashMap(16);
-        // ↓ 从 md 「### 字典翻译」小节逐条写入（field：transValue）
-        transHash.put("status", "dic|yxzt");
-        transHash.put("createTime", "date|" + FormatConstant.SIMPLE_DATE_TIME_FORMAT);
+        // ↓ 从 md 「### 字典翻译」小节逐条写入（field：transValue），一律引用 SysConstants 常量，禁止内联字符串
+        transHash.put("status", SysConstants.YXZT);
+        transHash.put("createTime", SysConstants.DATE_SIMPLE_DATE_TIME);
         return transHash;
     }
 ```
 
-> `getTransHash()` 规则详见 [conventions.md §字典翻译](../conventions.md)；无 `### 字典翻译` 小节时仅保留 `createTime`。
+> `getTransHash()` 规则详见 [conventions.md §字典翻译](../conventions.md)；常量缺失先补到 `com.guava.{module}.constant.SysConstants`（对齐 guava-admin-starter 模式）；无 `### 字典翻译` 小节时仅保留 `createTime`。
 ```
 
 ## 方法实现（按选中操作生成）
@@ -121,12 +121,12 @@ public class {Entity}ServiceImpl implements {Entity}Service
 ```java
     /** <p>更新{中文名}信息</p> @since {yyyy/M/d} */
     @Override
-    public Map<String, Object> update{Entity}(Long id, Map<String, Object> param)
+    public Map<String, Object> update{Entity}(Long {pk}, Map<String, Object> param)
     {
-        AssertMyUtil.notNull(id, BizCode.METHOD_ARGS_NOTNULL, "id");
+        AssertMyUtil.notNull({pk}, BizCode.METHOD_ARGS_NOTNULL, "{pk}");
         {Entity}PO po = Map2ObjUtil.toObject(param, {Entity}PO.class);
         AssertMyUtil.notNull(po, BizCode.VARIABLE_NOT_NULL, "{entity}PO");
-        po.setId(id);
+        po.set{Pk}({pk});
         {entity}Mapper.updateById(po);
         // todo: 如需同步 Redis/Feign，在此调用
         return transResultService.transResult(po.toMaps(), getTransHash());
@@ -138,10 +138,10 @@ public class {Entity}ServiceImpl implements {Entity}Service
 ```java
     /** <p>删除{中文名}</p> @since {yyyy/M/d} */
     @Override
-    public Integer remove{Entity}(Long id)
+    public Integer remove{Entity}(Long {pk})
     {
-        AssertMyUtil.notNull(id, BizCode.VARIABLE_NOT_NULL, "id");
-        return {entity}Mapper.deleteById(id);
+        AssertMyUtil.notNull({pk}, BizCode.VARIABLE_NOT_NULL, "{pk}");
+        return {entity}Mapper.deleteById({pk});
     }
 ```
 
@@ -150,11 +150,11 @@ public class {Entity}ServiceImpl implements {Entity}Service
 ```java
     /** <p>更新{中文名}状态</p> @since {yyyy/M/d} */
     @Override
-    public Map<String, Object> update{Entity}Status(Long id, Integer status)
+    public Map<String, Object> update{Entity}Status(Long {pk}, Integer status)
     {
-        AssertMyUtil.notNull(id, BizCode.VARIABLE_NOT_NULL, "id");
+        AssertMyUtil.notNull({pk}, BizCode.VARIABLE_NOT_NULL, "{pk}");
         {Entity}PO po = new {Entity}PO();
-        po.setId(id);
+        po.set{Pk}({pk});
         po.setStatus(status);
         {entity}Mapper.updateById(po);
         return transResultService.transResult(po.toMaps(), getTransHash());

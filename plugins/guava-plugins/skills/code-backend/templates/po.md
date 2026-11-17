@@ -44,13 +44,15 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("{表名}")
+// ↓ only if 主键序列（服务配置「主键序列」，默认 common 非空时生成）:
+@KeySequence("{pkSeq}")
 public class {Entity}PO extends BasePO
 {
     /**
      * 编号
      */
-    @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+    @TableId(value = "{pk}", type = IdType.AUTO)
+    private Long {pk};
     /**
      * {字段注释}
      */
@@ -89,6 +91,7 @@ Guava 类型兜底（无 MCP 时）：`text`/`textarea` → `String`；`dic` →
 ## 关键规则
 
 - PO 继承 `BasePO`（`com.guava.component.model.BasePO`），审计字段（`create_by`/`create_time`/`last_update_by`/`last_update_time`/`del_flag`/`status`/`version`）由基类承载，本表**不重复声明**（除非基类没有）。
-- 主键统一 `@TableId(value = "id", type = IdType.AUTO)` + `private Long id`。
+- 主键统一 `@TableId(value = "{pk}", type = IdType.AUTO)` + `private Long {pk}`（`{pk}` = 服务配置「主键」，默认 `id`）。
+- **主键序列**（`{pkSeq}`，默认 `common`）非空时：类上加 `@KeySequence("{pkSeq}")`（`com.baomidou.mybatisplus.annotation.KeySequence`），`@TableId` 类型改 `IdType.INPUT`；旧 md 未声明时维持 `IdType.AUTO` 不加注解。
 - 类头 Javadoc：`<p>{表注释}({表名}) po实体类</p>` + `@author` + `@since {yyyy/M/d}`（与 Controller/Service 一致）。
 - 覆盖策略：已存在时保留原 `@since`，仅补充缺失字段；禁止无脑覆盖。

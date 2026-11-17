@@ -30,7 +30,7 @@
 ## 明细
 - name: loginLog
   label: 用户登录明细
-  api: /sysuser/findUserLoginInfo
+  api: /sysUser/findUserLoginInfo
   columns:
     - label: 登录IP
       prop: loginIp
@@ -62,7 +62,7 @@
 
 | 配置 `api` | 推导 API 函数名 |
 | -------- | --------------- |
-| `/sysuser/findUserLoginInfo` | `findUserLoginInfoApi` |
+| `/sysUser/findUserLoginInfo` | `findUserLoginInfoApi` |
 | `/order/findOrderDtl` | `findOrderDtlApi` |
 
 API 函数需在 `src/api/<module>.ts` 中追加（如不存在，见 [api.md](api.md)）。
@@ -140,12 +140,12 @@ const showLoginLog = async (row: Recordable<any>, index: number) => {
 ## 明细
 - name: loginLog
   label: 用户登录明细
-  api: /sysuser/findUserLoginInfo
+  api: /sysUser/findUserLoginInfo
   columns: [{ label: 登录IP, prop: loginIp }, ...]
 
 - name: orderDtl
   label: 订单明细
-  api: /sysuser/findUserOrderDtl
+  api: /sysUser/findUserOrderDtl
   columns: [{ label: 订单编号, prop: orderNo }, ...]
 ```
 

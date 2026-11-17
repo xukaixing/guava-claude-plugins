@@ -31,7 +31,7 @@
 | template | 主体包进 `<GvTabs>`：搜索表单 + 列表放 `name="list"` 的 TabPane，内联表单放 `name="edit"` 的 TabPane（见下） |
 
 ```typescript
-const save<Feature>Inline = async () => { const fm = <feature>InlineFm.value; if (!fm) return; try { const ok = await crud.save(fm, saveXxxApi); if (ok) message('success', '保存成功'); } catch (e) { message(e, 'error'); } };
+const save<Feature>Inline = async () => { const fm = <feature>InlineFm.value; if (!fm) return; try { const ok = await crud.save(fm, saveXxxApi); if (ok) message('保存成功', 'success'); } catch (e) { message(e, 'error'); } };
 const handleTabClick = (tab: TabsPaneContext) => { activeTab.value = tab.paneName as string; };
 ```
 

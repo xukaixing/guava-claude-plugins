@@ -29,7 +29,7 @@ infoPage: true
 ## 表格 - 用户信息列表
 
 | 名称 | 字段 | 宽度 | 筛选 | 类型 | 固定 | 扩展 |
-| 操作 | | 80 | | action:编辑,编辑 | Y |
+| 操作 | | | | action:编辑,编辑 | Y |
 | 用户姓名 | text_1 | 150 | Y | | Y |
 | 状态 | text_3 | | Y | dic:xb |
 | 金额 | text_4 | | | | | amount, align: right |
@@ -97,12 +97,12 @@ editPage: true
 subTable: false
 api:
   module: admin/user
-  base: /sysuser
+  base: /sysUser
   operations:
-    list: /sysuser/findUsers
-    create: /sysuser/saveUser
-    update: /sysuser/updateUser/{id}
-    delete: /sysuser/deleteUser
+    list: /sysUser/findUsers
+    create: /sysUser/saveUser
+    update: /sysUser/updateUser/{id}
+    delete: /sysUser/deleteUser
 ---
 
 ## 查询
@@ -121,7 +121,7 @@ api:
 ## 明细
 - name: loginLog
   label: 用户登录明细
-  api: /sysuser/findUserLoginInfo
+  api: /sysUser/findUserLoginInfo
   columns:
     - label: 登录IP
       prop: loginIp
@@ -351,7 +351,7 @@ api:
 | `dic:yxzt` | 字典列 |
 | `date:datetime` | 日期列 |
 | `amount` | 金额列（自动右对齐 + `amountFormat`） |
-| `action:编辑,删除` | 操作列（视觉稿格式行内声明，按钮名不去重；优先于 `## 操作列` 小节，设计器导出不再双写该小节） |
+| `action:编辑,删除` | 操作列（视觉稿格式行内声明，按钮名不去重，忽略「宽度」不生成 `width`；优先于 `## 操作列` 小节，设计器导出不再双写该小节） |
 | `multiHeader`（组名写在「名称」列，字段留空） | 多级表头分组起始行，其后连续带字段行作子列（生成 `multiLabel` + `heads`，见 [helper.md §7.1](templates/helper.md#71-多级表头类型multiheader)）；兼容旧写法 `multi:<分组名>` |
 
 ### 表格「固定 / 扩展」列（视觉稿格式，可选）

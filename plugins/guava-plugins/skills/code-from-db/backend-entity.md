@@ -44,13 +44,15 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("{tableName}")
+// ↓ only if 主键序列（服务配置「主键序列」，默认 common 非空时生成）:
+@KeySequence("{pkSeq}")
 public class {Entity}PO extends BasePO
 {
     /**
      * 编号
      */
-    @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+    @TableId(value = "{pk}", type = IdType.AUTO)
+    private Long {pk};
 
     /**
      * {columnComment}
@@ -86,18 +88,14 @@ public class {Entity}PO extends BasePO
 
 ## 3. Mapper 模板
 
+**不加任何注释**（类头 Javadoc 也不生成）：
+
 ```java
 package com.guava.{package 末段}.repository;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.guava.{package 末段}.model.po.{Entity}PO;
 
-/**
- * <p>{tableComment} mapper</p>
- *
- * @author {git user.name} <{git user.email}>
- * @since {yyyy/M/d}
- */
 public interface {Entity}Mapper extends BaseMapper<{Entity}PO>
 {
 }
@@ -144,6 +142,6 @@ public class {Entity}DTO
 ## 6. 关键规则
 
 - PO 继承 `BasePO`（`com.guava.component.model.BasePO`），审计字段由基类承载，本表自己的 `create_time/update_time` 等不重复声明（除非基类没有）。
-- 主键统一 `@TableId(value="id", type=IdType.AUTO)` + `private Long id`。
+- 主键统一 `@TableId(value="{pk}", type=IdType.AUTO)` + `private Long {pk}`（`{pk}` = 服务配置「主键」，默认 `id`）；**主键序列**（`{pkSeq}`，默认 `common`）非空时类上加 `@KeySequence("{pkSeq}")` 且类型改 `IdType.INPUT`。
 - 类头 Javadoc 对齐 `SysUserPO`：`<p>{表注释}({表名}) po实体类</p>` + `@author` + `@since {yyyy/M/d}`。
 - 覆盖策略：已存在同文件时**保留**原 `@since`，仅补充缺失字段；禁止无脑覆盖。
