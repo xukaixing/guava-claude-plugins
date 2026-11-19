@@ -131,7 +131,7 @@ public class {ApiName}Controller
     public void export{Entity}Data(HttpServletResponse response, @RequestBody Map<String, Object> param) throws IOException
     {
         AssertMyUtil.notNull(param, BizCode.VARIABLE_NOT_EMPTY, "param");
-        {apiName}Service.export(response, "{中文名}导出", param);
+        {apiName}Service.export{Entity}Data(response, "{中文名}导出", param);
     }
 ```
 

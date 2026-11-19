@@ -144,6 +144,39 @@ public static String findXxx(Page<Map<String, Object>> page, String conditions)
   sql.append(" WHERE ");
 ```
 
+## 导出 SQL
+
+「服务逻辑描述」含「导出」时追加（Mapper 接口同步追加方法，见下）：
+
+```java
+public String export{Entity}(String headFields, String conditions)
+{
+    StringBuffer sql = new StringBuffer();
+    sql.append(" SELECT\n ");
+    sql.append(headFields);
+    sql.append(" FROM\n ");
+    sql.append("    {表} {别名} \n ");
+    sql.append(" WHERE\n ");
+    sql.append(conditions);
+    sql.append("    AND {别名}.del_flag = 0");
+    sql.append("    ORDER BY {别名}.create_time DESC \n ");
+    return sql.toString();
+}
+```
+
+Mapper 接口（追加到 `{Entity}Mapper.java`）：
+
+```java
+    @SelectProvider({Entity}SqlProvider.class)
+    List<Map<String, Object>> export{Entity}(String headFields, String conditions);
+```
+
+注意：
+- `headFields` 由 `excelApiService.toHeader(header, headList)` 解析产出（字段含表别名，如 `u.user_name`），**直接拼接**（参考 `SysUserSqlProvider.exportUsers`）
+- `conditions` 由 `MyUtil.getConditionsWhere` 生成，以 `AND` 开头，直接 `append(conditions)`
+- `FROM` / `JOIN` / `GROUP BY` / 固定过滤条件按 `### 列表数据表` 声明拼接（多表 / 聚合 / 字典列翻译需求与列表查询 SQL 同源）；仅单表列表可省略 JOIN / GROUP BY
+- 风格与上方 SqlProvider 查询模板一致（关键字大写、`StringBuffer` 链式 append）
+
 ## 与 page-generator 联动
 
 同时生成前后端时：

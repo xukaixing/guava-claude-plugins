@@ -34,7 +34,7 @@ public interface {ApiName}Service
 
     Map<String, Object> update{Entity}Status(Long {pk}, Integer status);
 
-    void export(HttpServletResponse response, String fileName, Map<String, Object> params) throws IOException;
+    void export{Entity}Data(HttpServletResponse response, String fileName, Map<String, Object> params) throws IOException;
 }
 ```
 

@@ -131,7 +131,12 @@ const TOOLS = [
   },
   {
     name: 'upsert_case',
-    description: '创建或更新测试用例（幂等；specContent 为完整 Playwright spec 文件源码，自带 import）',
+    description:
+      '创建或更新测试用例（幂等）。caseType=raw（默认）：specContent 为完整 Playwright spec 源码，自带 import；' +
+      'caseType=menu（菜单冒烟，免写代码）：specContent 为 DSL JSON，如 {"menu":["系统管理","用户管理","用户维护"],"blacklist"?["删除"]}，' +
+      '执行时自动登录→进入菜单→枚举页面所有按钮逐个点击（黑名单按钮点击后取消），校验无报错；' +
+      'caseType=steps（步骤流，业务逻辑用例）：specContent 为 {"logic":"逻辑说明（写入报告）","steps":[...]}，' +
+      '每步为单键对象，支持 {"menu":[...]}/{"click":"按钮名"}/{"fill":{"表单标签":"值"}}/{"select":{"标签":"选项"}}/{"expect":"文本"}/{"expectNot":"文本"}/{"expectRow":"行文本"}',
     inputSchema: {
       type: 'object',
       properties: {
@@ -139,7 +144,14 @@ const TOOLS = [
         suiteKey: { type: 'string' },
         caseKey: { type: 'string', description: '用例标识，如 menu-nav / login-submit' },
         title: { type: 'string', description: '用例标题（中文）' },
-        specContent: { type: 'string', description: '完整 Playwright spec 源码' },
+        caseType: {
+          type: 'string',
+          description: '用例类型：raw（默认，Playwright 源码）/ menu（菜单冒烟 DSL）/ steps（步骤流 DSL）',
+        },
+        specContent: {
+          type: 'string',
+          description: 'raw: 完整 Playwright spec 源码；menu: {"menu":[...],"blacklist"?[...]}；steps: {"logic":"...","steps":[...]}',
+        },
         tags: { type: 'string', description: '标签，逗号分隔，如 smoke,menu' },
         priority: { type: 'string', description: 'P0/P1/P2' },
       },
@@ -236,17 +248,26 @@ async function callTool(name, args) {
       return del(`/api/mgmt/projects/${args.projectKey}/suites/${args.suiteKey}`);
     case 'list_cases':
       return get(`/api/mgmt/projects/${args.projectKey}/suites/${args.suiteKey}/cases`);
-    case 'upsert_case':
+    case 'upsert_case': {
+      const caseType = args.caseType || 'raw';
+      if (!['raw', 'menu', 'steps'].includes(caseType)) {
+        throw new Error(`caseType 仅支持 raw/menu/steps: ${caseType}`);
+      }
+      if (caseType !== 'raw' && !String(args.specContent).trim().startsWith('{')) {
+        throw new Error(`caseType=${caseType} 时 specContent 必须为 DSL JSON 字符串（以 { 开头）`);
+      }
       return put(
         `/api/mgmt/projects/${args.projectKey}/suites/${args.suiteKey}/cases/${args.caseKey}`,
         {
           title: args.title,
+          caseType,
           specContent: args.specContent,
           tags: args.tags,
           priority: args.priority,
           source: 'agent',
         },
       );
+    }
     case 'delete_case':
       return del(
         `/api/mgmt/projects/${args.projectKey}/suites/${args.suiteKey}/cases/${args.caseKey}`,

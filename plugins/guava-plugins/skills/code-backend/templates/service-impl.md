@@ -168,9 +168,10 @@ public class {ApiName}ServiceImpl implements {ApiName}Service
 ```java
     /** <p>导出{中文名}信息</p> @since {yyyy/M/d} */
     @Override
-    public void export(HttpServletResponse response, String fileName, Map<String, Object> param)
+    public void export{Entity}Data(HttpServletResponse response, String fileName, Map<String, Object> params)
     {
-        String header = getValue(param.get("header"));
+        String header = getValue(params.get("header"));
+        String param = getValue(params.get("params"));
         String qc = getConditionsWhere(param, null);
         List<List<String>> headList = new ArrayList<>();
         List<String> headFields = excelApiService.toHeader(header, headList);
@@ -180,7 +181,10 @@ public class {ApiName}ServiceImpl implements {ApiName}Service
     }
 ```
 
-> 需要补 import `java.util.ArrayList`。`{entity}Mapper.export{Entity}(fields, qc)` 对应 Mapper XML 中的自定义导出查询。
+> - 需要补 import `java.util.ArrayList`
+> - 前端 GvExportDialog 提交的 `params` 键是查询条件 JSON 字符串（`filterConditions` 序列化），先 `getValue(params.get("params"))` 取出再 `getConditionsWhere(param, null)`——与参考 `SysUserServiceImpl.exportUserData` 一致
+> - `{entity}Mapper.export{Entity}(fields, qc)` 对应 Mapper 接口 `@SelectProvider({Entity}SqlProvider.class)` 方法与 SqlProvider 导出 SQL（见 [search-conditions.md §导出 SQL](search-conditions.md#导出-sql)）；导出时 Mapper / SqlProvider 为必生成项，不受「默认不生成 Mapper」限制（见 [_shared.md 覆盖策略](../_shared.md)）
+> - 前端按钮若带特殊查询语义（如部门含子孙、多选拼接），按 `### 服务逻辑描述` / `### 列表数据表` 声明追加处理逻辑，参考 `exportUserData` 的 deptId 子孙部门 IN 拼接
 
 ## 实现要点
 

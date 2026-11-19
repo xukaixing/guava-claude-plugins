@@ -127,7 +127,12 @@
       <!-- 例：配置「新增、导入、导出」→
       <GvButton @click="add<Feature>()">新增</GvButton>
       <GvButton @click="import<Feature>()">导入</GvButton>
-      <GvButton @click="export<Feature>()">导出</GvButton> -->
+      <template #export>
+        <GvExportDialog
+          :export="export<Feature>Api"
+          :findExportFields="findExportFieldsApi"
+          :saveExportFields="saveExportFieldsApi" />
+      </template> -->
     </GvTable>
     <<Base>Edit v-model:visible="dialogVisible" :row-data="rowData" :operate-type="operateType" :title="title" @saved="save<Base>Info" />
   </div>
@@ -140,9 +145,24 @@
 | ------ | -------- | ---- |
 | 新增 | `add<Feature>()` | 打开 Drawer，`operateType = 'add'` |
 | 导入 | `import<Feature>()` | 占位（`// TODO: 导入`） |
-| 导出 | `export<Feature>()` | 占位（`// TODO: 导出`） |
+| 导出 | 无方法 —— `<template #export>` + `GvExportDialog`（见下） | 全栈：导出对话框；frontendOnly：回落 `export<Feature>()` 占位（`// TODO: 导出`） |
 | 批量删除 | `batchDelete<Feature>()` | 占位（`// TODO: 批量删除`，接 selection） |
 | 其他 | `<按钮名><Feature>()` | 同名占位方法 |
+
+**导出（全栈，非 frontendOnly）**：配置含「导出」按钮（设计器导出为 `导出:export`）时，**不写导出方法、不写 GvButton**，改为 GvTable 的 `#export` 插槽（GvTable 检测到插槽后自动生成工具栏导出按钮，并注入 `visible` / `tableHead` / `refTable`，参考 `src/views/sysMng/userMng/UserIndex.vue`）：
+
+```vue
+<template #export>
+  <GvExportDialog
+    :export="export<Feature>Api"
+    :findExportFields="findExportFieldsApi"
+    :saveExportFields="saveExportFieldsApi" />
+</template>
+```
+
+- `GvExportDialog` 由 guava-ui 全局注册，**无需 import**（同 GvTable / GvForm）
+- 三个 API 由 [api.md §5.1](api.md#51-导出-api) 追加到 `src/api/<apiModule>.ts`：`export<Feature>Api`（blob 下载）+ `findExportFieldsApi` / `saveExportFieldsApi`（excelApi 通用端点）
+- 后端配套端点 `POST /<apiName>/export<Feature>Data` 由 code-backend 按「服务逻辑描述」导出标记生成
 
 - 按钮文案**原样写入、不去重**（顿号 / 逗号分隔）
 - 未配置工具栏小节时保持默认单个「新增」按钮（`editPage` 启用时）

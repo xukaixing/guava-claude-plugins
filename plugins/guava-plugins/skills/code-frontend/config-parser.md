@@ -102,6 +102,8 @@ infoPage: true             # 生成 <Base>Info.vue（## 详情 小节，见 info
 
 顿号分隔按钮名 → Index 页表格工具栏，按钮名原样写入、不去重。按钮→方法映射（新增 / 导入 / 导出 / 批量删除 / 占位）见 [crud.md §3.3](templates/crud.md#33-工具栏按钮映射)。
 
+设计器「工具栏-导出」组件导出为带 action 的 `导出:export`——识别到「导出」按钮（无论有无 `:export` 后缀）按 crud.md §3.3 的 **GvExportDialog 插槽方式**生成（非 frontendOnly）：`GvTable` 内加 `<template #export><GvExportDialog … /></template>`，api 文件按 [api.md §5.1](templates/api.md#51-导出-api) 追加 `export<Feature>Api` / `findExportFieldsApi` / `saveExportFieldsApi`；frontendOnly 时保持 `export<Feature>()` 占位（禁止 `@/api` import，无法使用导出对话框）。
+
 ### 1.7 编辑表单子区（组件注解）
 
 `## 编辑表单` 下 `###` 子标题的组件注解决定生成：

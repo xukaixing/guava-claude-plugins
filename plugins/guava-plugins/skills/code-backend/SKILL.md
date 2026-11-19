@@ -57,7 +57,7 @@ Step 1.0：**服务配置(backend) 小节消费**（设计器「后端配置」�
 | 操作：保存 | `save{Entity}` 端点 |
 | 操作：更新 | `update{Entity}` 端点 |
 | 状态更新 | 额外生成 `update{Entity}Status` 端点 |
-| 导出 | 额外生成 `export{Entity}Data` 端点（Excel） |
+| 导出 | 额外生成 `export{Entity}Data` 端点（Excel）+ Mapper `export{Entity}` 方法与 SqlProvider 导出 SQL（必生成，见 [_shared.md](_shared.md) 例外） |
 | 操作日志 | 「操作日志」标记存在 → Controller 写操作生成 `@MarkLog`（含 import）；**否则不生成（默认）** |
 | 逻辑描述 | 业务逻辑备注（供 ServiceImpl 参考） |
 

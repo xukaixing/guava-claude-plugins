@@ -65,6 +65,8 @@ alert('导出完成', 'success'); // Notification 弹窗
 
 **禁止 `@/api` import**；数据来自 [data.md](data.md)（列表）或本文件内 mock（表单）。三种形态：
 
+> 工具栏「导出」按钮在 frontendOnly 下保持 `export<Feature>()` 占位（`// TODO: 导出`）：`GvExportDialog` 依赖导出 API（[api.md §5.1](api.md#51-导出-api)），frontendOnly 禁止 `@/api` import，无法使用插槽导出方式（见 [crud.md §3.3](crud.md#33-工具栏按钮映射)）。
+
 ### 4.1 列表页查询 / 删除（crud / tabs）
 
 ```typescript

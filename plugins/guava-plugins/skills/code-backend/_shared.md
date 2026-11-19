@@ -10,6 +10,8 @@
 | PO | **Write 覆盖**；保留原 `@created`，仅补充缺失字段 |
 | Mapper / SqlProvider | 本 skill 默认不生成；用户要求时 **追加** 缺失方法 |
 
+**例外**：「服务逻辑描述」含「导出」时，Mapper 接口方法与 SqlProvider 导出 SQL 为**必生成项**（导出链路必需，不受上表默认不生成限制）——Mapper 追加 `export{Entity}` 方法（`@SelectProvider`），SqlProvider 追加 `export{Entity}(headFields, conditions)` SQL（模板见 [search-conditions.md §导出 SQL](search-conditions.md#导出-sql)）。
+
 禁止因已存在而跳过。仅补充缺失端点时 StrReplace 追加。
 
 ## 输出根

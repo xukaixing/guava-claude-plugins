@@ -94,6 +94,46 @@ export const find<Feature>DtlApi = (datas: Recordable<any>) => {
 
 ---
 
+## 5.1 导出 API
+
+配置含「导出」工具栏按钮（见 [crud.md §3.3](crud.md#33-工具栏按钮映射)）时，向同文件**追加**三个函数（endpoint 与 `<gateway>` 同模块其余 API；`export<Feature>Data` 路径与后端「服务逻辑描述」导出标记对应）：
+
+```typescript
+// export <feature> list api（Excel 导出，blob 下载）
+export const export<Feature>Api = (data: Recordable<any>) => {
+  const { fetch } = useFetch();
+  return fetch.post(`${server.<gateway>}/<apiName>/export<Feature>Data`, data, {
+    responseType: 'blob',
+  });
+}
+
+// find export fields api（excelApi 通用端点，btnId = GvTable 的 ref-table）
+export const findExportFieldsApi = (param: string) => {
+  const { fetch } = useFetch();
+  return fetch.get(`${server.<gateway>}/excelApi/findTabExport`, {
+    params: {
+      btnId: param,
+    },
+  });
+}
+
+// save export fields api（excelApi 通用端点）
+export const saveExportFieldsApi = (btnId: string, header: string, expId: string | number) => {
+  const { fetch } = useFetch();
+  return fetch.get(`${server.<gateway>}/excelApi/saveTabExport`, {
+    params: {
+      btnId,
+      header,
+      expId,
+    },
+  });
+}
+```
+
+> 文件已存在且三个函数均已定义时跳过；只缺一部分则 StrReplace 追加缺失函数（函数名以既有文件为准，页面 import 对应调整）。
+
+---
+
 ## 6. form-only
 
 **仅生成** `get` / `save` 对应的 API：

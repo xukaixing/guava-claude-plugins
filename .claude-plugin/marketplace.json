@@ -1,7 +1,7 @@
 {
   "name": "guava-tools",
   "description": "Guava AI Coding Assistant Claude Code Plugin Market",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "owner": {
     "name": "xukaixing<xukaixing@hotmail.com>"
   },
@@ -10,7 +10,7 @@
       "name": "guava-plugins",
       "source": "./plugins/guava-plugins",
       "description": "Guava 全栈生成 + Gv* MCP: /guava-plugins:code-frontend|code-backend|code-all|code-from-db|code-optimize，agent guava-codegen 按 md 自动调度，agent guava-test-manager 经 test-manager MCP 管理多应用 Playwright 用例、触发执行与失败分析",
-      "version": "2.0.2",
+      "version": "2.0.3",
       "keywords": [
         "guava",
         "guava-ui",
