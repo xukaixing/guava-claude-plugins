@@ -81,10 +81,12 @@
 | ---- | -------- | -------- |
 | `text` | `field`, `label`, `format` | `hidden`, `placeholder` |
 | `dic` | `field`, `label`, `format`, `dicType` | `dicRemote`, `multiple`, `isreload`, `filtercode` |
+| `switch` | `field`, `label`, `format` | 字典取扩展列 `dic=` / `e#`（同 dic）；生成 FormItem `type: 'dic'` + `dicType`，GvForm 编辑表单对 sf/yxzt 两选项字典自动渲染为开关；查询表单渲染为字典下拉 |
 | `date` | `field`, `label`, `format`, `dateType` | `defaultTime`, `disabledDate` |
 | `number` | `field`, `label`, `format` | `min`, `max`, `step`, `precision` |
 | `textarea` | `field`, `label`, `format` | `colspan`, `rows` |
 | `cascader` | `field`, `label`, `options` | `lazy`, `lazyLoad` |
+| `selectDialog` | `field`, `label`, `format` | 弹窗引用与回填全部走 `扩展` 列：`pick=` / `pickMap=` / `pickTable=`（语法与生成见 [edit.md §2.3](templates/edit.md)） |
 
 ### dateType
 

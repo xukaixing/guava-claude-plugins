@@ -225,6 +225,28 @@ const TOOLS = [
       required: ['runNo', 'content'],
     },
   },
+  {
+    name: 'generate_case',
+    description:
+      'AI 生成用例内容（平台内嵌 claude CLI，服务端校验 DSL）。输入 Markdown 业务场景描述，返回校验通过的用例内容：' +
+      'caseType=steps 返回步骤流 DSL JSON（{"logic":"...","steps":[...]}）；caseType=menu 返回菜单冒烟 DSL JSON（{"menu":[...],"blacklist"?[...]}）；' +
+      'caseType=raw 返回完整 Playwright spec 源码。生成后配合 upsert_case 写入用例。' +
+      'steps 的 md 场景格式约定：## 逻辑 + ## 步骤（- 菜单：a / b、- 点击：按钮、- 填写：标签 = 值、- 选择：标签 = 选项、- 期望：文本、- 期望不出现：文本、- 期望行：文本）',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        projectKey: { type: 'string' },
+        suiteKey: { type: 'string' },
+        caseType: {
+          type: 'string',
+          description: '目标用例类型：steps（步骤流，推荐）/ menu（菜单冒烟）/ raw（Playwright 源码）',
+        },
+        requirement: { type: 'string', description: 'Markdown 业务场景/需求描述' },
+        timeoutSeconds: { type: 'number', description: '轮询超时秒数，默认 600' },
+      },
+      required: ['projectKey', 'suiteKey', 'caseType', 'requirement'],
+    },
+  },
 ];
 
 // ---- 工具实现 -----------------------------------------------------------
@@ -290,6 +312,38 @@ async function callTool(name, args) {
       return post(`/api/mgmt/runs/${args.runNo}/rerun`);
     case 'save_analysis':
       return callApi('PUT', `/api/mgmt/runs/${args.runNo}/analysis`, { content: args.content });
+    case 'generate_case': {
+      const caseType = args.caseType || 'steps';
+      if (!['raw', 'menu', 'steps'].includes(caseType)) {
+        throw new Error(`caseType 仅支持 raw/menu/steps: ${caseType}`);
+      }
+      // 启动生成任务（服务端 spawn claude CLI，用户已在方案中批准该模式）
+      const { runId } = await post('/api/mgmt/ai/generate', {
+        projectKey: args.projectKey,
+        suiteKey: args.suiteKey,
+        caseType,
+        requirement: args.requirement,
+      });
+      // 轮询聚合结果（agent 场景无 SSE 消费方）
+      const timeoutSeconds = args.timeoutSeconds || 600;
+      const deadline = Date.now() + timeoutSeconds * 1000;
+      for (;;) {
+        await new Promise((r) => setTimeout(r, 5000));
+        const st = await get(`/api/mgmt/ai/generate/${runId}`);
+        if (st.status === 'DONE') {
+          return { runId, caseType, specContent: st.result };
+        }
+        if (st.status === 'ERROR') {
+          throw new Error(`AI 生成失败: ${st.error}\n原始输出:\n${st.output ?? ''}`);
+        }
+        if (st.status === 'CANCELLED') {
+          throw new Error('AI 生成已取消');
+        }
+        if (Date.now() > deadline) {
+          throw new Error(`AI 生成超时（${timeoutSeconds}s），runId=${runId}，可稍后查询状态`);
+        }
+      }
+    }
     default:
       throw new Error(`未知工具: ${name}`);
   }

@@ -100,6 +100,8 @@ const <feature>LoginInfoHeadList = build<Feature>LoginInfoHeadList();
 | 点击行为 | `<Feature>EditActions` 追加 `open<Section>: () => void`（`<Section>` = 子表单标题 PascalCase）；图标点击事件名以 MCP `get_props` GvInput 实际暴露为准，当前版本若无 icon 点击事件，方法体留 `@todo` 注释待 guava-ui 补齐 |
 | 子表单 | 目标 `## 编辑表单 - <子表单>（GvDialog/GvDrawer…）` 小节生成独立 Edit 子组件 `<Base><Section>Edit.vue`（容器 / 宽度取小节注解） |
 
+> 工具栏按钮 / 操作列按钮的「打开抽屉/弹窗」（`targetForm`）除编辑表单画布外，也可指向 `## 选择弹窗 - <名>` 小节——复用 §2.3 的 `Pick<Name>.vue` 组件打开该弹窗（按钮场景无 pickMap / pickTable 回填，仅作打开查看）。
+
 父组件持有子表单弹窗开关并挂载子组件：
 
 ```vue
@@ -126,6 +128,45 @@ const open<Section> = () => {
 
 - 子组件复用 §3 基座模板（frontendOnly 时同 §1），容器为 GvDialog 时 `size` 取注解宽度
 - 子表单 `## 按钮` 独立配置（省略默认 `保存`）；`saved` 事件由父组件按需回填触发字段
+
+---
+
+## 2.3 弹出选择（`扩展=pick=…`）
+
+字段 `类型=selectDialog` + `扩展` 关键字 `pick=` / `pickMap=` / `pickTable=`（语法登记见 [config-parser.md §1.7](../config-parser.md)）：
+
+| 部分 | 生成 |
+| ---- | ---- |
+| 目标小节 | `## 选择弹窗 - <名>（GvDialog[，宽度 N]）`（内含 `### 查询` + `### 表格`）生成独立子组件 `Pick<Name>.vue`：`<GvDialog>`（`size` 取 `pick=` 括号宽度或小节注解）内查询条件 `GvForm`（工厂命名 `create<Feature>Pick<Name>SearchList`，规则同 [search-conditions.md §7](../search-conditions.md)）+ `GvTable`（列转换同 helper.md §9，命名 `create<Feature>Pick<Name>HeadList`）；列表数据接入该弹窗表格自己的「列表数据表」`listKey` |
+| 触发字段 | helper FormItem 生成**只读** `type: 'text'` + `suffixIcon: 'search'`（与 §2.2 同一交互基座）；`<Feature>EditActions` 追加 `openPick<Name>: () => void` |
+| 选中回填 | 子组件行点击（或确定按钮）`emit('picked', row)`；父组件监听：`pickMap` 逐对 `setFieldValue(<表单字段>, row[<弹窗列>])`；配置了 `pickTable=<子表字段>[:append\|replace]` 时同时回填内嵌表格——`replace` 整体替换、`append` 追加行，行数据按宿主子表列名同名从 `row` 抽取 |
+
+父组件接线（示意）：
+
+```vue
+<script setup lang="tsx">
+import Pick<Name> from './Pick<Name>.vue';
+// @data
+const pick<Name>Visible = ref(false);
+// @methods
+const openPick<Name> = () => { pick<Name>Visible.value = true; };
+const onPick<Name> = (row: Recordable) => {
+  // pickMap=code:supplierCode;name:supplierName
+  setFieldValue('supplierCode', row.code);
+  setFieldValue('supplierName', row.name);
+  // pickTable=detailList:replace
+  setFieldValue('detailList', [pickRowByColumns(row, <detailList列名>)]);
+  pick<Name>Visible.value = false;
+};
+</script>
+
+<template>
+  <Pick<Name> v-model:visible="pick<Name>Visible" @picked="onPick<Name>" />
+</template>
+```
+
+- 校验：生成「确认表」时若 `pick=` 目标小节不存在（画布被删/悬空引用），必须告警并在报告中注明，不得静默跳过
+- `pickMap` / `pickTable` 不作为 FormItem 属性，仅写入 actions 回填逻辑
 
 ---
 
@@ -220,10 +261,19 @@ template 增量（插在 GvForm 与 footer 之间）：
 
 ```vue
 <div v-show="masterId !== 0">
+  <!-- ↓ multi enabled（子表标题带「复选」注解时开启）：加 :multi="true" + @selection-change + selectedRows/selectionChangeCB -->
   <GvTable ref="<feature>DtlTableList" ref-table="<feature>DtlTableList" :table-head="<feature>DtlTableHeadList" :table-data="search<Feature>DtlData">
     <GvButton @click="add<Feature>Dtl()">新增</GvButton>
   </GvTable>
 </div>
+```
+
+子表复选增量（script）：
+
+```ts
+// ↓ multi enabled
+const selectedDtlRows = ref<Recordable<any>[]>([]);
+const selectionChangeDtlCB = (selection: Recordable<any>[]) => { selectedDtlRows.value = selection; };
 ```
 
 ---

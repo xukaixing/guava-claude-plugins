@@ -86,9 +86,9 @@ public class {ApiName}ServiceImpl implements {ApiName}Service
     @Override
     public IPage<Map<String, Object>> find{Entity}(Page<Map<String, Object>> page, String conditions)
     {
-        // 设置排序
+        // 设置默认排序：优先按 ### 列表数据表 该列表的「排序：别名.字段 DESC/ASC」行生成（多条 = 多个 OrderItem，按行序 addOrder）
         OrderItem oi = new OrderItem();
-        oi.setColumn("{table_alias}.create_time");   // ← 排序列
+        oi.setColumn("{table_alias}.create_time");   // ← 排序列（无排序行时的默认值）
         oi.setAsc(false);
         page.addOrder(oi);
         return transResultService.transResult(
@@ -204,7 +204,7 @@ public class {ApiName}ServiceImpl implements {ApiName}Service
 > 通用风格（Javadoc `<p>` + 标准 `@param`/`@return`/`@throws`/`@since`、Allman、4 空格、static import、`HashMap.newHashMap(16)`、throws 收窄、框架优先）见 [conventions.md](../conventions.md)，此处只列 ServiceImpl 特有规则：
 
 - `getTransHash()` 必须覆盖 Step 1.1/1.2 中所有字典和日期字段
-- 查询方法必须设置默认排序（`OrderItem` + `page.addOrder(oi)`）
+- 查询方法必须设置默认排序（`OrderItem` + `page.addOrder(oi)`）：排序列优先取 `### 列表数据表` 该列表的「排序」行（多条按行序生成多个 OrderItem），无排序行时默认 `{主表别名}.create_time DESC`
 - 新增/更新后返回翻译后的 Map：`transResultService.transResult(po.toMaps(), getTransHash())`
 - 复杂业务逻辑（Redis 同步、级联操作）用 `// todo:` 标注，不臆造 Feign 接口
 - 仅实现选中操作，不生成空方法

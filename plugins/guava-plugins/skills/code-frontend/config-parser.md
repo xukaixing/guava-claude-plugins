@@ -56,8 +56,9 @@ infoPage: true             # 生成 <Base>Info.vue（## 详情 小节，见 info
 | 小节 | 说明 |
 | ---- | ---- |
 | `## 查询 - <描述>` | 搜索表单（后缀可省） |
-| `## 表格 - <描述>` | 列表 |
+| `## 表格 - <描述>` | 列表；标题带 `（复选）` 注解时生成复选表格（`:multi="true"` + `@selection-change`，见 crud.md） |
 | `## 编辑表单 - <描述>` | 新增/编辑（`## 编辑` 兼容别名） |
+| `## 选择弹窗 - <名>` | 选择弹窗画布（内含 `### 查询` + `### 表格`），供 `类型=selectDialog` 字段 `扩展=pick=` 引用，生成规则见 [edit.md §2.3](templates/edit.md#23-弹出选择扩展pickpickmappicktable) |
 | `## 标签页` / `## 明细` / `## 详情` / `## 改进` | 同精简格式规则 |
 
 - 按 `-` 前前缀匹配；`- 描述` 作为区块标题文案（Edit Drawer 标题、搜索区分隔等）
@@ -104,6 +105,8 @@ infoPage: true             # 生成 <Base>Info.vue（## 详情 小节，见 info
 
 设计器「工具栏-导出」组件导出为带 action 的 `导出:export`——识别到「导出」按钮（无论有无 `:export` 后缀）按 crud.md §3.3 的 **GvExportDialog 插槽方式**生成（非 frontendOnly）：`GvTable` 内加 `<template #export><GvExportDialog … /></template>`，api 文件按 [api.md §5.1](templates/api.md#51-导出-api) 追加 `export<Feature>Api` / `findExportFieldsApi` / `saveExportFieldsApi`；frontendOnly 时保持 `export<Feature>()` 占位（禁止 `@/api` import，无法使用导出对话框）。
 
+编辑表单画布（`## 编辑表单 - <描述>`）内含子表（`### <名>（GvTable 子表）`）时，子表工具栏按钮以 `### 表格工具栏 - <子表名>` 小节输出（格式同上，action 后缀同理）——归属该子表工具栏，**不**生成到 Index 页；多子表时后缀为 `表格工具栏2 - <子表名>` 等。子表标题含「复选」（`（GvTable 子表，复选）`）时该子表生成复选表格（`:multi="true"` + `@selection-change`，同主列表规则）。
+
 ### 1.7 编辑表单子区（组件注解）
 
 `## 编辑表单` 下 `###` 子标题的组件注解决定生成：
@@ -132,6 +135,18 @@ infoPage: true             # 生成 <Base>Info.vue（## 详情 小节，见 info
 | `(<容器>)` | 弹窗容器 `Dialog` / `Drawer`，与目标小节注解一致时可省略 |
 
 生成规则见 [edit.md §2.2](templates/edit.md#22-弹窗子表单扩展suffixbtn) 与 [helper.md §8](templates/helper.md#8-format--日期--只读--占用列)。
+
+编辑表单项 `类型=selectDialog` 的 `扩展` 关键字（弹出选择：按钮弹「查询+列表」选择器，选中行回填）：
+
+| 关键字 | 语法 | 语义 |
+| ---- | ---- | ---- |
+| `pick=` | `pick=<选择弹窗>[:<标题>](Dialog[,<宽度>])` | 目标 `## 选择弹窗 - <选择弹窗>（GvDialog…）` 小节（内含 `### 查询` + `### 表格`）；标题缺省取小节名，括号可省 |
+| `pickMap=` | `pickMap=<弹窗表格列>:<表单字段>[;<列2>:<字段2>…]` | 选中行 → 宿主表单字段回填映射（`;` 分隔多组） |
+| `pickTable=` | `pickTable=<子表字段>[:append\|replace]` | 选中行同时回填宿主表单内嵌表格（tableEditable 子表字段），`replace` 覆盖、`append`（默认）追加 |
+
+生成规则见 [edit.md §2.3](templates/edit.md#23-弹出选择扩展pickpickmappicktable)。
+
+查询 / 编辑表单项 `类型=switch`（开关）：字典取 `扩展` 列 `dic=` / `e#`（同 dic），生成 FormItem `type: 'dic'` + `dicType`——GvForm 编辑表单对 sf/yxzt 两选项字典自动渲染为开关，查询表单渲染为字典下拉（选型表见 [search-conditions.md §3](search-conditions.md)）。
 
 ### 1.8 pageType 推导（YAML 显式时优先）
 

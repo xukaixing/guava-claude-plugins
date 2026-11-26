@@ -66,7 +66,8 @@ public IPage<Map<String, Object>> findXxx(@RequestBody String params)
 @Override
 public IPage<Map<String, Object>> findXxx(Page<Map<String, Object>> page, String conditions)
 {
-  // 设置默认排序
+  // 设置默认排序：按 ### 列表数据表 该列表的「排序：别名.字段 DESC/ASC」行生成
+  // （多条排序行 = 多个 OrderItem，按行序 addOrder；无排序行时默认 {主表别名}.create_time DESC）
   OrderItem oi = new OrderItem();
   oi.setColumn("b.create_time");   // ← 数据库列名
   oi.setAsc(false);

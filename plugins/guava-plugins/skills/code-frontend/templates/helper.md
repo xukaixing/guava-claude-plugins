@@ -163,6 +163,7 @@ export interface <Feature>TableActions {
 - 日期查询一律 `isDate` + `daterange`；编辑按 label 关键字推导
 - 只读 `Y` → `readonly: true`；占用列 `≥2` → `colspan: N`
 - `扩展=suffixBtn=<图标名>:<子表单>(<容器>)`（编辑表单 `type: 'text'` 项）→ FormItem 追加 `suffixIcon: '<图标名>'` + 点击回调 `actions.open<Section>`（`<Section>` = 子表单标题 PascalCase）；图标点击事件名以 MCP `get_props` GvInput 实际暴露为准，无该事件时方法体留 `@todo` 注释（guava-ui 需补 suffixIcon 点击事件）
+- `类型=selectDialog` + `扩展=pick=<选择弹窗>[:<标题>](Dialog[,<宽度>])`（可带 `pickMap=<弹窗列>:<表单字段>;…`、`pickTable=<子表字段>[:append|replace]`）→ **只读** `type: 'text'` FormItem + `suffixIcon: 'search'` + 点击回调 `actions.openPick<Name>`（`<Name>` = 选择弹窗名 PascalCase）；`pickMap` / `pickTable` 回填逻辑见 [edit.md §2.3](edit.md#23-弹出选择扩展pickpickmappicktable)，仅写 actions 不进 FormItem
 
 ---
 

@@ -32,23 +32,46 @@ description: >
 
 ## Step 2 — 生成/维护用例
 
+**优先用 DSL 用例（menu/steps），复杂场景才用 raw 脚本**——平台页面已内嵌同能力的 AI 生成（md 场景 → DSL），agent 侧用 `generate_case` 批量生成、`upsert_case` 写入。
+
 按功能范围派生用例，默认落在 `smoke` 或按功能建套件（如 `menu`、`form`），用例按 T1-T4 分类覆盖：
 
-| 类别 | 关注点 | 示例 caseKey |
-| --- | --- | --- |
-| T1 菜单导航 | 菜单可达、路由跳转正确、页面标题 | `menu-nav-xxx` |
-| T2 按钮可用性 | 新增/编辑/删除/查询按钮存在且可点击、权限隐藏 | `btn-avail-xxx` |
-| T3 输入校验 | 必填/长度/格式校验与错误提示 | `valid-xxx` |
-| T4 保存/修改 | 表单提交、列表回显、删除确认；写操作只用 `E2E_<ts>_` 数据 | `save-xxx` |
+| 类别 | 关注点 | 首选 caseType | 示例 caseKey |
+| --- | --- | --- | --- |
+| T1 菜单导航 | 菜单可达、路由跳转正确、页面标题 | menu（整页按钮冒烟）/ steps | `menu-nav-xxx` |
+| T2 按钮可用性 | 新增/编辑/删除/查询按钮存在且可点击、权限隐藏 | menu / steps | `btn-avail-xxx` |
+| T3 输入校验 | 必填/长度/格式校验与错误提示 | steps | `valid-xxx` |
+| T4 保存/修改 | 表单提交、列表回显、删除确认；写操作只用 `E2E_<ts>_` 数据 | steps（复杂表单交互才用 raw） | `save-xxx` |
 
 执行方式（subagent 隔离，省 token）：
 
 1. 拉起 **1 个测试开发 subagent**，一次性并行读取以下材料（禁止二次 Read）：
    - 用户需求原文、目标 URL/账号/功能范围
    - 有源码时：`${CLAUDE_PROJECT_DIR}/src/views/` 下相关页面（组件结构、表单字段、按钮、菜单配置）；无源码则依赖用户提供的信息
-2. subagent 产出**完整 Playwright spec 源码**（每个用例一个 spec 文件，自带 `import { test, expect } from '@playwright/test'`；用 `process.env.E2E_BASE_URL / E2E_USERNAME / E2E_PASSWORD / E2E_LOGIN_PATH / E2E_MENU_SELECTOR`；公共登录放 `test.beforeEach`）。
-3. 本 agent 用 `upsert_case` 幂等写入（source=agent，tags 标 T1-T4 类别与功能名）。
+2. 按类别产出用例内容（三选一）：
+   - **menu（菜单冒烟，免写代码）**：subagent 只产出菜单路径与危险按钮清单 → `generate_case` 或直接拼 `{"menu":["一级","二级"],"blacklist":["删除"]}`
+   - **steps（步骤流，推荐）**：subagent 先把业务场景整理成 **md 场景格式**（约定见下），再 `generate_case(caseType=steps)` 生成 DSL JSON；**不要手工拼 steps JSON**，格式错误率高
+   - **raw（Playwright 源码）**：subagent 产出**完整 spec 源码**（每个用例一个 spec 文件，自带 `import { test, expect } from '@playwright/test'`；用 `process.env.E2E_BASE_URL / E2E_USERNAME / E2E_PASSWORD / E2E_LOGIN_PATH / E2E_MENU_SELECTOR`；公共登录放 `test.beforeEach`）
+3. 本 agent 用 `upsert_case` 幂等写入（source=agent，tags 标 T1-T4 类别与功能名）；`generate_case` 返回的内容已通过服务端 DslValidator 校验，可直接写入。
 4. 已有用例时：先 `list_cases` 复用/修正，避免重复造轮子。
+
+**steps md 场景格式约定**（`generate_case` 的 requirement 入参，与平台页面 AI 生成一致）：
+
+```markdown
+## 逻辑
+管理员新增用户成功后列表可见
+
+## 步骤
+- 菜单：系统管理 / 用户管理 / 用户维护   （→ {"menu":[...]}，逐级菜单合并一步）
+- 点击：新增                              （→ {"click":"..."}）
+- 填写：用户名 = test01；手机号 = 138...  （→ {"fill":{"标签":"值",...}}）
+- 选择：角色 = 管理员                     （→ {"select":{"标签":"选项"}}，"*" 表示任选第一项）
+- 期望：新增成功                          （→ {"expect":"..."}）
+- 期望不出现：错误提示                    （→ {"expectNot":"..."}）
+- 期望行：test01                          （→ {"expectRow":"..."}）
+```
+
+生成后 `generate_case` 返回 `{"runId","caseType","specContent"}`，取 `specContent`（已格式化+校验）传给 `upsert_case`。
 
 ## Step 3 — 触发执行
 

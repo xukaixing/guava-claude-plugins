@@ -84,6 +84,9 @@
       else crud.removeResult(search<Feature>Data.value, index);
     } catch (e) { message(e, 'error'); }
   };
+  // ↓ multi enabled（表格标题带「复选」注解时开启）
+  const selectedRows = ref<Recordable<any>[]>([]);
+  const selectionChangeCB = (selection: Recordable<any>[]) => { selectedRows.value = selection; };
   // ↓ add/edit enabled
   const save<Base>Info = (payload: { type: 'update' | 'insert'; data: Recordable<any>; rownums?: number }) => {
     if (payload.type === 'update') crud.updateResult(search<Feature>Data.value, payload.data, payload.rownums!);
@@ -122,6 +125,8 @@
     </GvForm>
     <GvTable ref="<feature>TableList" ref-table="<feature>TableList" :table-head="<feature>TableHeadList" :table-data="search<Feature>Data"
       @expand-change="expandChange">  <!-- expand -->
+      <!-- ↓ multi enabled（表格标题带「复选」注解时开启）：加 :multi="true" + @selection-change -->
+      <!-- <GvTable ... :multi="true" @selection-change="selectionChangeCB"> -->
       <!-- ↓ 工具栏按钮由 ### 表格工具栏（或精简格式 ## 表格工具栏）驱动，未配置时仅保留「新增」 -->
       <GvButton @click="add<Feature>()">新增</GvButton>  <!-- add -->
       <!-- 例：配置「新增、导入、导出」→

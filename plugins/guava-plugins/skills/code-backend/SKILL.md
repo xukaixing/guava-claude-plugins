@@ -67,6 +67,7 @@ Step 1.0：**服务配置(backend) 小节消费**（设计器「后端配置」�
 
 ```markdown
 - 用户信息列表（主画布）：数据库 guava_sys；表 sys_user（别名 su）
+  - 排序：su.create_time DESC
   - 查询列：userName、account、status、text_4、deptId、text_10
 - 登录日志列表：数据库 guava_sys；表 sys_login_log（别名 sl）
   - 查询列：userName、loginTime、ip
@@ -76,6 +77,7 @@ Step 1.0：**服务配置(backend) 小节消费**（设计器「后端配置」�
 |----|------|
 | 列表名（主画布） | 与 `## 表格 - <描述>` 同名列表对应；`（主画布）` 标记 = 页面主列表 |
 | 数据库 + 表（别名） | 该列表 SqlProvider `FROM {表} {别名}`；查询 field 表别名来源（`su@字段`，见 Step 1.1）；Step 4.5 PO 生成的表名 / 库名来源（主画布列表） |
+| 排序 | `排序：别名.字段 DESC/ASC` 行（可多条）→ 该列表 ServiceImpl `find{Xxx}` 默认排序：每条排序行一个 `OrderItem`，按行序 `page.addOrder`（字段为数据库列名）；无排序行时默认 `{主表别名}.create_time DESC` |
 | 查询列 | 该列表 SqlProvider SELECT 列（`db_column camelAlias`，驼峰别名与前端表格 prop 对齐） |
 
 **多列表生成规则**：每个列表各生成一套 `find{Xxx}` 方法（Controller + Service + ServiceImpl + SqlProvider SQL），方法名与 SQL 互不共用——
